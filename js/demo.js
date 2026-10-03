@@ -1,122 +1,219 @@
 let demoRunning = false;
+
 function startDemo() {
   const dc = document.getElementById('demoCanvas');
   if (!dc || demoRunning) return;
   demoRunning = true;
   const dctx = dc.getContext('2d');
-  const demo = {
-    player: { x: 60, y: 240, vx: 0, vy: 0, angle: 0 },
-    gates: [
-      { x: 760, y: 110, w: 60, h: 80, label: 'كَيْفَ حَالُكَ' },
-      { x: 760, y: 240, w: 60, h: 80, label: 'أَنَا بِخَيْرٍ' },
-      { x: 760, y: 370, w: 60, h: 80, label: 'مَا اسْمُكَ' },
-    ],
-    target: 'I am fine',
-    path: [{ x: 60, y: 240 }, { x: 320, y: 240 }, { x: 320, y: 320 }, { x: 520, y: 320 }, { x: 520, y: 240 }, { x: 730, y: 240 }],
-    pathIdx: 0, t: 0, flashGreenUntil: 0,
-    orbs: [{ x: 380, y: 380, r: 14, t: 0 }],
-  };
-  function stepDemo() {
-    if (!manualScreen.classList.contains('show')) { demoRunning = false; return; }
-    const dt = 0.016; demo.t += dt;
-    const p = demo.player;
-    const target = demo.path[demo.pathIdx];
-    const dx = target.x - p.x, dy = target.y - p.y;
-    const d = Math.hypot(dx, dy) || 1;
-    if (d < 3) {
-      demo.pathIdx = (demo.pathIdx + 1) % demo.path.length;
-      if (demo.pathIdx === 0) { p.x = 60; p.y = 240; }
-    } else {
-      p.x += dx / d * 170 * dt;
-      p.y += dy / d * 170 * dt;
-      p.angle = Math.atan2(dy, dx);
+
+  const W = dc.width, H = dc.height;
+  const pad = 20;
+  const l = pad + 20;
+  const r = W - pad - 20;
+  const t = pad + 20;
+  const b = H - pad - 20;
+  const cx = (l + r) / 2;
+
+  // Gates on alternating walls
+  const gates = [
+    { side: 'right', y: t + 100, w: 58, h: 42, label: 'كَيْفَ حَالُكَ', correct: false },
+    { side: 'left',  y: t + 200, w: 58, h: 42, label: 'أَنَا بِخَيْرٍ', correct: true  },
+    { side: 'right', y: t + 300, w: 58, h: 42, label: 'مَا اسْمُكَ',  correct: false },
+  ];
+  for (const g of gates) {
+    g.x = (g.side === 'right') ? r - 32 : l + 32;
+  }
+
+  const rightGateX = gates[0].x - 60;
+  const leftGateX  = gates[1].x + 60;
+
+  const path = [
+    { x: cx,         y: b - 30, hold: 500 },
+    { x: rightGateX, y: gates[0].y, hold: 400 },
+    { x: cx,         y: t + 130, hold: 200 },
+    { x: leftGateX,  y: gates[1].y, hold: 800 },  // pause at correct gate
+    { x: cx,         y: t + 60, hold: 300 },
+    { x: cx,         y: t + 20, hold: 400 },      // exit
+  ];
+
+  const player = { x: cx, y: b - 30, angle: -Math.PI / 2 };
+  let pathIdx = 0;
+  let holdUntil = performance.now() + 600;
+  let stormY = b + 40;
+  let flashUntil = 0;
+  let t0 = performance.now();
+
+    function draw() {
+    if (!manualScreen.classList.contains('show')) {
+      demoRunning = false;
+      return;
     }
-    if (demo.pathIdx === 5 && p.x > 700) demo.flashGreenUntil = demo.t + 0.5;
+    const now = performance.now();
+    const dt = Math.min(0.04, (now - t0) / 1000);
+    t0 = now;
 
-    const W = dc.width, H = dc.height;
+    // --- Update ---
+    if (now < holdUntil) {
+      // holding at waypoint
+    } else {
+      const wp = path[pathIdx];
+      const dx = wp.x - player.x, dy = wp.y - player.y;
+      const d = Math.hypot(dx, dy) || 1;
+      if (d < 2.5) {
+        pathIdx++;
+        if (pathIdx >= path.length) {
+          pathIdx = 0;
+          player.x = cx;
+          player.y = b - 30;
+          stormY = b + 40;
+        } else {
+          holdUntil = now + (path[pathIdx].hold || 300);
+          // Flash correct gate when arriving at the correct waypoint
+          if (pathIdx === 4) flashUntil = now + 900;
+        }
+      } else {
+        const speed = 130;
+        player.x += dx / d * speed * dt;
+        player.y += dy / d * speed * dt;
+        player.angle = Math.atan2(dy, dx);
+      }
+    }
+
+    stormY -= 14 * dt;
+
+    // --- Draw ---
     dctx.clearRect(0, 0, W, H);
+
+    // Floor
     dctx.fillStyle = '#18150e';
-    dctx.fillRect(20, 20, W - 40, H - 40);
-    dctx.fillStyle = 'rgba(138, 122, 90, 0.08)';
-    for (let x = 60; x < W - 30; x += 40)
-      for (let y = 60; y < H - 30; y += 40) dctx.fillRect(x, y, 1, 1);
-    dctx.strokeStyle = '#3a3020'; dctx.lineWidth = 1;
-    dctx.strokeRect(20.5, 20.5, W - 41, H - 41);
+    dctx.fillRect(l, t, r - l, b - t);
 
-    dctx.fillStyle = '#6a5a3d';
-    dctx.font = '10px "JetBrains Mono", monospace';
-    dctx.textAlign = 'center';
-    dctx.fillText('FIND', W / 2, 42);
-    dctx.fillStyle = '#e8dfc8';
-    dctx.font = '600 20px "Inter", system-ui, sans-serif';
-    dctx.fillText(demo.target, W / 2, 66);
+    // Grid dots
+    dctx.fillStyle = 'rgba(138, 122, 90, 0.10)';
+    for (let x = l + 20; x < r; x += 26)
+      for (let y = t + 20; y < b; y += 26) dctx.fillRect(x, y, 1, 1);
 
-    demo.orbs[0].t += dt;
-    const orb = demo.orbs[0];
-    const obx = orb.x + Math.sin(orb.t * 1.5) * 30;
-    dctx.fillStyle = 'rgba(0,0,0,0.55)';
-    dctx.beginPath();
-    dctx.ellipse(obx + 2, orb.y + orb.r * 0.6, orb.r * 0.9, orb.r * 0.4, 0, 0, Math.PI * 2);
-    dctx.fill();
-    dctx.fillStyle = '#1a0810';
-    dctx.beginPath(); dctx.arc(obx, orb.y, orb.r, 0, Math.PI * 2); dctx.fill();
-    dctx.strokeStyle = '#5a2a3a'; dctx.lineWidth = 2;
-    dctx.beginPath(); dctx.arc(obx, orb.y, orb.r - 2, 0, Math.PI * 2); dctx.stroke();
-    dctx.fillStyle = '#d46a4a';
-    dctx.beginPath(); dctx.arc(obx - 3, orb.y - 1, 2, 0, Math.PI * 2); dctx.fill();
-    dctx.beginPath(); dctx.arc(obx + 3, orb.y - 1, 2, 0, Math.PI * 2); dctx.fill();
+    // Border
+    dctx.strokeStyle = '#3a3020';
+    dctx.lineWidth = 1;
+    dctx.strokeRect(l + 0.5, t + 0.5, r - l - 1, b - t - 1);
 
-    for (const g of demo.gates) {
-      const x = g.x - g.w / 2, y = g.y - g.h / 2;
-      dctx.fillStyle = '#1f1a10'; dctx.fillRect(x, y, g.w, g.h);
-      dctx.strokeStyle = '#6a5a3d'; dctx.lineWidth = 2;
-      dctx.strokeRect(x + 0.5, y + 0.5, g.w - 1, g.h - 1);
+    // Storm rising
+    if (stormY < b) {
+      dctx.fillStyle = '#1a1408';
+      dctx.fillRect(l, stormY, r - l, b - stormY);
+      dctx.strokeStyle = '#8a6a3d';
+      dctx.lineWidth = 2;
       dctx.beginPath();
-      dctx.moveTo(x, y + 16);
-      dctx.quadraticCurveTo(x + g.w / 2, y - 10, x + g.w, y + 16);
+      dctx.moveTo(l, stormY + 0.5);
+      dctx.lineTo(r, stormY + 0.5);
       dctx.stroke();
+      const grd = dctx.createLinearGradient(0, stormY, 0, stormY - 40);
+      grd.addColorStop(0, 'rgba(26, 20, 8, 0.7)');
+      grd.addColorStop(1, 'rgba(26, 20, 8, 0)');
+      dctx.fillStyle = grd;
+      dctx.fillRect(l, stormY - 40, r - l, 40);
+    }
+
+    // Gates
+    for (const g of gates) {
+      const x = g.x - g.w / 2;
+      const y = g.y - g.h / 2;
+      const isFlashing = g.correct && flashUntil > now;
+
+      // Shadow
+      dctx.fillStyle = 'rgba(0,0,0,0.45)';
+      dctx.fillRect(x + 2, y + 3, g.w, g.h);
+
+      // Body
+      dctx.fillStyle = isFlashing ? '#d4af37' : '#1f1a10';
+      dctx.fillRect(x, y, g.w, g.h);
+
+      // Frame
+      dctx.strokeStyle = isFlashing ? '#d4af37' : '#6a5a3d';
+      dctx.lineWidth = 2;
+      dctx.strokeRect(x + 0.5, y + 0.5, g.w - 1, g.h - 1);
+
+      // Label above
       dctx.save();
       dctx.direction = 'rtl';
       dctx.fillStyle = '#c9b88a';
-      dctx.font = '600 15px "Inter", system-ui, sans-serif';
+      dctx.font = '600 12px "Inter", system-ui, sans-serif';
       dctx.textAlign = 'center';
-      dctx.fillText(g.label, g.x, y - 8);
+      dctx.textBaseline = 'bottom';
+      const labelW = dctx.measureText(g.label).width + 10;
+      dctx.fillStyle = 'rgba(14,12,8,0.85)';
+      dctx.fillRect(g.x - labelW / 2, y - 18, labelW, 16);
+      dctx.fillStyle = isFlashing ? '#d4af37' : '#c9b88a';
+      dctx.fillText(g.label, g.x, y - 4);
       dctx.restore();
     }
 
-    dctx.fillStyle = '#d4af37';
-    dctx.beginPath(); dctx.arc(p.x, p.y, 12, 0, Math.PI * 2); dctx.fill();
-    dctx.fillStyle = '#0e0c08';
-    dctx.beginPath();
-    dctx.arc(p.x + Math.cos(p.angle) * 5, p.y + Math.sin(p.angle) * 5, 3, 0, Math.PI * 2);
-    dctx.fill();
-
-    const fadeIn = Math.min(1, demo.t * 0.6);
+    // Exit arrow at top
+    const pulse = 0.5 + 0.5 * Math.sin(now / 400);
     dctx.save();
-    dctx.globalAlpha = 0.12 * fadeIn;
-    dctx.strokeStyle = '#d4af37';
-    dctx.setLineDash([4, 6]);
+    dctx.globalAlpha = pulse * 0.85;
+    dctx.fillStyle = '#d4af37';
     dctx.beginPath();
-    dctx.moveTo(demo.path[0].x, demo.path[0].y);
-    for (let i = 1; i < demo.path.length; i++) dctx.lineTo(demo.path[i].x, demo.path[i].y);
-    dctx.stroke();
+    dctx.moveTo(cx - 14, t + 6);
+    dctx.lineTo(cx + 14, t + 6);
+    dctx.lineTo(cx, t + 22);
+    dctx.closePath();
+    dctx.fill();
     dctx.restore();
 
-    if (demo.t < demo.flashGreenUntil) {
-      const a = (demo.flashGreenUntil - demo.t) / 0.5;
-      dctx.fillStyle = `rgba(34, 197, 94, ${0.35 * a})`;
-      const g = demo.gates[1];
-      dctx.fillRect(g.x - g.w / 2, g.y - g.h / 2, g.w, g.h);
-    }
-
+    // Objective at top
+    dctx.save();
+    dctx.textAlign = 'center';
     dctx.fillStyle = '#6a5a3d';
-    dctx.font = '10px "JetBrains Mono", monospace';
-    dctx.textAlign = 'left';
-    dctx.fillText('WALK →', 40, H - 30);
-    dctx.fillStyle = '#d4af37';
-    dctx.fillText('CORRECT', 110, H - 30);
+    dctx.font = '9px "JetBrains Mono", monospace';
+    dctx.fillText('FIND', cx, t - 8);
+    dctx.fillStyle = '#e8dfc8';
+    dctx.font = '600 14px "Inter", system-ui, sans-serif';
+    dctx.fillText('I am fine', cx, t + 44);
+    dctx.restore();
 
-    requestAnimationFrame(stepDemo);
+    // Player
+    dctx.fillStyle = 'rgba(0,0,0,0.5)';
+    dctx.beginPath();
+    dctx.ellipse(player.x + 2, player.y + 6, 10, 5, 0, 0, Math.PI * 2);
+    dctx.fill();
+
+    dctx.fillStyle = '#0e0c08';
+    dctx.beginPath();
+    dctx.arc(player.x, player.y, 10, 0, Math.PI * 2);
+    dctx.fill();
+
+    dctx.strokeStyle = '#8a7a5a';
+    dctx.lineWidth = 2;
+    dctx.beginPath();
+    dctx.arc(player.x, player.y, 9, 0, Math.PI * 2);
+    dctx.stroke();
+
+    dctx.fillStyle = '#d4af37';
+    dctx.beginPath();
+    dctx.arc(player.x, player.y - 2, 4.5, 0, Math.PI * 2);
+    dctx.fill();
+
+    // Facing indicator
+    dctx.strokeStyle = '#d4af37';
+    dctx.lineWidth = 2;
+    dctx.beginPath();
+    dctx.moveTo(player.x, player.y);
+    dctx.lineTo(
+      player.x + Math.cos(player.angle) * 16,
+      player.y + Math.sin(player.angle) * 16
+    );
+    dctx.stroke();
+
+    // Bottom hint
+    dctx.save();
+    dctx.textAlign = 'center';
+    dctx.fillStyle = '#6a5a3d';
+    dctx.font = '9px "JetBrains Mono", monospace';
+    dctx.fillText('GATES ALTERNATE · STORM RISES', cx, b + 14);
+    dctx.restore();
+
+    requestAnimationFrame(draw);
   }
-  requestAnimationFrame(stepDemo);
 }
