@@ -170,7 +170,9 @@ function drawGates() {
     ctx.restore();
   }
 
-  if (G.gates.every(g => g.done) && (!G.boss || G.boss.dead)) {
+const exitOpen = (G.roomType === 'explore')
+  || (G.gates.every(g => g.done) && (!G.boss || G.boss.dead));
+  if (exitOpen) {
     const { l, r, t } = G.bounds;
     const pulse = 0.55 + Math.sin(performance.now() / 400) * 0.35;
     ctx.save();
@@ -449,5 +451,42 @@ function drawVignette() {
     rg.addColorStop(1, `rgba(138,26,26,${a})`);
     ctx.fillStyle = rg;
     ctx.fillRect(0, 0, w, h);
+  }
+}
+
+function drawDiscoveries() {
+  if (G.roomType !== 'explore') return;
+  const t = performance.now() / 1000;
+  for (const d of G.discoveries) {
+    if (d.found) continue;
+    const bob = Math.sin(t * 1.8 + d.bob) * 4;
+    // Outer glow
+    ctx.save();
+    ctx.globalAlpha = 0.15 + 0.10 * Math.sin(t * 2 + d.bob);
+    ctx.fillStyle = COL.gold;
+    ctx.beginPath(); ctx.arc(d.x, d.y + bob, 32, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+    // Core
+    ctx.fillStyle = COL.gold;
+    ctx.beginPath(); ctx.arc(d.x, d.y + bob, 9, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = COL.void;
+    ctx.beginPath(); ctx.arc(d.x, d.y + bob, 4, 0, Math.PI * 2); ctx.fill();
+    // Halo ring
+    ctx.strokeStyle = COL.khakiBr;
+    ctx.globalAlpha = 0.5;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(d.x, d.y + bob, 16, 0, Math.PI * 2); ctx.stroke();
+    ctx.globalAlpha = 1;
+
+    // Prompt hint if this is the nearest one
+    if (G.discoveryNear === d && !G.discoveryOpen) {
+      const pulse = 0.6 + 0.4 * Math.sin(t * 4);
+      ctx.save();
+      ctx.globalAlpha = pulse;
+      ctx.strokeStyle = COL.gold;
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(d.x, d.y + bob, 22, 0, Math.PI * 2); ctx.stroke();
+      ctx.restore();
+    }
   }
 }

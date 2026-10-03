@@ -1,8 +1,59 @@
+function roomTypeFor(i) {
+  if (i < ROOM_PATTERN.length) return ROOM_PATTERN[i].type;
+  // Endless: every 5th room is a boss, others alternate combat/explore
+  const k = i - ROOM_PATTERN.length + 1;
+  if (k % 5 === 0) return 'boss';
+  return (k % 2 === 1) ? 'combat' : 'explore';
+}
+
 function makeRoom(i) {
-  const lesson = G.currentLesson;
-  const rng = G.rng;
+  const type = roomTypeFor(i);
   const D = DIFFICULTY[G.difficulty] || DIFFICULTY.normal;
 
+  // EXPLORE
+  if (type === 'explore') {
+    let n = 0;
+    for (let j = 0; j < i; j++) if (roomTypeFor(j) === 'explore') n++;
+    return {
+      type: 'explore',
+      name: EXPLORE_NAMES[n % EXPLORE_NAMES.length],
+      gates: [], stormSpeed: 0, obstacleCount: 3, orbConfig: [], isBoss: false, bossHp: 0,
+    };
+  }
+
+  // COMBAT / BOSS
+  let base;
+  if (i < ROOM_PATTERN.length) {
+    base = ROOM_PATTERN[i];
+  } else {
+    const k = i - ROOM_PATTERN.length;
+    const isBoss = (k + 1) % 5 === 0;
+    if (isBoss) {
+      base = {
+        type: 'boss',
+        name: 'Shadow Throne ×' + Math.floor((k + 1) / 5 + 1),
+        gates: 4, storm: 0, obs: 3,
+        orbs: [{ type: 'drifter', count: Math.min(4, 2 + Math.floor(k / 5)) }],
+        bossHp: 6 + Math.floor(k / 5) * 3,
+      };
+    } else {
+      base = {
+        type: 'combat',
+        name: 'Endless ' + (i + 1),
+        gates: 3 + (i % 3),
+        storm: Math.min(42, 21 + k * 2.2),
+        obs: 4 + (i % 4),
+        orbs: [
+          { type: 'drifter', count: Math.min(5, 2 + Math.floor(k / 2)) },
+          { type: 'charger', count: Math.min(4, 1 + Math.floor(k / 2)) },
+          { type: 'splitter', count: Math.min(3, Math.floor((k + 1) / 2)) },
+        ],
+      };
+    }
+  }
+
+  const lesson = G.currentLesson;
+  const rng = G.rng;
   const weighted = [];
   for (const it of lesson) {
     const copies = G.daily ? 1 : 1 + Math.min(3, G.misses[it.ar] || 0);
@@ -10,36 +61,10 @@ function makeRoom(i) {
   }
   const shuffled = shuffle(weighted, rng);
 
-  let count, storm, obs, orbCfg, isBoss, bossHp = 6, name;
-  if (i < 5) {
-    count = ROOM_GATE_COUNT[i]; storm = ROOM_STORM_SPEED[i];
-    obs = ROOM_OBSTACLE_COUNT[i]; orbCfg = ROOM_ORB_CONFIG[i];
-    isBoss = i === 4; name = ROOM_NAMES[i];
-  } else {
-    const k = i - 4;
-    isBoss = (i + 1) % 5 === 0;
-    if (isBoss) {
-      count = 4; storm = 0; obs = 3;
-      orbCfg = [{ type: 'drifter', count: Math.min(4, 2 + Math.floor(k / 5)) }];
-      bossHp = 6 + Math.floor((i - 4) / 5) * 3;
-      name = 'Shadow Throne ×' + Math.floor((i + 1) / 5);
-    } else {
-      count = 3 + (i % 3);
-      storm = Math.min(42, 23 + k * 2.2);
-      obs = 4 + (i % 4);
-      orbCfg = [
-        { type: 'drifter', count: Math.min(5, 2 + Math.floor(k / 2)) },
-        { type: 'charger', count: Math.min(4, 1 + Math.floor(k / 2)) },
-        { type: 'splitter', count: Math.min(3, Math.floor((k + 1) / 2)) },
-      ].filter(c => c.count > 0);
-      name = 'Endless ' + (i + 1);
-    }
-  }
-
-  count = Math.max(2, Math.round(count * D.gateMul));
-  if (storm > 0) storm = Math.max(4, Math.round(storm * D.stormMul));
-  orbCfg = orbCfg.map(c => ({ type: c.type, count: Math.max(1, Math.round(c.count * D.orbMul)) }));
-  bossHp = Math.max(3, Math.round(bossHp * D.bossMul));
+  let count = Math.max(2, Math.round(base.gates * D.gateMul));
+  let storm = base.storm > 0 ? Math.max(4, Math.round(base.storm * D.stormMul)) : 0;
+  let orbCfg = base.orbs.map(c => ({ type: c.type, count: Math.max(1, Math.round(c.count * D.orbMul)) }));
+  let bossHp = base.bossHp ? Math.max(3, Math.round(base.bossHp * D.bossMul)) : 0;
 
   const gates = [];
   const usedAr = new Set();
@@ -51,7 +76,19 @@ function makeRoom(i) {
     usedAr.add(item.ar);
     gates.push(item);
   }
-  return { gates, stormSpeed: storm, obstacleCount: obs, orbConfig: orbCfg, isBoss, bossHp, name };
+  return {
+    type: base.type,
+    gates, stormSpeed: storm, obstacleCount: base.obs,
+    orbConfig: orbCfg, isBoss: base.type === 'boss',
+    bossHp, name: base.name,
+  };
+}
+
+function buildRun() {
+  G.rng = G.daily ? mulberry32(dayNum() * 7919 + 13) : Math.random;
+  const rooms = [];
+  for (let i = 0; i < ROOM_PATTERN.length; i++) rooms.push(makeRoom(i));
+  return rooms;
 }
 
 function buildRun() {
@@ -76,8 +113,83 @@ function enterRoom(idx) {
   G.stunUntil = 0; G.invulnUntil = 0;
   G.staffCooldownUntil = 0; G.burstCooldownUntil = 0;
   G.tension = 0; G.heartTimer = 0;
-  G.lastWrong = null; updateLastWrongPanel();
+    G.lastWrong = null; updateLastWrongPanel();
+  G.roomType = room.type || 'combat';
+  G.discoveries = [];
+  G.discoveryNear = null;
+  G.discoveryOpen = null;
 
+  if (G.roomType === 'explore') {
+    // ---- Explore room: no gates, no orbs, no storm ----
+    G.gates = [];
+    G.obstacles = [];
+    G.pickups = [];
+    G.orbs = [];
+    G.boss = null;
+    G.projectiles = [];
+    G.stormY = G.bounds.b + 1000;
+    G.stormSpeed = 0;
+    G.dust = [];
+    for (let i = 0; i < 70; i++) {
+      G.dust.push({ x: rand(l, r), y: rand(t, b), vx: rand(-10, 30), vy: rand(-8, 8), size: rand(0.8, 2.2), alpha: rand(0.15, 0.5) });
+    }
+    G.footprints = []; G.particles = []; G.rings = []; G.floatingText = [];
+
+    // Scatter obstacles for texture
+    let tries = 0;
+    while (G.obstacles.length < room.obstacleCount && tries < 100) {
+      tries++;
+      const ox = rand(l + 60, r - 60);
+      const oy = rand(t + 60, b - 100);
+      const oradius = rand(20, 36);
+      if (dist(ox, oy, G.player.x, G.player.y) < oradius + 90) continue;
+      let blocked = false;
+      for (const o of G.obstacles) if (dist(ox, oy, o.x, o.y) < oradius + o.r + 20) { blocked = true; break; }
+      if (blocked) continue;
+      G.obstacles.push({ x: ox, y: oy, r: oradius, variant: Math.floor(Math.random() * 3) });
+    }
+
+    // Place discovery nodes — prefer phrases not yet seen this run
+    const unseen = G.currentLesson.filter(it => !G.seenThisRun || !G.seenThisRun.has(it.ar));
+    const pool = unseen.length >= DISCOVERIES_PER_ROOM ? unseen : G.currentLesson;
+    const picks = shuffle(pool, Math.random).slice(0, DISCOVERIES_PER_ROOM);
+    for (let i = 0; i < picks.length; i++) {
+      let px = 0, py = 0, ok = false;
+      for (let tries2 = 0; tries2 < 60 && !ok; tries2++) {
+        px = rand(l + 70, r - 70);
+        py = rand(t + 90, b - 120);
+        if (dist(px, py, G.player.x, G.player.y) < 140) continue;
+        if (G.player && dist(px, py, G.player.x, G.player.y) < 160) continue;
+        let blocked = false;
+        for (const o of G.obstacles) if (dist(px, py, o.x, o.y) < o.r + 40) { blocked = true; break; }
+        for (const d of G.discoveries) if (dist(px, py, d.x, d.y) < 140) { blocked = true; break; }
+        if (blocked) continue;
+        ok = true;
+      }
+      if (!ok) continue;
+      G.discoveries.push({
+        x: px, y: py,
+        phrase: picks[i],
+        scene: DISCOVERY_SCENES[Math.floor(Math.random() * DISCOVERY_SCENES.length)],
+        found: false,
+        bob: Math.random() * Math.PI * 2,
+      });
+    }
+
+    objLabel.textContent = 'Explore';
+    objText.textContent = room.name;
+    objText.classList.remove('arabic');
+
+    roomVal.textContent = `${idx + 1} / ${G.endless ? '∞' : G.rooms.length}`;
+    roomNameEl.textContent = room.name;
+    updateStars();
+    bossBar.classList.remove('show');
+    S.roomEnter();
+    setStatus('Explore', 'Take your time. Nothing hunts you here.', 'ok', 2500);
+    return;
+  }
+
+  // ---- Combat / Boss room: existing flow below ----
   const count = room.gates.length;
   const margin = 60;
   const usable = (b - t) - margin * 2;
@@ -200,6 +312,7 @@ function assignOrbWord(o) { o.wordItem = null; o.wordTrue = false; }
 function assignOrbWords() { for (const o of G.orbs) { o.wordItem = null; o.wordTrue = false; } }
 
 function pickTarget() {
+  if (G.roomType === 'explore') return;
   const available = G.gates.filter(g => !g.done);
   if (!available.length) { G.targetGate = null; assignOrbWords(); return; }
   const g = available[Math.floor(Math.random() * available.length)];

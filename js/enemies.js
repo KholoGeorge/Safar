@@ -1,4 +1,5 @@
 function updateOrbs(dt) {
+  if (G.roomType === 'explore') return;
   const p = G.player;
   if (!p) return;
   const now = nowMs();
@@ -73,6 +74,7 @@ function updateOrbs(dt) {
 }
 
 function updateBoss(dt) {
+  if (G.roomType === 'explore') return;
   // Respawn handler — runs when there's no boss alive
   if (!G.boss) {
     if (G.bossRespawnAt && nowMs() >= G.bossRespawnAt) {
@@ -144,6 +146,7 @@ function updateBoss(dt) {
 }
 
 function updateProjectiles(dt) {
+  if (G.roomType === 'explore') return;
   const p = G.player;
   const now = nowMs();
   for (const pr of G.projectiles) {
@@ -176,11 +179,13 @@ function updateProjectiles(dt) {
 }
 
 function updateStorm(dt) {
+  if (G.roomType === 'explore') return;
   if (G.stormSpeed === 0) return;
   G.stormY -= G.stormSpeed * G.up.storm * dt;
 }
 
 function updateTension(dt) {
+  if (G.roomType === 'explore') return;
   const p = G.player;
   if (!p || G.stormSpeed === 0) { G.tension = 0; return; }
   const gap = (p.y + p.radius) - G.stormY;
@@ -196,24 +201,35 @@ function updateTension(dt) {
 }
 
 function checkRoomClear() {
+  const p = G.player;
+  if (!p) return;
+  if (p.y >= G.bounds.t + 40) return;
+
+  if (G.roomType === 'explore') { advanceRoom(); return; }
+
   if (!G.gates.length) return;
   if (!G.gates.every(g => g.done)) return;
   if (G.boss && !G.boss.dead) return;
-  const p = G.player;
-  if (p.y < G.bounds.t + 40) {
-    G.roomsCleared++; G.roomIdx++;
+  advanceRoom();
+}
+
+function advanceRoom() {
+  const wasCombat = (G.roomType === 'combat' || G.roomType === 'boss');
+  G.roomsCleared++; G.roomIdx++;
+  if (wasCombat) {
     G.score += 500;
-    G.lastWrong = null;
-    updateLastWrongPanel();
-    spawnFloatText(p.x - 60, p.y - 40, 'ROOM +500', COL.gold, 1.2, 22);
-    if (!G.endless && G.roomIdx >= G.rooms.length) {
-      if (G.daily) endRun(true);
-      else offerChoice();
-    } else {
-      showRoomReview(() => {
-        const betweenLines = STORY.between[(G.roomIdx - 1) % STORY.between.length];
-        showDialogue(betweenLines, () => enterRoom(G.roomIdx));
-      });
-    }
+    spawnFloatText(G.player.x - 60, G.player.y - 40, 'ROOM +500', COL.gold, 1.2, 22);
+  }
+  G.lastWrong = null;
+  updateLastWrongPanel();
+
+  if (!G.endless && G.roomIdx >= G.rooms.length) {
+    if (G.daily) endRun(true);
+    else offerChoice();
+  } else {
+    showRoomReview(() => {
+      const betweenLines = STORY.between[(G.roomIdx - 1) % STORY.between.length];
+      showDialogue(betweenLines, () => enterRoom(G.roomIdx));
+    });
   }
 }

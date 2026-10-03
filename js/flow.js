@@ -67,6 +67,7 @@ function startRun() {
   G.shield = false; G.endless = false;
   G.lastWrong = null;
   updateLastWrongPanel();
+  G.seenThisRun = new Set();
   G.maxStamina = 100;
   G.up = { speed: 1, regen: 1, range: 1, burstCd: 1, storm: 1 };
   G.paused = false; G.pausedMs = 0;

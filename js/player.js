@@ -316,9 +316,9 @@ function gateCorrect(g) {
   spawnFloatText(g.x - 60, g.y - 70, '+' + pts, COL.gold);
   if (G.combo >= 3) spawnFloatText(G.player.x, G.player.y - 40, 'x' + comboMult() + ' COMBO', COL.khakiBr, 1.0, 20);
   if (G.misses[g.item.ar]) { G.misses[g.item.ar]--; if (G.misses[g.item.ar] <= 0) delete G.misses[g.item.ar]; saveMisses(); }
-  S.correct(G.combo);
   G.roomPhrases.push({ item: g.item, correct: true });
-  speakAr(g.item);
+  S.correct(G.combo); speakAr(g.item);
+  if (G.seenThisRun) G.seenThisRun.add(g.item.ar);
   flash(COL.gold, 0.18, 180);
   shake(7, 180);
   spawnParticles(g.x, g.y, COL.gold, 20, 1.2);

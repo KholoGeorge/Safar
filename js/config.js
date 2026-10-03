@@ -75,17 +75,21 @@ const nowMs = () => performance.now();
 const comboMult = () => 1 + Math.min(4, Math.floor(G.combo / 3));
 
 // Room tuning
-const ROOM_NAMES = ['The Dust Road', 'The Old Well', 'Broken Ruins', 'The Long Passage', 'The Shadow Throne'];
-const ROOM_GATE_COUNT = [3, 4, 4, 5, 4];
-const ROOM_STORM_SPEED = [10, 13, 17, 21, 0];
-const ROOM_OBSTACLE_COUNT = [4, 6, 7, 5, 3];
-const ROOM_ORB_CONFIG = [
-  [{ type: 'drifter', count: 2 }],
-  [{ type: 'drifter', count: 2 }, { type: 'charger', count: 1 }],
-  [{ type: 'drifter', count: 2 }, { type: 'charger', count: 2 }, { type: 'splitter', count: 1 }],
-  [{ type: 'drifter', count: 3 }, { type: 'charger', count: 2 }, { type: 'splitter', count: 1 }],
-  [{ type: 'drifter', count: 2 }],
+// Room pattern for the main run. Index = room number.
+// type: 'combat' | 'explore' | 'boss'
+const ROOM_PATTERN = [
+  { type: 'combat',  name: 'The Dust Road',     gates: 3, storm: 10, obs: 4, orbs: [{ type: 'drifter', count: 2 }] },
+  { type: 'explore', name: 'The Dry Well' },
+  { type: 'combat',  name: 'Broken Ruins',      gates: 4, storm: 17, obs: 7, orbs: [{ type: 'drifter', count: 2 }, { type: 'charger', count: 2 }, { type: 'splitter', count: 1 }] },
+  { type: 'explore', name: 'Fallen Pillars' },
+  { type: 'combat',  name: 'The Long Passage',  gates: 5, storm: 21, obs: 5, orbs: [{ type: 'drifter', count: 3 }, { type: 'charger', count: 2 }, { type: 'splitter', count: 1 }] },
+  { type: 'boss',    name: 'The Shadow Throne', gates: 4, storm: 0,  obs: 3, orbs: [{ type: 'drifter', count: 2 }], bossHp: 6 },
 ];
+
+const EXPLORE_NAMES = ['The Dry Well', 'Fallen Pillars', 'A Broken Cart', 'An Empty Shrine', 'The Silent Stones', 'The Long Watch'];
+
+const DISCOVERIES_PER_ROOM = 3;
+const DISCOVERY_RANGE = 70;      // how close to trigger the prompt
 const ORB_RESPAWN_MS = 2000;
 
 // Difficulty

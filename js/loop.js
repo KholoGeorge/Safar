@@ -18,11 +18,13 @@ function frame(now) {
   if (G.running && !G.paused) {
     updatePlayer(dt);
     if (G.running) {
-      updateOrbs(dt);
-      updateBoss(dt);
-      updateProjectiles(dt);
-      updateStorm(dt);
-      updateTension(dt);
+      if (G.roomType !== 'explore') {
+        updateOrbs(dt);
+        updateBoss(dt);
+        updateProjectiles(dt);
+        updateStorm(dt);
+        updateTension(dt);
+      }
       checkRoomClear();
     }
   }
@@ -62,6 +64,7 @@ function frame(now) {
   drawObstacles();
   drawPickups();
   drawGates();
+  drawDiscoveries();
   drawOrbs();
   drawBoss();
   drawProjectiles();
@@ -126,3 +129,34 @@ function frame(now) {
 
   requestAnimationFrame(frame);
 }
+
+const discoveryScreen = document.getElementById('discoveryScreen');
+
+function openDiscovery(node) {
+  if (!node || node.found) return;
+  G.discoveryOpen = node;
+  const phrase = node.phrase;
+  document.getElementById('discScene').textContent = node.scene;
+  document.getElementById('discAr').textContent = phrase.ar;
+  document.getElementById('discEn').textContent = phrase.en;
+  discoveryScreen.classList.add('show');
+  pauseOn();
+  speakAr(phrase);
+}
+
+function closeDiscovery() {
+  if (!G.discoveryOpen) return;
+  G.discoveryOpen.found = true;
+  G.discoveryOpen = null;
+  discoveryScreen.classList.remove('show');
+  pauseOff();
+}
+
+discoveryScreen.addEventListener('click', (e) => {
+  if (e.target.closest('#discAudio')) return;
+  closeDiscovery();
+});
+document.getElementById('discAudio').addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (G.discoveryOpen) speakAr(G.discoveryOpen.phrase);
+});

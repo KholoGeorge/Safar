@@ -31,6 +31,19 @@ const STORY = {
   ],
 };
 
+const DISCOVERY_SCENES = [
+  'A traveller stops and speaks.',
+  'A stone tablet, half-buried in sand.',
+  'An old signpost, weathered by wind.',
+  'Someone has carved this into the wall.',
+  "A merchant's ledger, left open.",
+  'A voice whispers from the shadows.',
+  'Written on the inside of a jar.',
+  'A child calls out from a doorway.',
+  'Scratched into the rim of a dry well.',
+  'An inscription on a fallen pillar.',
+];
+
 let dlgQueue = [];
 let dlgDone = null;
 

@@ -13,6 +13,11 @@ const G = {
   story: true,
   lastWrong: null,
   roomPhrases: [],
+  roomType: 'combat',
+  seenThisRun: null,       // Set of phrase.ar values seen as gates this run
+  discoveries: [],
+  discoveryNear: null,     // the node the player is standing next to
+  discoveryOpen: null,     // node currently shown in the overlay
   rng: Math.random,
   roomIdx: 0, rooms: [], roomsCleared: 0, stars: 3,
   player: null, gates: [], obstacles: [], pickups: [],

@@ -24,7 +24,10 @@ window.addEventListener('keydown', (e) => {
   if (!G.running || G.paused || e.repeat) return;
   if (e.code === 'Space') tryDash();
   if (e.code === 'KeyJ') tryStaff();
-  if (e.code === 'KeyK') tryBurst();
+  if (e.code === 'KeyK') {
+    if (G.roomType === 'explore' && G.discoveryNear) openDiscovery(G.discoveryNear);
+    else tryBurst();
+  }
 });
 window.addEventListener('keyup', (e) => {
   const action = KEYMAP[e.code];
@@ -107,6 +110,14 @@ window.addEventListener('contextmenu', (e) => { if (G.running) e.preventDefault(
       if (a === 'staff') tryStaff();
       if (a === 'burst') tryBurst();
     });
+  });
+
+    // Tap in explore room opens nearest discovery
+  document.body.addEventListener('pointerdown', (e) => {
+    if (!G.running || G.paused) return;
+    if (G.roomType !== 'explore') return;
+    if (e.target.closest('#discAudio')) return;
+    if (G.discoveryNear && !G.discoveryOpen) openDiscovery(G.discoveryNear);
   });
 
   document.body.addEventListener('pointerdown', () => {
