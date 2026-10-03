@@ -12,6 +12,11 @@ const isTyping = (e) => {
 
 window.addEventListener('keydown', (e) => {
   if (isTyping(e)) return;
+  if (e.code === 'Escape' && G.running) {
+    e.preventDefault();
+    togglePause();
+    return;
+  }
   const action = KEYMAP[e.code];
   const gameKey = action || e.code === 'Space' || e.code === 'KeyJ' || e.code === 'KeyK';
   if (G.running && gameKey) e.preventDefault();

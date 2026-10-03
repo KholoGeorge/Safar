@@ -160,9 +160,7 @@ $('pressOnBtn').onclick = () => {
   chooseScreen.classList.remove('show');
   pauseOff();
   G.endless = true;
-  offerUpgrade(() => {
-    showDialogue(STORY.endless, () => enterRoom(G.roomIdx));
-  });
+  showDialogue(STORY.endless, () => enterRoom(G.roomIdx));
 };
 modeRow.addEventListener('click', (e) => {
   const btn = e.target.closest('button');
@@ -200,4 +198,32 @@ objReplay.addEventListener('click', (e) => {
 objSubReplay.addEventListener('click', (e) => {
   e.stopPropagation();
   if (G.lastWrong) speakAr(G.lastWrong.item);
+});
+
+function enterPause() {
+  if (G.userPaused) return;
+  G.userPaused = true;
+  pauseScreen.classList.add('show');
+  pauseOn();
+  G.keys = {};
+}
+function resumeFromPause() {
+  if (!G.userPaused) return;
+  G.userPaused = false;
+  pauseScreen.classList.remove('show');
+  pauseOff();
+}
+function togglePause() {
+  if (!G.running) return;
+  if (dialogueScreen.classList.contains('show')) return;
+  if (upgradeScreen.classList.contains('show')) return;
+  if (chooseScreen.classList.contains('show')) return;
+  if (G.userPaused) resumeFromPause();
+  else enterPause();
+}
+document.getElementById('pauseBtn').addEventListener('click', togglePause);
+document.getElementById('pauseResume').addEventListener('click', resumeFromPause);
+document.getElementById('pauseQuit').addEventListener('click', () => {
+  resumeFromPause();
+  endRun(false);
 });

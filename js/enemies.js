@@ -73,7 +73,19 @@ function updateOrbs(dt) {
 }
 
 function updateBoss(dt) {
-  if (!G.boss || G.boss.dead) return;
+  // Respawn handler — runs when there's no boss alive
+  if (!G.boss) {
+    if (G.bossRespawnAt && nowMs() >= G.bossRespawnAt) {
+      const room = G.rooms[G.roomIdx];
+      if (room && room.isBoss) {
+        spawnBoss(room.bossHp);
+        G.bossRespawnAt = 0;
+      }
+    }
+    return;
+  }
+  if (G.boss.dead) return;
+
   const b = G.boss, p = G.player;
   if (!p) return;
   const now = nowMs();
@@ -198,10 +210,8 @@ function checkRoomClear() {
       if (G.daily) endRun(true);
       else offerChoice();
     } else {
-      offerUpgrade(() => {
-        const betweenLines = STORY.between[(G.roomIdx - 1) % STORY.between.length];
-        showDialogue(betweenLines, () => enterRoom(G.roomIdx));
-      });
+      const betweenLines = STORY.between[(G.roomIdx - 1) % STORY.between.length];
+      showDialogue(betweenLines, () => enterRoom(G.roomIdx));
     }
   }
 }

@@ -112,19 +112,6 @@ function enterRoom(idx) {
   }
 
   G.pickups = [];
-  const pickupCount = 1 + Math.floor(Math.random() * 2);
-  tries = 0;
-  while (G.pickups.length < pickupCount && tries < 100) {
-    tries++;
-    const px = rand(l + 80, r - 80);
-    const py = rand(t + 60, b - 100);
-    if (dist(px, py, G.player.x, G.player.y) < 120) continue;
-    let blocked = false;
-    for (const o of G.obstacles) if (dist(px, py, o.x, o.y) < o.r + 30) { blocked = true; break; }
-    for (const g of G.gates) if (dist(px, py, g.x, g.y) < 80) { blocked = true; break; }
-    if (blocked) continue;
-    G.pickups.push({ x: px, y: py, r: 12, collected: false, bob: Math.random() * Math.PI * 2 });
-  }
 
   G.orbs = [];
   G.boss = null;
@@ -242,6 +229,8 @@ function pickTarget() {
   speakAr(g.item);
   G.lastWrong = null;
   updateLastWrongPanel();
+  G.bossRespawnAt = 0;
+  G.bossKilledThisRoom = false;
   assignOrbWords();
 }
 

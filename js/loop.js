@@ -102,6 +102,15 @@ function frame(now) {
   shieldAbility.classList.toggle('ready', G.shield);
   scoreEl.textContent = `SCORE ${G.score}` + (G.combo >= 3 ? ` · x${comboMult()}` : '');
 
+    const pauseBtn = document.getElementById('pauseBtn');
+  if (pauseBtn) {
+    const shouldShow = G.running && !G.userPaused
+      && !dialogueScreen.classList.contains('show')
+      && !upgradeScreen.classList.contains('show')
+      && !chooseScreen.classList.contains('show');
+    pauseBtn.style.display = shouldShow ? 'flex' : 'none';
+  }
+
   statusEl.innerHTML = G.statusText + (G.statusSub ? `<div class="sub">${G.statusSub}</div>` : '');
   statusEl.className = 'status ' + G.statusClass;
   if (G.statusUntil && now > G.statusUntil) {

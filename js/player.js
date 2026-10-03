@@ -83,21 +83,6 @@ function updatePlayer(dt) {
 
   if (p.y + p.radius >= G.stormY) { playerCaught(); return; }
 
-  for (const pk of G.pickups) {
-    if (pk.collected) continue;
-    if (dist(p.x, p.y, pk.x, pk.y) < p.radius + pk.r) {
-      pk.collected = true;
-      G.stamina = Math.min(G.maxStamina, G.stamina + 40);
-      G.stormY = Math.min(G.bounds.b + 260, G.stormY + 90);
-      S.lantern();
-      flash(COL.gold, 0.20, 180);
-      shake(6, 150);
-      setStatus('Lantern found', 'Storm pushed back', 'ok', 1400);
-    }
-  }
-
-    // Gate triggering: correct gates fire instantly, wrong gates require
-  // the player to deliberately linger inside them for WRONG_DWELL_MS.
   if (now >= G.gateCooldownUntil) {
     let inGate = null;
     for (const g of G.gates) {
@@ -235,7 +220,6 @@ function damageOrb(o, dmg, knockback) {
         spawnSplitChild(o.x + Math.cos(a) * 24, o.y + Math.sin(a) * 24, o.id);
       }
     }
-    if (Math.random() < 0.3) G.pickups.push({ x: o.x, y: o.y, r: 12, collected: false, bob: 0 });
   } else {
     S.hit();
     const d = dist(o.x, o.y, G.player.x, G.player.y) || 1;
@@ -297,21 +281,27 @@ function damageBoss(dmg) {
   spawnParticles(G.boss.x, G.boss.y, COL.bossEye, 20, 1.2);
   spawnRing(G.boss.x, G.boss.y, COL.bossRing, 120, 0.4);
   if (G.boss.hp <= 0) {
-    G.boss.dead = true; G.bossDefeated = true;
-    G.score += 1000;
-    spawnFloatText(G.boss.x, G.boss.y - 60, '+1000', COL.gold, 1.6, 32);
+    const bx = G.boss.x, by = G.boss.y;
+    const firstKill = !G.bossKilledThisRoom;
+    G.boss = null;
+    G.bossRespawnAt = nowMs() + 10000;
+    G.bossDefeated = true;
     S.bossDeath();
     shake(30, 800);
     flash(COL.bossRing, 0.5, 500);
-    spawnParticles(G.boss.x, G.boss.y, COL.bossEye, 60, 2.0);
-    spawnParticles(G.boss.x, G.boss.y, COL.gold, 40, 1.5);
-    spawnRing(G.boss.x, G.boss.y, COL.gold, 300, 0.9);
-    spawnRing(G.boss.x, G.boss.y, COL.bossRing, 400, 1.1);
-    for (let i = 0; i < 3; i++) {
-      const a = Math.random() * Math.PI * 2;
-      G.pickups.push({ x: G.boss.x + Math.cos(a) * 60, y: G.boss.y + Math.sin(a) * 60, r: 12, collected: false, bob: 0 });
+    spawnParticles(bx, by, COL.bossEye, 60, 2.0);
+    spawnParticles(bx, by, COL.gold, 40, 1.5);
+    spawnRing(bx, by, COL.gold, 300, 0.9);
+    spawnRing(bx, by, COL.bossRing, 400, 1.1);
+    if (firstKill) {
+      G.bossKilledThisRoom = true;
+      G.score += 1000;
+      spawnFloatText(bx, by - 60, '+1000', COL.gold, 1.6, 32);
+      setStatus('The throne falls', 'Clear the gates to ascend', 'ok', 3000);
+    } else {
+      G.score += 200;
+      spawnFloatText(bx, by - 60, '+200', COL.gold, 1.2, 24);
     }
-    setStatus('The throne falls', 'Clear the gates to ascend', 'ok', 3000);
   }
 }
 

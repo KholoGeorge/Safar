@@ -11,6 +11,7 @@
   <canvas id="game"></canvas>
 
   <div class="hud">
+    <button class="pause-btn" id="pauseBtn" title="Pause (Esc)">⏸</button>
     <div class="hud-top">
       <div class="storm-meter">
         <div class="storm-label">Storm</div>
@@ -200,7 +201,18 @@
       <button class="btn" id="dlgNext">Continue</button>
       <button class="btn ghost" id="dlgSkip">Skip Story</button>
     </div>
-  </div>
+  
+      </div>
+  
+        <div class="screen overlay" id="pauseScreen">
+        <div class="title-main" style="font-size:44px;">PAUSED</div>
+        <div class="title-sub">Take a breath</div>
+        <div class="divider"></div>
+        <div class="btn-row">
+          <button class="btn gold" id="pauseResume">Resume</button>
+          <button class="btn ghost" id="pauseQuit">Quit to Routes</button>
+        </div>
+      </div>
 
   <div class="touch-controls" id="touchControls">
     <div class="joystick-zone" id="joyZone">
