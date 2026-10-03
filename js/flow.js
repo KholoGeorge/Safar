@@ -1,5 +1,5 @@
 function showScreen(el) {
-  [homeScreen, manualScreen, briefScreen, endScreen, upgradeScreen, chooseScreen, dialogueScreen]
+  [homeScreen, manualScreen, briefScreen, endScreen, upgradeScreen, chooseScreen, dialogueScreen, reviewScreen]
     .forEach(s => s.classList.remove('show'));
   if (el) el.classList.add('show');
 }
@@ -199,6 +199,90 @@ objSubReplay.addEventListener('click', (e) => {
   e.stopPropagation();
   if (G.lastWrong) speakAr(G.lastWrong.item);
 });
+
+function showRoomReview(done) {
+  const seen = G.roomPhrases || [];
+  const wrong = seen.filter(p => !p.correct);
+  const right = seen.filter(p => p.correct);
+
+  // Prioritize: wrong first, then correct, deduped by phrase
+  const shown = [];
+  const seenAr = new Set();
+  for (const p of wrong) {
+    if (shown.length >= 3) break;
+    if (seenAr.has(p.item.ar)) continue;
+    seenAr.add(p.item.ar);
+    shown.push(p);
+  }
+  for (const p of right) {
+    if (shown.length >= 4) break;
+    if (seenAr.has(p.item.ar)) continue;
+    seenAr.add(p.item.ar);
+    shown.push(p);
+  }
+
+  if (!shown.length) { done(); return; }
+
+  const prevRoomName = ROOM_NAMES[G.roomIdx - 1] || 'The road';
+  const nextRoomName = G.roomIdx < 5
+    ? ROOM_NAMES[G.roomIdx]
+    : (G.endless ? 'The endless road' : 'The road home');
+
+  const list = $('reviewList');
+  list.innerHTML = '';
+  for (const p of shown) {
+    const row = document.createElement('div');
+    row.className = 'review-row ' + (p.correct ? 'ok' : 'bad');
+    const ar = G.mode === 'en-ar' ? p.item.ar : p.item.en;
+    const en = G.mode === 'en-ar' ? p.item.en : p.item.ar;
+    const dir = G.mode === 'en-ar' ? 'rtl' : 'ltr';
+    row.innerHTML = `
+      <div class="review-mark">${p.correct ? '✓' : '✗'}</div>
+      <div class="review-body">
+        <div class="review-ar" dir="${dir}">${ar}</div>
+        <div class="review-en">${en}</div>
+      </div>
+    `;
+    list.appendChild(row);
+  }
+
+  $('reviewFrom').textContent = prevRoomName;
+  $('reviewTo').textContent = nextRoomName;
+
+  reviewScreen.classList.add('show');
+  pauseOn();
+
+  // Stagger the rows in
+  const rows = list.querySelectorAll('.review-row');
+  let idx = 0;
+  function reveal() {
+    if (idx >= rows.length) return;
+    rows[idx].classList.add('shown');
+    idx++;
+    setTimeout(reveal, 550);
+  }
+  setTimeout(reveal, 300);
+
+  // Auto-advance
+  const totalTime = 500 + shown.length * 550 + 2200;
+  const timer = setTimeout(() => {
+    reviewScreen.classList.remove('show');
+    pauseOff();
+    done();
+  }, totalTime);
+
+  // Tap to skip
+  setTimeout(() => {
+    const skip = () => {
+      clearTimeout(timer);
+      reviewScreen.removeEventListener('click', skip);
+      reviewScreen.classList.remove('show');
+      pauseOff();
+      done();
+    };
+    reviewScreen.addEventListener('click', skip, { once: true });
+  }, 900);
+}
 
 function enterPause() {
   if (G.userPaused) return;

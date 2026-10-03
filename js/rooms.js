@@ -218,6 +218,7 @@ function pickTarget() {
   speakAr(g.item);
   G.lastWrong = null;
   updateLastWrongPanel();
+  G.roomPhrases = [];
   G.bossRespawnAt = 0;
   G.bossKilledThisRoom = false;
   assignOrbWords();

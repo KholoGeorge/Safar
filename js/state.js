@@ -12,6 +12,7 @@ const G = {
   difficulty: 'normal',
   story: true,
   lastWrong: null,
+  roomPhrases: [],
   rng: Math.random,
   roomIdx: 0, rooms: [], roomsCleared: 0, stars: 3,
   player: null, gates: [], obstacles: [], pickups: [],

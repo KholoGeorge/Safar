@@ -30,6 +30,7 @@ const endScreen = $('endScreen');
 const upgradeScreen = $('upgradeScreen');
 const chooseScreen = $('chooseScreen');
 const dialogueScreen = $('dialogueScreen');
+const reviewScreen = $('reviewScreen');
 const lessonGrid = $('lessonGrid');
 const briefTitle = $('briefTitle');
 const briefSub = $('briefSub');

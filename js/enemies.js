@@ -210,8 +210,10 @@ function checkRoomClear() {
       if (G.daily) endRun(true);
       else offerChoice();
     } else {
-      const betweenLines = STORY.between[(G.roomIdx - 1) % STORY.between.length];
-      showDialogue(betweenLines, () => enterRoom(G.roomIdx));
+      showRoomReview(() => {
+        const betweenLines = STORY.between[(G.roomIdx - 1) % STORY.between.length];
+        showDialogue(betweenLines, () => enterRoom(G.roomIdx));
+      });
     }
   }
 }
