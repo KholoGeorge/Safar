@@ -17,6 +17,7 @@ function updatePlayer(dt) {
   const dashing = G.dashing && now < G.dashUntil;
   const K = G.keys;
 
+  // ---------- INPUT ----------
   let ax = 0, ay = 0;
   if (!stunned && !dashing) {
     if (K.up)    ay -= 1;
@@ -36,22 +37,30 @@ function updatePlayer(dt) {
   p.vx -= p.vx * PLAYER_FRICTION * dt;
   p.vy -= p.vy * PLAYER_FRICTION * dt;
 
+  // ---------- SPEED CAP ----------
   const baseSpeed = dashing ? DASH_SPEED : (sprinting ? PLAYER_SPRINT : PLAYER_WALK);
   const maxSpeed = baseSpeed * (dashing ? 1 : G.up.speed);
   const sp = Math.hypot(p.vx, p.vy);
-  if (sp > maxSpeed) { p.vx = p.vx / sp * maxSpeed; p.vy = p.vy / sp * maxSpeed; }
+  if (sp > maxSpeed) {
+    p.vx = p.vx / sp * maxSpeed;
+    p.vy = p.vy / sp * maxSpeed;
+  }
 
+  // ---------- STAMINA ----------
   if (dashing) {}
   else if (sprinting) G.stamina = Math.max(0, G.stamina - SPRINT_DRAIN * dt);
   else G.stamina = Math.min(G.maxStamina, G.stamina + STAMINA_REGEN * G.up.regen * dt);
 
+  // ---------- POSITION ----------
   const prevX = p.x, prevY = p.y;
-  p.x += p.vx * dt; p.y += p.vy * dt;
+  p.x += p.vx * dt;
+  p.y += p.vy * dt;
 
   const { l, t, r, b } = G.bounds;
   p.x = clamp(p.x, l + p.radius, r - p.radius);
   p.y = clamp(p.y, t + p.radius, b - p.radius);
 
+  // ---------- OBSTACLE COLLISION ----------
   for (const o of G.obstacles) {
     const d = dist(p.x, p.y, o.x, o.y);
     const min = p.radius + o.r;
@@ -64,6 +73,7 @@ function updatePlayer(dt) {
     }
   }
 
+  // ---------- WALK ANIMATION / FOOTPRINTS ----------
   if (sp > 25) p.walkPhase += dt * sp * 0.045;
   else p.walkPhase *= 0.88;
 
@@ -81,9 +91,26 @@ function updatePlayer(dt) {
     }
   }
 
-  if (p.y + p.radius >= G.stormY) { playerCaught(); return; }
+  // ---------- STORM (Y axis, rises from bottom) ----------
+  if (G.stormSpeed > 0 && p.y + p.radius >= G.stormY) {
+    playerCaught();
+    return;
+  }
 
-  if (now >= G.gateCooldownUntil) {
+  // ---------- DISCOVERY PROXIMITY (explore rooms only) ----------
+  if (G.roomType === 'explore') {
+    let near = null;
+    for (const d of G.discoveries) {
+      if (d.found) continue;
+      if (dist(p.x, p.y, d.x, d.y) < DISCOVERY_RANGE) { near = d; break; }
+    }
+    G.discoveryNear = near;
+    const prompt = document.getElementById('discPrompt');
+    if (prompt) prompt.classList.toggle('show', !!near && !G.discoveryOpen);
+  }
+
+  // ---------- GATES (dwell mechanic) ----------
+  if (G.roomType !== 'explore' && now >= G.gateCooldownUntil) {
     let inGate = null;
     for (const g of G.gates) {
       if (g.done) continue;
@@ -110,7 +137,7 @@ function updatePlayer(dt) {
     } else {
       G.inWrongGate = null;
     }
-  } else {
+  } else if (G.roomType !== 'explore') {
     G.inWrongGate = null;
   }
 }
