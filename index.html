@@ -537,17 +537,14 @@ async function loadLessons() {
       if (!file) continue;
       const name = (typeof entry === 'object' && entry.name)
         ? entry.name
-        : file.replace(/\.json$/i, '');
+        : file.replace(/\.(json|txt)$/i, '');
       try {
         const r = await fetch(LESSONS_DIR + encodeURI(file), { cache: 'no-store' });
         if (!r.ok) throw new Error('HTTP ' + r.status);
-        const ld = await r.json();
-        const phrases = Array.isArray(ld) ? ld : (ld.phrases || ld.items || []);
-        const cleaned = phrases
-          .map(p => ({ ar: p.ar || '', en: p.en || '', au: p.au || p.audio || '' }))
-          .filter(p => p.ar && p.en);
+        const text = await r.text();
+        const cleaned = parseLessonFile(text, file);
         if (cleaned.length >= 5) out[name] = cleaned;
-        else console.warn('SAFAR: skipping', file, '— need at least 5 valid phrases');
+        else console.warn('SAFAR: skipping', file, '— need at least 5 valid phrases, got', cleaned.length);
       } catch (e) {
         console.warn('SAFAR: could not load lesson file', file, e);
       }
@@ -559,14 +556,43 @@ async function loadLessons() {
   if (!Object.keys(out).length) {
     if (manifestOk) {
       errNote.style.display = 'block';
-      errNote.textContent = 'No valid lessons found in lessons/. Falling back to built-in route.';
+      errNote.textContent = 'No valid lessons found in lessons/. Need at least 5 phrases per file.';
     } else {
       errNote.style.display = 'block';
-      errNote.textContent = 'Could not read lessons/manifest.json — serve this page over http:// (not file://) and make sure the lessons/ folder exists. Falling back to built-in route.';
+      errNote.textContent = 'Could not read lessons/manifest.json — check the file exists and is valid JSON.';
     }
     return defaults();
   }
   return out;
+}
+
+// Accepts JSON arrays, {"phrases":[...]}, or pipe-delimited lines:
+//   arabic | english | audio.mp3
+function parseLessonFile(text, filename) {
+  const trimmed = text.trim();
+  if (!trimmed) return [];
+
+  // Try JSON first
+  if (trimmed.startsWith('[') || trimmed.startsWith('{')) {
+    try {
+      const ld = JSON.parse(trimmed);
+      const phrases = Array.isArray(ld) ? ld : (ld.phrases || ld.items || []);
+      return phrases
+        .map(p => ({ ar: p.ar || '', en: p.en || '', au: p.au || p.audio || '' }))
+        .filter(p => p.ar && p.en);
+    } catch (_) { /* fall through to pipe parsing */ }
+  }
+
+  // Pipe-delimited
+  return trimmed
+    .split(/\r?\n/)
+    .map(l => l.trim())
+    .filter(l => l && !l.startsWith('#'))
+    .map(line => {
+      const parts = line.split('|').map(p => p.trim());
+      return { ar: parts[0] || '', en: parts[1] || '', au: parts[2] || '' };
+    })
+    .filter(p => p.ar && p.en);
 }
 
 // ============================================================
