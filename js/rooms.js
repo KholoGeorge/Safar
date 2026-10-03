@@ -118,11 +118,6 @@ function enterRoom(idx) {
   for (const config of room.orbConfig) {
     for (let i = 0; i < config.count; i++) spawnOrb(config.type, idx);
   }
-  let carried = 0;
-  const maxCarry = idx === 0 ? 1 : 2;
-  for (const o of G.orbs) {
-    if (o.type === 'drifter' && carried < maxCarry) { o.carry = true; carried++; }
-  }
   if (room.isBoss) spawnBoss(room.bossHp);
 
   G.stormY = b + 260;
@@ -201,14 +196,8 @@ function spawnBoss(hp = 6) {
   };
 }
 
-function assignOrbWord(o) {
-  const tg = G.targetGate;
-  if (!o.carry || !tg) { o.wordItem = null; o.wordTrue = false; return; }
-  const others = G.currentLesson.filter(x => x.ar !== tg.item.ar);
-  if (Math.random() < 0.4 || !others.length) { o.wordItem = tg.item; o.wordTrue = true; }
-  else { o.wordItem = others[Math.floor(Math.random() * others.length)]; o.wordTrue = false; }
-}
-function assignOrbWords() { for (const o of G.orbs) assignOrbWord(o); }
+function assignOrbWord(o) { o.wordItem = null; o.wordTrue = false; }
+function assignOrbWords() { for (const o of G.orbs) { o.wordItem = null; o.wordTrue = false; } }
 
 function pickTarget() {
   const available = G.gates.filter(g => !g.done);

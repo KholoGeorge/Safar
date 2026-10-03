@@ -245,24 +245,6 @@ function drawOrbs() {
       ctx.restore();
     }
 
-    if (o.carry && o.wordItem) {
-      const arabic = G.mode === 'en-ar';
-      const txt = arabic ? o.wordItem.ar : o.wordItem.en;
-      ctx.save();
-      ctx.direction = arabic ? 'rtl' : 'ltr';
-      ctx.font = arabic ? '700 15px "Inter", system-ui, sans-serif' : '600 12px "Inter", system-ui, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      const w = ctx.measureText(txt).width + 14;
-      const ly = o.y + bob - o.r - 18;
-      ctx.fillStyle = 'rgba(14,12,8,0.88)';
-      ctx.fillRect(o.x - w / 2, ly - 10, w, 20);
-      ctx.strokeStyle = o.ring; ctx.lineWidth = 1;
-      ctx.strokeRect(o.x - w / 2 + 0.5, ly - 10 + 0.5, w - 1, 19);
-      ctx.fillStyle = COL.khakiBr;
-      ctx.fillText(txt, o.x, ly);
-      ctx.restore();
-    }
   }
 }
 
