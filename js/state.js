@@ -29,6 +29,7 @@ const G = {
   dashCooldownUntil: 0, dashUntil: 0, dashing: false,
   stunUntil: 0, invulnUntil: 0,
   staffCooldownUntil: 0, burstCooldownUntil: 0,
+  gateCooldownUntil: 0,
   flashUntil: 0, flashColor: '#e8dfc8', flashAlpha: 0,
   statusText: 'Awaiting orders',
   statusSub: 'WASD · SHIFT sprint · SPACE dash · J staff · K burst',

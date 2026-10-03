@@ -96,15 +96,18 @@ function updatePlayer(dt) {
     }
   }
 
-  for (const g of G.gates) {
-    if (g.done) continue;
-    if (Math.abs(p.x - g.x) < g.w / 2 + p.radius * 0.4 &&
-        Math.abs(p.y - g.y) < g.h / 2 + p.radius * 0.4) {
-      if (g.isTarget) gateCorrect(g);
-      else gateWrong(g);
-      break;
+    if (now >= G.gateCooldownUntil) {
+    for (const g of G.gates) {
+      if (g.done) continue;
+          // Must be inside the gate's rectangle (not just near it)
+        if (Math.abs(p.x - g.x) < g.w / 2 &&
+        Math.abs(p.y - g.y) < g.h / 2) {
+          if (g.isTarget) gateCorrect(g);
+          else gateWrong(g);
+          break;
+        }
+      }
     }
-  }
 }
 
 function tryDash() {
@@ -327,10 +330,23 @@ function gateWrong(g) {
   S.wrong();
   flash(COL.danger, 0.32, 220);
   shake(16, 300);
+
   const p = G.player;
-  p.vy = 260; p.vx = 0;
-  p.x = clamp(p.x, G.bounds.l + 40, G.bounds.r - 40);
-  p.y = clamp(p.y, G.bounds.t + 40, G.bounds.b - 40);
+  const { l, r } = G.bounds;
+
+  // Push DOWN (toward the storm) and AWAY from the wall
+  p.vy = 240;
+  if (g.isLeft) {
+    p.vx = 320;
+    p.x = Math.max(p.x, l + 100);   // clear the gate's right edge
+  } else {
+    p.vx = -320;
+    p.x = Math.min(p.x, r - 100);   // clear the gate's left edge
+  }
+
+  // Grace window so you can actually walk away
+  G.gateCooldownUntil = nowMs() + 900;
+
   if (absorbHit()) { setStatus('Shield took it', 'Fall back', 'ok', 1400); return; }
   G.stars--;
   updateStars();
