@@ -96,18 +96,38 @@ function updatePlayer(dt) {
     }
   }
 
-    if (now >= G.gateCooldownUntil) {
+    // Gate triggering: correct gates fire instantly, wrong gates require
+  // the player to deliberately linger inside them for WRONG_DWELL_MS.
+  if (now >= G.gateCooldownUntil) {
+    let inGate = null;
     for (const g of G.gates) {
       if (g.done) continue;
-          // Must be inside the gate's rectangle (not just near it)
-        if (Math.abs(p.x - g.x) < g.w / 2 &&
-        Math.abs(p.y - g.y) < g.h / 2) {
-          if (g.isTarget) gateCorrect(g);
-          else gateWrong(g);
-          break;
-        }
+      if (Math.abs(p.x - g.x) < g.w / 2 &&
+          Math.abs(p.y - g.y) < g.h / 2) {
+        inGate = g;
+        break;
       }
     }
+    const WRONG_DWELL_MS = 450;
+    if (inGate && inGate.isTarget) {
+      gateCorrect(inGate);
+      G.inWrongGate = null;
+    } else if (inGate && !inGate.isTarget) {
+      if (G.inWrongGate === inGate) {
+        if (now - G.inWrongSince >= WRONG_DWELL_MS) {
+          gateWrong(inGate);
+          G.inWrongGate = null;
+        }
+      } else {
+        G.inWrongGate = inGate;
+        G.inWrongSince = now;
+      }
+    } else {
+      G.inWrongGate = null;
+    }
+  } else {
+    G.inWrongGate = null;
+  }
 }
 
 function tryDash() {
@@ -332,20 +352,23 @@ function gateWrong(g) {
   shake(16, 300);
 
   const p = G.player;
-  const { l, r } = G.bounds;
+  const { l, r, t } = G.bounds;
 
-  // Push DOWN (toward the storm) and AWAY from the wall
-  p.vy = 240;
+  // Push inward from the wall. No vertical shove — the player earned this
+  // by standing still, they can walk out on their own.
   if (g.isLeft) {
     p.vx = 320;
-    p.x = Math.max(p.x, l + 100);   // clear the gate's right edge
+    p.x = Math.max(p.x, l + 110);
   } else {
     p.vx = -320;
-    p.x = Math.min(p.x, r - 100);   // clear the gate's left edge
+    p.x = Math.min(p.x, r - 110);
   }
+  // Small upward drift — away from the storm, never toward it
+  p.vy = -80;
 
-  // Grace window so you can actually walk away
+  // Grace window
   G.gateCooldownUntil = nowMs() + 900;
+  G.inWrongGate = null;
 
   if (absorbHit()) { setStatus('Shield took it', 'Fall back', 'ok', 1400); return; }
   G.stars--;

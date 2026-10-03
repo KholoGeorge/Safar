@@ -30,6 +30,8 @@ const G = {
   stunUntil: 0, invulnUntil: 0,
   staffCooldownUntil: 0, burstCooldownUntil: 0,
   gateCooldownUntil: 0,
+  inWrongGate: null,
+  inWrongSince: 0,
   flashUntil: 0, flashColor: '#e8dfc8', flashAlpha: 0,
   statusText: 'Awaiting orders',
   statusSub: 'WASD · SHIFT sprint · SPACE dash · J staff · K burst',
