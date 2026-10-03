@@ -14,7 +14,6 @@ function startDemo() {
   const b = H - pad - 20;
   const cx = (l + r) / 2;
 
-  // Gates on alternating walls
   const gates = [
     { side: 'right', y: t + 100, w: 58, h: 42, label: 'كَيْفَ حَالُكَ', correct: false },
     { side: 'left',  y: t + 200, w: 58, h: 42, label: 'أَنَا بِخَيْرٍ', correct: true  },
@@ -28,12 +27,12 @@ function startDemo() {
   const leftGateX  = gates[1].x + 60;
 
   const path = [
-    { x: cx,         y: b - 30, hold: 500 },
-    { x: rightGateX, y: gates[0].y, hold: 400 },
-    { x: cx,         y: t + 130, hold: 200 },
-    { x: leftGateX,  y: gates[1].y, hold: 800 },  // pause at correct gate
-    { x: cx,         y: t + 60, hold: 300 },
-    { x: cx,         y: t + 20, hold: 400 },      // exit
+    { x: cx,         y: b - 30,        hold: 500 },
+    { x: rightGateX, y: gates[0].y,    hold: 400 },
+    { x: cx,         y: t + 130,       hold: 200 },
+    { x: leftGateX,  y: gates[1].y,    hold: 800 },
+    { x: cx,         y: t + 60,        hold: 300 },
+    { x: cx,         y: t + 20,        hold: 400 },
   ];
 
   const player = { x: cx, y: b - 30, angle: -Math.PI / 2 };
@@ -43,7 +42,7 @@ function startDemo() {
   let flashUntil = 0;
   let t0 = performance.now();
 
-    function draw() {
+  function draw() {
     if (!manualScreen.classList.contains('show')) {
       demoRunning = false;
       return;
@@ -66,9 +65,9 @@ function startDemo() {
           player.x = cx;
           player.y = b - 30;
           stormY = b + 40;
+          holdUntil = now + 600;
         } else {
           holdUntil = now + (path[pathIdx].hold || 300);
-          // Flash correct gate when arriving at the correct waypoint
           if (pathIdx === 4) flashUntil = now + 900;
         }
       } else {
@@ -84,21 +83,18 @@ function startDemo() {
     // --- Draw ---
     dctx.clearRect(0, 0, W, H);
 
-    // Floor
     dctx.fillStyle = '#18150e';
     dctx.fillRect(l, t, r - l, b - t);
 
-    // Grid dots
     dctx.fillStyle = 'rgba(138, 122, 90, 0.10)';
     for (let x = l + 20; x < r; x += 26)
       for (let y = t + 20; y < b; y += 26) dctx.fillRect(x, y, 1, 1);
 
-    // Border
     dctx.strokeStyle = '#3a3020';
     dctx.lineWidth = 1;
     dctx.strokeRect(l + 0.5, t + 0.5, r - l - 1, b - t - 1);
 
-    // Storm rising
+    // Storm
     if (stormY < b) {
       dctx.fillStyle = '#1a1408';
       dctx.fillRect(l, stormY, r - l, b - stormY);
@@ -121,23 +117,18 @@ function startDemo() {
       const y = g.y - g.h / 2;
       const isFlashing = g.correct && flashUntil > now;
 
-      // Shadow
       dctx.fillStyle = 'rgba(0,0,0,0.45)';
       dctx.fillRect(x + 2, y + 3, g.w, g.h);
 
-      // Body
       dctx.fillStyle = isFlashing ? '#d4af37' : '#1f1a10';
       dctx.fillRect(x, y, g.w, g.h);
 
-      // Frame
       dctx.strokeStyle = isFlashing ? '#d4af37' : '#6a5a3d';
       dctx.lineWidth = 2;
       dctx.strokeRect(x + 0.5, y + 0.5, g.w - 1, g.h - 1);
 
-      // Label above
       dctx.save();
       dctx.direction = 'rtl';
-      dctx.fillStyle = '#c9b88a';
       dctx.font = '600 12px "Inter", system-ui, sans-serif';
       dctx.textAlign = 'center';
       dctx.textBaseline = 'bottom';
@@ -149,7 +140,7 @@ function startDemo() {
       dctx.restore();
     }
 
-    // Exit arrow at top
+    // Exit arrow
     const pulse = 0.5 + 0.5 * Math.sin(now / 400);
     dctx.save();
     dctx.globalAlpha = pulse * 0.85;
@@ -162,7 +153,7 @@ function startDemo() {
     dctx.fill();
     dctx.restore();
 
-    // Objective at top
+    // Objective
     dctx.save();
     dctx.textAlign = 'center';
     dctx.fillStyle = '#6a5a3d';
@@ -195,7 +186,6 @@ function startDemo() {
     dctx.arc(player.x, player.y - 2, 4.5, 0, Math.PI * 2);
     dctx.fill();
 
-    // Facing indicator
     dctx.strokeStyle = '#d4af37';
     dctx.lineWidth = 2;
     dctx.beginPath();
@@ -206,7 +196,6 @@ function startDemo() {
     );
     dctx.stroke();
 
-    // Bottom hint
     dctx.save();
     dctx.textAlign = 'center';
     dctx.fillStyle = '#6a5a3d';
@@ -216,4 +205,6 @@ function startDemo() {
 
     requestAnimationFrame(draw);
   }
+
+  requestAnimationFrame(draw);   // <-- this was missing
 }
