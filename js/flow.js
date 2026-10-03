@@ -224,9 +224,11 @@ function showRoomReview(done) {
 
   if (!shown.length) { done(); return; }
 
-  const prevRoomName = ROOM_NAMES[G.roomIdx - 1] || 'The road';
-  const nextRoomName = G.roomIdx < 5
-    ? ROOM_NAMES[G.roomIdx]
+    const prevRoom = G.rooms[G.roomIdx - 1];
+  const nextRoom = G.rooms[G.roomIdx];
+  const prevRoomName = (prevRoom && prevRoom.name) || 'The road';
+  const nextRoomName = nextRoom
+    ? nextRoom.name
     : (G.endless ? 'The endless road' : 'The road home');
 
   const list = $('reviewList');

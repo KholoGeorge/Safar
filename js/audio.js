@@ -129,7 +129,6 @@ function speakAr(item) {
   curAudio = a;
   const p = a.play();
   if (p && p.catch) p.catch(err => {
-    console.warn('SAFAR: audio failed for', path, err);
     if (USE_TTS_FALLBACK) ttsFallback(item.ar);
   });
 }
