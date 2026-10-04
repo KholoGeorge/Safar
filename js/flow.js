@@ -201,6 +201,11 @@ objSubReplay.addEventListener('click', (e) => {
   if (G.lastWrong) speakAr(G.lastWrong.item);
 });
 
+document.querySelector('.objective-line').addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (G.targetGate) speakAr(G.targetGate.item);
+});
+
 function showRoomReview(done) {
   const seen = G.roomPhrases || [];
   const wrong = seen.filter(p => !p.correct);

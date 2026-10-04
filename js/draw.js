@@ -1,5 +1,10 @@
 function drawFloor() {
   const { l, t, r, b } = G.bounds;
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(l, t, r - l, b - t);
+  ctx.clip();
+
   ctx.fillStyle = COL.floor;
   ctx.fillRect(l, t, r - l, b - t);
   ctx.fillStyle = COL.sand;
@@ -14,6 +19,9 @@ function drawFloor() {
   const step = 44;
   for (let x = l + step; x < r; x += step)
     for (let y = t + step; y < b; y += step) ctx.fillRect(x, y, 1, 1);
+
+  ctx.restore();
+
   ctx.strokeStyle = COL.border;
   ctx.lineWidth = 1;
   ctx.strokeRect(l + 0.5, t + 0.5, r - l - 1, b - t - 1);
