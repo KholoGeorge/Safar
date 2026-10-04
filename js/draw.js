@@ -105,12 +105,6 @@ function drawStorm() {
   }
 }
 
-// Palette for the gender stripe on gate labels
-const GATE_VARIANT_COLOR = {
-  m: '#7ab8c9',   // cool blue-grey — masculine
-  f: '#d49a9a',   // muted rose — feminine
-};
-
 function drawGates() {
   const p = G.player;
   const t = performance.now();
@@ -171,7 +165,7 @@ function drawGates() {
     ctx.globalAlpha = labelAlpha;
     ctx.direction = (G.mode === 'en-ar') ? 'rtl' : 'ltr';
     ctx.font = (G.mode === 'en-ar')
-      ? '700 17px "Inter", system-ui, sans-serif'
+      ? '700 19px "Inter", system-ui, sans-serif'
       : '600 15px "Inter", system-ui, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -185,15 +179,6 @@ function drawGates() {
     ctx.fillStyle = 'rgba(14,12,8,0.85)';
     ctx.fillRect(lx, ly, lw, lh);
 
-    // Gender stripe across the top of the label box
-    const stripe = GATE_VARIANT_COLOR[g.item.variant];
-    if (stripe) {
-      ctx.save();
-      ctx.globalAlpha = labelAlpha * 0.9;
-      ctx.fillStyle = stripe;
-      ctx.fillRect(lx, ly, lw, 3);
-      ctx.restore();
-    }
 
     ctx.fillStyle = COL.khakiBr;
     ctx.fillText(label, g.x, ly + lh / 2 + 1);
