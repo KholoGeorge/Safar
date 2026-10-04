@@ -65,7 +65,8 @@ function flash(color, alpha = 0.15, ms = 150) { G.flashUntil = nowMs() + ms; G.f
 function shake(mag, ms = 250) { G.shakeUntil = nowMs() + ms; G.shakeMag = mag; }
 function hitstop(ms = 60) { G.hitstopUntil = nowMs() + ms; }
 function spawnParticles(x, y, color, count, power = 1) {
-  for (let i = 0; i < count; i++) {
+  const n = IS_SLOW ? Math.max(3, Math.ceil(count * 0.4)) : count;
+  for (let i = 0; i < n; i++) {
     const a = Math.random() * Math.PI * 2;
     const s = rand(80, 340) * power;
     G.particles.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 40, life: rand(0.4, 0.9), max: 0.7, color, size: rand(2, 4.5) });

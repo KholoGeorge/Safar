@@ -1,3 +1,10 @@
+// Apply a glow to the current draw if the device can afford it.
+function glow(color, blur) {
+  if (IS_SLOW) return;
+  ctx.shadowColor = color;
+  ctx.shadowBlur = blur;
+}
+
 function drawFloor() {
   const { l, t, r, b } = G.bounds;
   ctx.save();

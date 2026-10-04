@@ -5,6 +5,15 @@ const $ = id => document.getElementById(id);
 const IS_TOUCH = matchMedia('(hover: none) and (pointer: coarse)').matches
               || 'ontouchstart' in window
               || navigator.maxTouchPoints > 0;
+// Very slow device? Adreno 306-class (Galaxy Tab E, older budget phones).
+// Detected by low core count or low reported memory. Used to strip the
+// expensive parts of the render path.
+const IS_SLOW = (() => {
+  if (typeof navigator === 'undefined') return false;
+  const cores = navigator.hardwareConcurrency || 4;
+  const mem = navigator.deviceMemory || 4;
+  return cores <= 4 && mem <= 2;
+})();
 
 // HUD refs
 const stormFill = $('stormFill');
@@ -49,7 +58,10 @@ const difficultyRow = $('difficultyRow');
 // Canvas
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
-let DPR = Math.min(window.devicePixelRatio || 1, IS_TOUCH ? 1.5 : 2);
+let DPR = Math.min(
+window.devicePixelRatio || 1,
+  IS_SLOW ? 1 : (IS_TOUCH ? 1.5 : 2)
+);
 function resize() {
   const w = window.innerWidth, h = window.innerHeight;
   canvas.width = w * DPR; canvas.height = h * DPR;

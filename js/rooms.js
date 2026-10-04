@@ -99,12 +99,36 @@ function buildRun() {
 function enterRoom(idx) {
   while (G.rooms.length <= idx) G.rooms.push(makeRoom(G.rooms.length));
 
-  const w = window.innerWidth, h = window.innerHeight;
+    const w = window.innerWidth, h = window.innerHeight;
   const topPad = IS_TOUCH ? Math.min(140, Math.round(h * 0.18)) : 118;
   const botPad = IS_TOUCH ? Math.min(120, Math.round(h * 0.18)) : 78;
-  const playW = Math.min(w - 40, h * 0.6);
+  const availW = w - 40;
+  const availH = h - topPad - botPad;
+
+  // Shape the arena by aspect ratio. Portrait playfields want to be taller
+  // than wide but never a corridor; landscape wants to be closer to square.
+  const isPortrait = h > w;
+  const ASPECT = isPortrait ? 1.55 : 1.2;   // playH / playW
+
+  let playW, playH;
+  if (availH / availW >= ASPECT) {
+    // Space is taller than the aspect wants → constrain by width.
+    playW = Math.min(availW, IS_TOUCH ? 520 : 720);
+    playH = playW * ASPECT;
+  } else {
+    // Normal case → fill height, cap width so big screens don't balloon.
+    playH = Math.min(availH, (IS_TOUCH ? 520 : 720) * ASPECT);
+    playW = playH / ASPECT;
+  }
+
   const px0 = (w - playW) / 2;
-  G.bounds = { l: px0 + 20, t: topPad, r: px0 + playW - 20, b: h - botPad };
+  const py0 = topPad + (availH - playH) / 2;
+  G.bounds = {
+    l: px0 + 20,
+    t: py0 + 20,
+    r: px0 + playW - 20,
+    b: py0 + playH - 20,
+  };
 
   const room = G.rooms[idx];
   const { l, t, r, b } = G.bounds;
@@ -144,9 +168,10 @@ function enterRoom(idx) {
     G.stormY = G.bounds.b + 1000;
     G.stormSpeed = 0;
     G.dust = [];
-    for (let i = 0; i < 70; i++) {
-      G.dust.push({ x: rand(l, r), y: rand(t, b), vx: rand(-10, 30), vy: rand(-8, 8), size: rand(0.8, 2.2), alpha: rand(0.15, 0.5) });
-    }
+    const dustCount = IS_SLOW ? 25 : 70;
+for (let i = 0; i < dustCount; i++) {
+  G.dust.push(...);
+}
     G.footprints = []; G.particles = []; G.rings = []; G.floatingText = [];
 
     let tries = 0;
@@ -247,9 +272,10 @@ function enterRoom(idx) {
   G.projectiles = [];
 
   G.dust = [];
-  for (let i = 0; i < 70; i++) {
-    G.dust.push({ x: rand(l, r), y: rand(t, b), vx: rand(-10, 30), vy: rand(-8, 8), size: rand(0.8, 2.2), alpha: rand(0.15, 0.5) });
-  }
+  const dustCount = IS_SLOW ? 25 : 70;
+for (let i = 0; i < dustCount; i++) {
+  G.dust.push(...);
+}
   G.footprints = []; G.particles = []; G.rings = []; G.floatingText = [];
 
   pickTarget();
