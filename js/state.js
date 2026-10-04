@@ -80,36 +80,3 @@ function spawnFloatText(x, y, text, color, life = 1.0, size = 26) {
 }
 function pauseOn() { if (!G.paused) { G.paused = true; G.pauseStart = nowMs(); } }
 function pauseOff() { if (G.paused) { G.paused = false; G.pausedMs += nowMs() - G.pauseStart; } }
-
-// Harakat (vowel mark) handling for the reading modes.
-const HARAKAT = /[\u064B-\u065F\u0670\u06D6-\u06ED]/g;
-const HARAKAT_TIGHT = /[\u064B-\u065F\u0670]/;
-
-function stripHarakat(text) {
-  return String(text || '').replace(HARAKAT, '');
-}
-
-function keepLastHaraka(text) {
-  const s = String(text || '');
-  let lastIdx = -1;
-  for (let i = 0; i < s.length; i++) {
-    if (HARAKAT_TIGHT.test(s[i])) lastIdx = i;
-  }
-  let out = '';
-  for (let i = 0; i < s.length; i++) {
-    if (!HARAKAT_TIGHT.test(s[i])) out += s[i];
-    else if (i === lastIdx) out += s[i];
-  }
-  return out;
-}
-
-function renderAr(phrase, contextPhrases, mode) {
-  const ar = phrase.ar || '';
-  if (mode === 'full') return ar;
-  const bare = stripHarakat(ar);
-  if (mode === 'bare') return bare;
-  const collides = (contextPhrases || []).some(p =>
-    p !== phrase && stripHarakat(p.ar || '') === bare
-  );
-  return collides ? keepLastHaraka(ar) : bare;
-}
