@@ -434,22 +434,23 @@ function drawDust() {
   ctx.restore();
 }
 
+let _vigCache = { w: 0, h: 0, grd: null };
 function drawVignette() {
   const w = window.innerWidth, h = window.innerHeight;
-  const cx = w / 2, cy = h / 2;
-  const grd = ctx.createRadialGradient(cx, cy, Math.min(w, h) * 0.35, cx, cy, Math.max(w, h) * 0.75);
-  grd.addColorStop(0, 'rgba(0,0,0,0)');
-  grd.addColorStop(1, 'rgba(0,0,0,0.55)');
-  ctx.fillStyle = grd;
+  if (_vigCache.w !== w || _vigCache.h !== h) {
+    const cx = w / 2, cy = h / 2;
+    const g = ctx.createRadialGradient(cx, cy, Math.min(w, h) * 0.35, cx, cy, Math.max(w, h) * 0.75);
+    g.addColorStop(0, 'rgba(0,0,0,0)');
+    g.addColorStop(1, 'rgba(0,0,0,0.55)');
+    _vigCache = { w, h, grd: g };
+  }
+  ctx.fillStyle = _vigCache.grd;
   ctx.fillRect(0, 0, w, h);
 
   if (G.tension > 0) {
     const pulse = 0.6 + 0.4 * Math.sin(performance.now() / (260 - 160 * G.tension));
-    const a = 0.5 * G.tension * pulse;
-    const rg = ctx.createRadialGradient(cx, cy, Math.min(w, h) * 0.25, cx, cy, Math.max(w, h) * 0.7);
-    rg.addColorStop(0, 'rgba(138,26,26,0)');
-    rg.addColorStop(1, `rgba(138,26,26,${a})`);
-    ctx.fillStyle = rg;
+    const a = 0.5 * G.tension * pulse * 0.55;
+    ctx.fillStyle = `rgba(138,26,26,${a})`;
     ctx.fillRect(0, 0, w, h);
   }
 }

@@ -215,21 +215,26 @@ function checkRoomClear() {
 
 function advanceRoom() {
   const wasCombat = (G.roomType === 'combat' || G.roomType === 'boss');
-  G.roomsCleared++; G.roomIdx++;
+  G.roomsCleared++;
+  G.roomIdx++;
+
   if (wasCombat) {
     G.score += 500;
     spawnFloatText(G.player.x - 60, G.player.y - 40, 'ROOM +500', COL.gold, 1.2, 22);
   }
+
   G.lastWrong = null;
   updateLastWrongPanel();
 
   if (!G.endless && G.roomIdx >= G.rooms.length) {
-    if (G.daily) endRun(true);
-    else offerChoice();
-  } else {
-    showRoomReview(() => {
-      const betweenLines = STORY.between[(G.roomIdx - 1) % STORY.between.length];
-      showDialogue(betweenLines, () => enterRoom(G.roomIdx));
-    });
+    if (G.daily) { endRun(true); return; }
+    offerChoice();
+    return;
   }
+
+  showRoomReview(() => {
+    const between = STORY.between[(G.roomIdx - 1) % STORY.between.length];
+    showDialogue(between, () => enterRoom(G.roomIdx));
+  });
 }
+

@@ -14,10 +14,15 @@ const G = {
   lastWrong: null,
   roomPhrases: [],
   roomType: 'combat',
-  seenThisRun: null,       // Set of phrase.ar values seen as gates this run
+  seenThisRun: null,
   discoveries: [],
-  discoveryNear: null,     // the node the player is standing next to
-  discoveryOpen: null,     // node currently shown in the overlay
+  discoveryNear: null,
+  discoveryOpen: null,
+
+  // ---- touch ----
+  joy: null,           // { x, y, m } from the floating analog stick, or null
+  touchMode: IS_TOUCH, // opt into auto-staff, gate padding, layout strip
+
   rng: Math.random,
   roomIdx: 0, rooms: [], roomsCleared: 0, stars: 3,
   player: null, gates: [], obstacles: [], pickups: [],

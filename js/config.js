@@ -49,7 +49,15 @@ function resize() {
   canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
   ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
 }
-window.addEventListener('resize', resize); resize();
+window.addEventListener('resize', resize);
+window.addEventListener('orientationchange', () => setTimeout(resize, 120));
+if (window.visualViewport) window.visualViewport.addEventListener('resize', resize);
+resize();
+
+// Touch detection — must be hoisted so anything that reads it during boot sees it.
+const IS_TOUCH = matchMedia('(hover: none) and (pointer: coarse)').matches
+              || 'ontouchstart' in window
+              || navigator.maxTouchPoints > 0;
 
 // Palette
 const COL = {
@@ -74,9 +82,7 @@ const dist = (ax, ay, bx, by) => Math.hypot(ax - bx, ay - by);
 const nowMs = () => performance.now();
 const comboMult = () => 1 + Math.min(4, Math.floor(G.combo / 3));
 
-// Room tuning
-// Room pattern for the main run. Index = room number.
-// type: 'combat' | 'explore' | 'boss'
+// Room pattern for the main run.
 const ROOM_PATTERN = [
   { type: 'combat',  name: 'The Dust Road',     gates: 3, storm: 10, obs: 4, orbs: [{ type: 'drifter', count: 2 }] },
   { type: 'explore', name: 'The Dry Well' },
@@ -89,7 +95,8 @@ const ROOM_PATTERN = [
 const EXPLORE_NAMES = ['The Dry Well', 'Fallen Pillars', 'A Broken Cart', 'An Empty Shrine', 'The Silent Stones', 'The Long Watch'];
 
 const DISCOVERIES_PER_ROOM = 3;
-const DISCOVERY_RANGE = 70;      // how close to trigger the prompt
+const DISCOVERY_RANGE = 70;
+const DISCOVERY_TAP_RADIUS = 64;
 const ORB_RESPAWN_MS = 2000;
 
 // Difficulty
@@ -99,9 +106,21 @@ const DIFFICULTY = {
   hard:   { gateMul: 1.25, stormMul: 1.5,  orbMul: 1.5, bossMul: 1.3 },
 };
 
+// Extra tilt applied on top of the player's chosen difficulty when playing
+// with thumbs. Touch input is less precise, so we lean toward reading and
+// away from reflex.
+const TOUCH_MODIFIERS = { gateMul: 1.0, stormMul: 0.80, orbMul: 0.60, bossMul: 0.90 };
+
 // Player tuning
 const PLAYER_WALK = 200, PLAYER_SPRINT = 320, PLAYER_ACCEL = 2000, PLAYER_FRICTION = 15;
 const DASH_SPEED = 720, DASH_DURATION = 150, DASH_COOLDOWN = 1200, DASH_COST = 34;
 const SPRINT_DRAIN = 42, STAMINA_REGEN = 22;
 const STAFF_COOLDOWN = 400, STAFF_ACTIVE = 200, STAFF_RANGE = 72, STAFF_ARC = Math.PI * 0.72;
 const BURST_COOLDOWN = 3000, BURST_COST = 40, BURST_RADIUS = 85;
+
+// Touch
+const JOY_MAX_R = 52;
+const JOY_DEAD = 0.18;
+const JOY_SPRINT = 0.80;
+const AUTO_STAFF_REACH = 0.85;   // fraction of staff reach that triggers an auto-swing
+const GATE_PAD_TOUCH = 14;       // hit-test forgiveness on gates for thumbs

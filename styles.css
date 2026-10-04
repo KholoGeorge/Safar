@@ -145,14 +145,81 @@ html, body {
 .dlg-speaker { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.5em; color: #d4af37; text-transform: uppercase; margin-bottom: 14px; }
 .dlg-text { font-family: 'Inter', system-ui, sans-serif; font-size: 22px; color: #e8dfc8; line-height: 1.55; max-width: 640px; text-align: center; font-style: italic; }
 
+/* ---------- TOUCH CONTROLS ------------ */
 .touch-controls { display: none; }
-body.touch .touch-controls { display: block; position: absolute; inset: 0; z-index: 20; pointer-events: none; }
-.joystick-zone { position: absolute; left: 0; bottom: 0; width: 46%; height: 55%; pointer-events: auto; }
-.joystick-base { position: absolute; left: 70px; bottom: 70px; width: 130px; height: 130px; border-radius: 50%; border: 2px solid rgba(201,184,138,0.35); background: radial-gradient(circle, rgba(201,184,138,0.10), rgba(14,12,8,0.35)); touch-action: none; }
-.joystick-knob { position: absolute; left: 50%; top: 50%; width: 54px; height: 54px; margin: -27px 0 0 -27px; border-radius: 50%; background: rgba(212,175,55,0.85); box-shadow: 0 0 18px rgba(212,175,55,0.45); transition: transform 0.04s linear; will-change: transform; }
-.action-buttons { position: absolute; right: 32px; bottom: 44px; display: flex; flex-direction: column; align-items: flex-end; gap: 14px; pointer-events: auto; }
-.action-btn { width: 84px; height: 84px; border-radius: 50%; border: 2px solid rgba(201,184,138,0.45); background: rgba(14,12,8,0.55); color: #c9b88a; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.15em; display: flex; align-items: center; justify-content: center; text-transform: uppercase; user-select: none; touch-action: none; transition: background 0.08s, border-color 0.08s; }
-.action-btn:active { background: rgba(212,175,55,0.25); border-color: #d4af37; color: #e8dfc8; }
+body.touch .touch-controls {
+  display: block;
+  position: absolute; inset: 0;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.joystick-zone {
+  position: absolute;
+  left: 0; bottom: 0;
+  width: 52%; height: 55%;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+/* Floating: hidden until the thumb lands, then shown at the touch point. */
+.joystick-base {
+  position: fixed;
+  left: 50%; top: 50%;
+  width: 130px; height: 130px;
+  margin: 0;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 2px solid rgba(201,184,138,0.35);
+  background: radial-gradient(circle, rgba(201,184,138,0.10), rgba(14,12,8,0.35));
+  opacity: 0;
+  transition: opacity 0.12s;
+  pointer-events: none;
+  touch-action: none;
+}
+.joystick-base.active { opacity: 1; }
+
+.joystick-knob {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 54px; height: 54px;
+  margin: -27px 0 0 -27px;
+  border-radius: 50%;
+  background: rgba(212,175,55,0.85);
+  box-shadow: 0 0 18px rgba(212,175,55,0.45);
+  transition: transform 0.04s linear;
+  will-change: transform;
+}
+
+.action-buttons {
+  position: absolute;
+  right: 26px;
+  bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 16px;
+  pointer-events: auto;
+}
+.action-btn {
+  width: 78px; height: 78px;
+  border-radius: 50%;
+  border: 2px solid rgba(201,184,138,0.45);
+  background: rgba(14,12,8,0.55);
+  color: #c9b88a;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.15em;
+  display: flex; align-items: center; justify-content: center;
+  text-transform: uppercase;
+  user-select: none;
+  touch-action: none;
+  transition: background 0.08s, border-color 0.08s;
+}
+.action-btn:active {
+  background: rgba(212,175,55,0.25);
+  border-color: #d4af37;
+  color: #e8dfc8;
+}
 .action-btn.dash { border-color: rgba(212,175,55,0.7); color: #d4af37; }
 
 @media (max-width: 820px) {

@@ -18,28 +18,39 @@ function updatePlayer(dt) {
   const K = G.keys;
 
   // ---------- INPUT ----------
-  let ax = 0, ay = 0;
+  // Analog stick takes priority. `analog` is 0..1 and scales both the
+  // acceleration rate and the speed cap, so a light push creeps and a full
+  // push runs.
+  let ax = 0, ay = 0, analog = 1;
   if (!stunned && !dashing) {
-    if (K.up)    ay -= 1;
-    if (K.down)  ay += 1;
-    if (K.left)  ax -= 1;
-    if (K.right) ax += 1;
+    if (G.joy) {
+      ax = G.joy.x; ay = G.joy.y; analog = G.joy.m;
+    } else {
+      if (K.up)    ay -= 1;
+      if (K.down)  ay += 1;
+      if (K.left)  ax -= 1;
+      if (K.right) ax += 1;
+    }
   }
   const len = Math.hypot(ax, ay);
   const sprinting = K.sprint && G.stamina > 5 && len > 0 && !dashing && !stunned;
 
-  if (len > 0) {
+  if (len > 0.001) {
     ax /= len; ay /= len;
-    p.angle = Math.atan2(ay, ax);
-    p.vx += ax * PLAYER_ACCEL * dt;
-    p.vy += ay * PLAYER_ACCEL * dt;
+    // Keyboard faces movement direction. On touch we leave facing alone and
+    // let autoStaff() snap it at swing time.
+    if (!G.joy) p.angle = Math.atan2(ay, ax);
+    p.vx += ax * PLAYER_ACCEL * dt * analog;
+    p.vy += ay * PLAYER_ACCEL * dt * analog;
   }
   p.vx -= p.vx * PLAYER_FRICTION * dt;
   p.vy -= p.vy * PLAYER_FRICTION * dt;
 
   // ---------- SPEED CAP ----------
   const baseSpeed = dashing ? DASH_SPEED : (sprinting ? PLAYER_SPRINT : PLAYER_WALK);
-  const maxSpeed = baseSpeed * (dashing ? 1 : G.up.speed);
+  // On touch, an analog push below 35% is clamped so creeping is still usable.
+  const analogCap = (G.joy && !dashing) ? Math.max(0.35, analog) : 1;
+  const maxSpeed = baseSpeed * (dashing ? 1 : G.up.speed) * analogCap;
   const sp = Math.hypot(p.vx, p.vy);
   if (sp > maxSpeed) {
     p.vx = p.vx / sp * maxSpeed;
@@ -73,7 +84,7 @@ function updatePlayer(dt) {
     }
   }
 
-  // ---------- WALK ANIMATION / FOOTPRINTS ----------
+  // ---------- FOOTPRINTS / FOOTSTEPS ----------
   if (sp > 25) p.walkPhase += dt * sp * 0.045;
   else p.walkPhase *= 0.88;
 
@@ -91,13 +102,16 @@ function updatePlayer(dt) {
     }
   }
 
-  // ---------- STORM (Y axis, rises from bottom) ----------
+  // ---------- STORM ----------
   if (G.stormSpeed > 0 && p.y + p.radius >= G.stormY) {
     playerCaught();
     return;
   }
 
-  // ---------- DISCOVERY PROXIMITY (explore rooms only) ----------
+  // ---------- AUTO-STAFF (touch only) ----------
+  if (G.touchMode) autoStaff();
+
+  // ---------- DISCOVERY PROXIMITY ----------
   if (G.roomType === 'explore') {
     let near = null;
     for (const d of G.discoveries) {
@@ -111,11 +125,12 @@ function updatePlayer(dt) {
 
   // ---------- GATES (dwell mechanic) ----------
   if (G.roomType !== 'explore' && now >= G.gateCooldownUntil) {
+    const pad = G.touchMode ? GATE_PAD_TOUCH : 0;
     let inGate = null;
     for (const g of G.gates) {
       if (g.done) continue;
-      if (Math.abs(p.x - g.x) < g.w / 2 &&
-          Math.abs(p.y - g.y) < g.h / 2) {
+      if (Math.abs(p.x - g.x) < g.w / 2 + pad &&
+          Math.abs(p.y - g.y) < g.h / 2 + pad) {
         inGate = g;
         break;
       }
@@ -142,6 +157,31 @@ function updatePlayer(dt) {
   }
 }
 
+// ---- Touch assist: auto-swing at the nearest enemy in reach ----
+function autoStaff() {
+  if (!G.running || G.paused) return;
+  const p = G.player; if (!p) return;
+  const now = nowMs();
+  if (now < G.staffCooldownUntil) return;
+  if (now < G.stunUntil) return;
+
+  const reach = (STAFF_RANGE * G.up.range + p.radius) * AUTO_STAFF_REACH;
+  let best = null, bd = Infinity;
+  for (const o of G.orbs) {
+    if (o.dead) continue;
+    const d = dist(p.x, p.y, o.x, o.y) - o.r;
+    if (d < bd) { bd = d; best = o; }
+  }
+  if (G.boss && !G.boss.dead) {
+    const d = dist(p.x, p.y, G.boss.x, G.boss.y) - G.boss.r;
+    if (d < bd) { bd = d; best = G.boss; }
+  }
+  if (best && bd < reach) {
+    p.angle = Math.atan2(best.y - p.y, best.x - p.x);
+    tryStaff();
+  }
+}
+
 function tryDash() {
   const now = nowMs();
   if (now < G.dashCooldownUntil) return;
@@ -156,7 +196,10 @@ function tryDash() {
   const sp = Math.hypot(p.vx, p.vy);
   let dx, dy;
   if (sp > 30) { dx = p.vx / sp; dy = p.vy / sp; }
+  else if (G.joy) { dx = G.joy.x; dy = G.joy.y; }
   else { dx = Math.cos(p.angle); dy = Math.sin(p.angle); }
+  const dl = Math.hypot(dx, dy) || 1;
+  dx /= dl; dy /= dl;
   p.vx = dx * DASH_SPEED; p.vy = dy * DASH_SPEED;
   for (let i = 0; i < 6; i++) {
     G.footprints.push({ x: p.x + rand(-3, 3), y: p.y + rand(-3, 3), angle: p.angle, life: 1.2, max: 1.2 });
@@ -228,18 +271,6 @@ function damageOrb(o, dmg, knockback) {
     spawnRing(o.x, o.y, COL.gold, 90, 0.35);
     shake(7, 160);
     hitstop(55);
-    if (o.wordItem) {
-      if (o.wordTrue) {
-        G.shield = true; S.shieldUp();
-        spawnFloatText(o.x, o.y - 30, 'SHIELD', COL.shield, 1.2, 22);
-        spawnRing(o.x, o.y, COL.shield, 110, 0.5);
-      } else {
-        const bonus = 150 * comboMult();
-        G.score += bonus;
-        spawnFloatText(o.x, o.y - 30, 'DECOY +' + bonus, COL.gold, 1.2, 22);
-      }
-      o.wordItem = null;
-    }
     if (o.type === 'splitter' && !o.splitDone) {
       o.splitDone = true;
       for (let i = 0; i < 2; i++) {
@@ -278,7 +309,6 @@ function respawnOrb(o) {
   o.chargeState = 'idle'; o.chargeAt = nowMs();
   o.chargeVx = 0; o.chargeVy = 0;
   o.splitDone = false;
-  assignOrbWord(o);
   spawnRing(o.x, o.y, o.ring, 80, 0.4);
   spawnParticles(o.x, o.y, o.ring, 12, 0.8);
   S.orbSpawn();
@@ -344,16 +374,18 @@ function gateCorrect(g) {
   if (G.combo >= 3) spawnFloatText(G.player.x, G.player.y - 40, 'x' + comboMult() + ' COMBO', COL.khakiBr, 1.0, 20);
   if (G.misses[g.item.ar]) { G.misses[g.item.ar]--; if (G.misses[g.item.ar] <= 0) delete G.misses[g.item.ar]; saveMisses(); }
   G.roomPhrases.push({ item: g.item, correct: true });
-  S.correct(G.combo); speakAr(g.item);
+  S.correct(G.combo);
+  speakAr(g.item);
   if (G.seenThisRun) G.seenThisRun.add(g.item.ar);
   flash(COL.gold, 0.18, 180);
   shake(7, 180);
   spawnParticles(g.x, g.y, COL.gold, 20, 1.2);
+  navigator.vibrate?.(15);
   setStatus('Correct', 'Continue north', 'ok', 1500);
   const p = G.player;
   p.vx = 0; p.vy = 0;
   if (G.gates.filter(x => !x.done).length > 0) pickTarget();
-  else { G.targetGate = null; assignOrbWords(); }
+  else { G.targetGate = null; }
 }
 
 function gateWrong(g) {
@@ -369,12 +401,11 @@ function gateWrong(g) {
   S.wrong();
   flash(COL.danger, 0.32, 220);
   shake(16, 300);
+  navigator.vibrate?.([30, 50, 30]);
 
   const p = G.player;
-  const { l, r, t } = G.bounds;
+  const { l, r } = G.bounds;
 
-  // Push inward from the wall. No vertical shove — the player earned this
-  // by standing still, they can walk out on their own.
   if (g.isLeft) {
     p.vx = 320;
     p.x = Math.max(p.x, l + 110);
@@ -382,10 +413,8 @@ function gateWrong(g) {
     p.vx = -320;
     p.x = Math.min(p.x, r - 110);
   }
-  // Small upward drift — away from the storm, never toward it
   p.vy = -80;
 
-  // Grace window
   G.gateCooldownUntil = nowMs() + 900;
   G.inWrongGate = null;
 
@@ -402,5 +431,6 @@ function playerCaught() {
   setStatus('The storm', '', 'warn', 1500);
   flash(COL.danger, 0.42, 320);
   shake(24, 400);
+  navigator.vibrate?.(120);
   endRun(false);
 }

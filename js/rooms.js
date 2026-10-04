@@ -1,6 +1,5 @@
 function roomTypeFor(i) {
   if (i < ROOM_PATTERN.length) return ROOM_PATTERN[i].type;
-  // Endless: every 5th room is a boss, others alternate combat/explore
   const k = i - ROOM_PATTERN.length + 1;
   if (k % 5 === 0) return 'boss';
   return (k % 2 === 1) ? 'combat' : 'explore';
@@ -9,8 +8,15 @@ function roomTypeFor(i) {
 function makeRoom(i) {
   const type = roomTypeFor(i);
   const D = DIFFICULTY[G.difficulty] || DIFFICULTY.normal;
+  // Touch tilts the run toward reading, away from reflex.
+  const T = IS_TOUCH ? TOUCH_MODIFIERS : { gateMul: 1, stormMul: 1, orbMul: 1, bossMul: 1 };
+  const M = {
+    gateMul:  D.gateMul  * T.gateMul,
+    stormMul: D.stormMul * T.stormMul,
+    orbMul:   D.orbMul   * T.orbMul,
+    bossMul:  D.bossMul  * T.bossMul,
+  };
 
-  // EXPLORE
   if (type === 'explore') {
     let n = 0;
     for (let j = 0; j < i; j++) if (roomTypeFor(j) === 'explore') n++;
@@ -21,7 +27,6 @@ function makeRoom(i) {
     };
   }
 
-  // COMBAT / BOSS
   let base;
   if (i < ROOM_PATTERN.length) {
     base = ROOM_PATTERN[i];
@@ -61,10 +66,10 @@ function makeRoom(i) {
   }
   const shuffled = shuffle(weighted, rng);
 
-  let count = Math.max(2, Math.round(base.gates * D.gateMul));
-  let storm = base.storm > 0 ? Math.max(4, Math.round(base.storm * D.stormMul)) : 0;
-  let orbCfg = base.orbs.map(c => ({ type: c.type, count: Math.max(1, Math.round(c.count * D.orbMul)) }));
-  let bossHp = base.bossHp ? Math.max(3, Math.round(base.bossHp * D.bossMul)) : 0;
+  const count = Math.max(2, Math.round(base.gates * M.gateMul));
+  const storm = base.storm > 0 ? Math.max(4, Math.round(base.storm * M.stormMul)) : 0;
+  const orbCfg = base.orbs.map(c => ({ type: c.type, count: Math.max(1, Math.round(c.count * M.orbMul)) }));
+  const bossHp = base.bossHp ? Math.max(3, Math.round(base.bossHp * M.bossMul)) : 0;
 
   const gates = [];
   const usedAr = new Set();
@@ -76,6 +81,7 @@ function makeRoom(i) {
     usedAr.add(item.ar);
     gates.push(item);
   }
+
   return {
     type: base.type,
     gates, stormSpeed: storm, obstacleCount: base.obs,
@@ -84,6 +90,7 @@ function makeRoom(i) {
   };
 }
 
+// Single definition. The old file had two, and the 5-room one won.
 function buildRun() {
   G.rng = G.daily ? mulberry32(dayNum() * 7919 + 13) : Math.random;
   const rooms = [];
@@ -91,19 +98,18 @@ function buildRun() {
   return rooms;
 }
 
-function buildRun() {
-  G.rng = G.daily ? mulberry32(dayNum() * 7919 + 13) : Math.random;
-  const rooms = [];
-  for (let i = 0; i < 5; i++) rooms.push(makeRoom(i));
-  return rooms;
-}
-
 function enterRoom(idx) {
   while (G.rooms.length <= idx) G.rooms.push(makeRoom(G.rooms.length));
+
   const w = window.innerWidth, h = window.innerHeight;
-  const playW = Math.min(w - 20, h * 0.6);
+  // Reserve a bottom strip on touch so thumbs don't cover the storm or the
+  // wall the player is standing against.
+  const topPad = IS_TOUCH ? Math.min(96, Math.round(h * 0.12)) : 118;
+  const botPad = IS_TOUCH ? Math.min(150, Math.round(h * 0.22)) : 78;
+  const playW = Math.min(w - 40, h * 0.6);
   const px0 = (w - playW) / 2;
-  G.bounds = { l: px0 + 20, t: 118, r: px0 + playW - 20, b: h - 78 };
+  G.bounds = { l: px0 + 20, t: topPad, r: px0 + playW - 20, b: h - botPad };
+
   const room = G.rooms[idx];
   const { l, t, r, b } = G.bounds;
 
@@ -113,14 +119,25 @@ function enterRoom(idx) {
   G.stunUntil = 0; G.invulnUntil = 0;
   G.staffCooldownUntil = 0; G.burstCooldownUntil = 0;
   G.tension = 0; G.heartTimer = 0;
-    G.lastWrong = null; updateLastWrongPanel();
+
+  // Per-room resets — these used to live inside pickTarget(), which fires on
+  // every correct gate. That wiped the room review after each answer and
+  // cancelled the boss respawn timer.
+  G.lastWrong = null;
+  updateLastWrongPanel();
+  G.roomPhrases = [];
+  G.bossRespawnAt = 0;
+  G.bossKilledThisRoom = false;
+  G.inWrongGate = null;
+  G.inWrongSince = 0;
+  G.gateCooldownUntil = 0;
+
   G.roomType = room.type || 'combat';
   G.discoveries = [];
   G.discoveryNear = null;
   G.discoveryOpen = null;
 
   if (G.roomType === 'explore') {
-    // ---- Explore room: no gates, no orbs, no storm ----
     G.gates = [];
     G.obstacles = [];
     G.pickups = [];
@@ -135,7 +152,6 @@ function enterRoom(idx) {
     }
     G.footprints = []; G.particles = []; G.rings = []; G.floatingText = [];
 
-    // Scatter obstacles for texture
     let tries = 0;
     while (G.obstacles.length < room.obstacleCount && tries < 100) {
       tries++;
@@ -149,7 +165,6 @@ function enterRoom(idx) {
       G.obstacles.push({ x: ox, y: oy, r: oradius, variant: Math.floor(Math.random() * 3) });
     }
 
-    // Place discovery nodes — prefer phrases not yet seen this run
     const unseen = G.currentLesson.filter(it => !G.seenThisRun || !G.seenThisRun.has(it.ar));
     const pool = unseen.length >= DISCOVERIES_PER_ROOM ? unseen : G.currentLesson;
     const picks = shuffle(pool, Math.random).slice(0, DISCOVERIES_PER_ROOM);
@@ -159,7 +174,6 @@ function enterRoom(idx) {
         px = rand(l + 70, r - 70);
         py = rand(t + 90, b - 120);
         if (dist(px, py, G.player.x, G.player.y) < 140) continue;
-        if (G.player && dist(px, py, G.player.x, G.player.y) < 160) continue;
         let blocked = false;
         for (const o of G.obstacles) if (dist(px, py, o.x, o.y) < o.r + 40) { blocked = true; break; }
         for (const d of G.discoveries) if (dist(px, py, d.x, d.y) < 140) { blocked = true; break; }
@@ -189,9 +203,9 @@ function enterRoom(idx) {
     return;
   }
 
-  // ---- Combat / Boss room: existing flow below ----
+  // ---- Combat / Boss ----
   const count = room.gates.length;
-  const margin = 60;
+  const margin = IS_TOUCH ? 52 : 60;
   const usable = (b - t) - margin * 2;
   const spacing = count > 1 ? usable / (count - 1) : 0;
   const startY = t + margin;
@@ -224,7 +238,6 @@ function enterRoom(idx) {
   }
 
   G.pickups = [];
-
   G.orbs = [];
   G.boss = null;
   for (const config of room.orbConfig) {
@@ -260,8 +273,7 @@ let orbIdSeq = 0;
 function randomOrbPos(radius, minPlayerDist = 240) {
   const { l, t, r, b } = G.bounds;
   const p = G.player;
-  let x = (l + r) / 2;
-  let y = (t + b) / 2;
+  let x = (l + r) / 2, y = (t + b) / 2;
   for (let i = 0; i < 60; i++) {
     x = rand(l + 50, r - 50);
     y = rand(t + 80, b - 60);
@@ -308,13 +320,10 @@ function spawnBoss(hp = 6) {
   };
 }
 
-function assignOrbWord(o) { o.wordItem = null; o.wordTrue = false; }
-function assignOrbWords() { for (const o of G.orbs) { o.wordItem = null; o.wordTrue = false; } }
-
 function pickTarget() {
   if (G.roomType === 'explore') return;
   const available = G.gates.filter(g => !g.done);
-  if (!available.length) { G.targetGate = null; assignOrbWords(); return; }
+  if (!available.length) { G.targetGate = null; return; }
   const g = available[Math.floor(Math.random() * available.length)];
   for (const x of G.gates) x.isTarget = false;
   g.isTarget = true;
@@ -329,47 +338,12 @@ function pickTarget() {
     objText.classList.add('arabic');
   }
   speakAr(g.item);
-  G.lastWrong = null;
-  updateLastWrongPanel();
-  G.roomPhrases = [];
-  G.bossRespawnAt = 0;
-  G.bossKilledThisRoom = false;
-  assignOrbWords();
 }
 
 function updateStars() {
   let html = '';
   for (let i = 0; i < 3; i++) html += `<div class="star ${i < G.stars ? '' : 'lost'}"></div>`;
   starsEl.innerHTML = html;
-}
-
-const UPGRADES = [
-  { n: 'Swift Sandals',  d: '+15% move speed',               f: () => { G.up.speed *= 1.15; } },
-  { n: 'Deep Lungs',     d: '+25 max stamina, faster regen', f: () => { G.maxStamina += 25; G.up.regen *= 1.25; } },
-  { n: 'Long Staff',     d: '+30% staff reach',              f: () => { G.up.range *= 1.3; } },
-  { n: 'Quick Light',    d: 'Burst cooldown -35%',           f: () => { G.up.burstCd *= 0.65; } },
-  { n: 'Storm Ward',     d: 'Storm moves 25% slower',        f: () => { G.up.storm *= 0.75; } },
-  { n: 'Lantern Heart',  d: 'Restore 1 condition',           f: () => { G.stars = Math.min(3, G.stars + 1); updateStars(); }, ok: () => G.stars < 3 },
-  { n: 'Veil of Dust',   d: 'Gain a shield for the next hit', f: () => { G.shield = true; S.shieldUp(); } },
-];
-
-function offerUpgrade(done) {
-  pauseOn();
-  const grid = $('upgradeGrid'); grid.innerHTML = '';
-  const pool = UPGRADES.filter(u => !u.ok || u.ok());
-  shuffle(pool, Math.random).slice(0, 3).forEach(u => {
-    const c = document.createElement('div');
-    c.className = 'lesson-card';
-    c.innerHTML = `<div class="name">${u.n}</div><div class="meta">${u.d}</div>`;
-    c.onclick = () => {
-      u.f(); S.boon();
-      upgradeScreen.classList.remove('show');
-      pauseOff();
-      done();
-    };
-    grid.appendChild(c);
-  });
-  upgradeScreen.classList.add('show');
 }
 
 function offerChoice() {
