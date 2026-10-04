@@ -154,10 +154,6 @@
       <button data-diff="normal" class="active">Normal</button>
       <button data-diff="hard">Hard</button>
     </div>
-    <div class="mode-row" id="storyRow">
-      <button data-story="1" class="active">Story On</button>
-      <button data-story="0">Story Off</button>
-    </div>
     <div class="mode-row" id="readingRow">
       <button data-reading="full" class="active">Vowelled</button>
       <button data-reading="adaptive">Adaptive</button>
@@ -167,9 +163,10 @@
       5 rooms. Read fast, fight hard. The boss waits in the dark.
     </div>
     <div class="btn-row">
-      <button class="btn ghost" id="backHomeBtn">Back</button>
-      <button class="btn" id="startBtn">Deploy</button>
-    </div>
+  <button class="btn ghost" id="backHomeBtn">Back</button>
+  <button class="btn" id="studyBtn">Study</button>
+  <button class="btn" id="startBtn">Deploy</button>
+  </div>
   </div>
 
   <div class="screen overlay" id="upgradeScreen">
@@ -248,6 +245,26 @@
   <div class="disc-hint">tap anywhere to continue</div>
 </div>
 
+<!-- LOADING -->
+<div class="screen overlay" id="loadingScreen">
+  <div class="loading-title" id="loadingTitle">—</div>
+  <div class="loading-sub" id="loadingSub">—</div>
+  <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+</div>
+
+<!-- STUDY -->
+<div class="screen" id="studyScreen" data-phase="blind">
+  <button class="study-exit" id="studyExit" title="Exit study">✕</button>
+  <div class="study-content" id="studyContent"></div>
+  <div class="study-bottom">
+    <button class="study-replay" id="studyReplay" title="Replay audio">🔊</button>
+    <div class="study-phase-hint" id="studyPhaseHint">Listen</div>
+    <div class="study-progress" id="studyProgress">1 / 1</div>
+    <button class="study-skip" id="studySkip">Skip</button>
+  </div>
+  <div class="study-tap-hint">tap anywhere to continue</div>
+</div>
+
   <div class="touch-controls" id="touchControls">
     <div class="joy-zone" id="joyZone"></div>
     <div class="action-zone top" id="actionTop"></div>
@@ -262,6 +279,7 @@
 <script src="js/audio.js"></script>
 <script src="js/lessons.js"></script>
 <script src="js/story.js"></script>
+<script src="js/study.js"></script>
 <script src="js/rooms.js"></script>
 <script src="js/player.js"></script>
 <script src="js/enemies.js"></script>

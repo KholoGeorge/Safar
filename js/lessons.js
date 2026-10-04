@@ -1,88 +1,73 @@
 const LESSONS_DIR = 'lessons/';
 
-async function loadLessons() {
-  const out = {};
+async function loadManifest() {
   const errNote = $('errNote');
-  let manifestOk = false;
-
   try {
     const res = await fetch(LESSONS_DIR + 'manifest.json', { cache: 'no-store' });
     if (!res.ok) throw new Error('manifest HTTP ' + res.status);
     const data = await res.json();
-    const entries = Array.isArray(data) ? data : (data.lessons || data.routes || []);
-    manifestOk = true;
-
-    for (const entry of entries) {
-      const file = typeof entry === 'string' ? entry : entry.file;
-      if (!file) continue;
-      const name = (typeof entry === 'object' && entry.name)
-        ? entry.name
-        : file.replace(/\.(json|txt)$/i, '');
-      try {
-        const r = await fetch(LESSONS_DIR + encodeURI(file), { cache: 'no-store' });
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        const text = await r.text();
-        const cleaned = parseLessonFile(text, file);
-        if (cleaned.length >= 5) out[name] = cleaned;
-        else console.warn('SAFAR: skipping', file, '— need 5+ phrases, got', cleaned.length);
-      } catch (e) {
-        console.warn('SAFAR: could not load lesson file', file, e);
-      }
-    }
+    return Array.isArray(data) ? data : (data.lessons || []);
   } catch (e) {
     console.warn('SAFAR: could not read lessons/manifest.json', e);
+    errNote.style.display = 'block';
+    errNote.textContent = 'Could not read lessons/manifest.json — serve over http:// and make sure the lessons/ folder exists.';
+    return [];
   }
+}
 
-  if (!Object.keys(out).length) {
-    if (manifestOk) {
-      errNote.style.display = 'block';
-      errNote.textContent = 'No valid lessons found in lessons/. Need at least 5 phrases per file.';
+async function loadOneLesson(file) {
+  const r = await fetch(LESSONS_DIR + encodeURI(file), { cache: 'no-store' });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  const entry = await r.json();
+
+  const phrases = (entry.phrases || [])
+    .map(p => ({
+      id: p.id || '',
+      ar: p.ar || '',
+      en: p.en || '',
+      au: p.au || p.audio || '',
+      variant: p.gender || p.variant || '',
+      hint: p.hint || '',            // still supported if you re-add it
+      common: !!p.common,
+      notes: p.notes || '',
+    }))
+    .filter(p => p.ar && p.en);
+
+  if (phrases.length < 5) throw new Error('need 5+ phrases, got ' + phrases.length);
+
+  phrases.dialogueAudio = entry.dialogueAudio || '';
+  phrases.displayName =
+    entry.lessonId && entry.title
+      ? entry.lessonId + ' · ' + entry.title
+      : (entry.name || file.replace(/\.json$/i, ''));
+  phrases.lessonId = entry.lessonId || '';
+  phrases.unit = entry.unit || 0;
+
+  return phrases;
+}
+
+async function loadLessons() {
+  const manifest = await loadManifest();
+  const out = {};
+  const results = await Promise.allSettled(
+    manifest.map(entry => {
+      const file = typeof entry === 'string' ? entry : entry.file;
+      return loadOneLesson(file).then(p => ({ file, phrases: p }));
+    })
+  );
+  for (const r of results) {
+    if (r.status === 'fulfilled') {
+      out[r.value.phrases.displayName] = r.value.phrases;
     } else {
-      errNote.style.display = 'block';
-      errNote.textContent = 'Could not read lessons/manifest.json — serve over http:// and make sure the lessons/ folder exists.';
+      console.warn('SAFAR: skipped a lesson file:', r.reason && r.reason.message);
     }
+  }
+  if (!Object.keys(out).length) {
+    $('errNote').style.display = 'block';
+    $('errNote').textContent = 'No valid lessons loaded. Check lessons/ files.';
     return defaults();
   }
   return out;
-}
-
-function parseLessonFile(text, filename) {
-  const trimmed = text.trim();
-  if (!trimmed) return [];
-
-  // JSON — supports { ar, en, au, hint, variant }
-  if (trimmed.startsWith('[') || trimmed.startsWith('{')) {
-    try {
-      const ld = JSON.parse(trimmed);
-      const phrases = Array.isArray(ld) ? ld : (ld.phrases || ld.items || []);
-      return phrases
-        .map(p => ({
-          ar: p.ar || '',
-          en: p.en || '',
-          au: p.au || p.audio || '',
-          hint: p.hint || '',
-          variant: p.variant || '',
-        }))
-        .filter(p => p.ar && p.en);
-    } catch (_) {}
-  }
-
-  // Pipe-delimited — ar | en | au | hint | variant
-  return trimmed
-    .split(/\r?\n/)
-    .map(l => l.trim())
-    .filter(l => l && !l.startsWith('#'))
-    .map(line => {
-      const parts = line.split('|').map(p => p.trim());
-      return {
-        ar: parts[0] || '',
-        en: parts[1] || '',
-        au: parts[2] || '',
-        hint: parts[3] || '',
-        variant: parts[4] || '',
-      };
-    })
-    .filter(p => p.ar && p.en);
 }
 
 function dayNum() {

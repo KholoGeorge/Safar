@@ -1,7 +1,22 @@
 function showScreen(el) {
-  [homeScreen, manualScreen, briefScreen, endScreen, upgradeScreen, chooseScreen, dialogueScreen, reviewScreen]
+  [homeScreen, manualScreen, briefScreen, endScreen, upgradeScreen, chooseScreen,
+   dialogueScreen, reviewScreen, loadingScreen, studyScreen]
+    .filter(Boolean)
     .forEach(s => s.classList.remove('show'));
   if (el) el.classList.add('show');
+}
+
+// ---- Loading card between rooms ----
+function showLoading(title, sub, ms, done) {
+  const el = $('loadingScreen');
+  if (!el) { if (done) done(); return; }
+  $('loadingTitle').textContent = title || '';
+  $('loadingSub').textContent = sub || '';
+  el.classList.add('show');
+  setTimeout(() => {
+    el.classList.remove('show');
+    if (done) done();
+  }, ms || 1400);
 }
 
 function refreshHome() {
@@ -46,12 +61,11 @@ function openBriefing(name, daily = false) {
   if (!daily && stat?.bestScore) sub += ` · best ${stat.bestScore} pts`;
   briefSub.textContent = sub;
   $('briefInfo').textContent = daily
-    ? 'Same gate order for everyone today. 6 rooms. One shot at your best score.'
-    : '6 rooms. Read fast, fight hard. The boss waits in the dark — and beyond it, the endless road.';
+    ? 'Same gate order for everyone today. 5 rooms. One shot at your best score.'
+    : '5 rooms. Read fast, fight hard. The boss waits in the dark — and beyond it, the endless road.';
   modeRow.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.mode === G.mode));
   voiceRow.querySelectorAll('button').forEach(b => b.classList.toggle('active', (b.dataset.voice === '1') === G.voice));
   difficultyRow.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.diff === G.difficulty));
-  storyRow.querySelectorAll('button').forEach(b => b.classList.toggle('active', (b.dataset.story === '1') === G.story));
   const readingRow = $('readingRow');
   if (readingRow) {
     readingRow.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.reading === G.reading));
@@ -79,7 +93,7 @@ function startRun() {
   G.startTime = nowMs();
   G.running = true;
   preloadLessonAudio(G.currentLesson);
-  showDialogue(STORY.intro, () => enterRoom(0));
+  showLoading(G.currentName, 'Deploying', 1200, () => enterRoom(0));
 }
 
 function endRun(victory) {
@@ -133,18 +147,13 @@ function endRun(victory) {
     saveDaily(D);
   }
 
-  const showEnd = () => {
-    if (victory) S.victory(); else S.death();
-    showScreen(endScreen);
-  };
-  if (victory && G.story && !G.daily) {
-    showDialogue(STORY.victory, showEnd);
-  } else {
-    showEnd();
-  }
+  if (victory) S.victory(); else S.death();
+  showScreen(endScreen);
 }
 
-// UI event bindings
+// ============================================================
+//  UI bindings
+// ============================================================
 $('openManualBtn').onclick = () => { showScreen(manualScreen); startDemo(); };
 $('closeManualBtn').onclick = () => { refreshHome(); showScreen(homeScreen); };
 $('dailyBtn').onclick = () => {
@@ -165,8 +174,20 @@ $('pressOnBtn').onclick = () => {
   chooseScreen.classList.remove('show');
   pauseOff();
   G.endless = true;
-  showDialogue(STORY.endless, () => enterRoom(G.roomIdx));
+  showLoading('Endless', 'Deeper into the dust', 1200, () => enterRoom(G.roomIdx));
 };
+
+// Study button — safe if the button is missing
+const studyBtn = $('studyBtn');
+if (studyBtn) {
+  studyBtn.onclick = () => {
+    if (typeof startStudy !== 'function') return;
+    const audio = (G.currentLesson && G.currentLesson.dialogueAudio) || '';
+    startStudy(G.currentLesson, audio, () => {});
+  };
+}
+
+// Mode rows
 modeRow.addEventListener('click', (e) => {
   const btn = e.target.closest('button');
   if (!btn) return;
@@ -174,6 +195,7 @@ modeRow.addEventListener('click', (e) => {
   btn.classList.add('active');
   G.mode = btn.dataset.mode;
 });
+
 voiceRow.addEventListener('click', (e) => {
   const btn = e.target.closest('button');
   if (!btn) return;
@@ -182,27 +204,28 @@ voiceRow.addEventListener('click', (e) => {
   G.voice = btn.dataset.voice === '1';
   if (G.voice) preloadLessonAudio(G.currentLesson);
 });
+
 difficultyRow.addEventListener('click', (e) => {
-  $('readingRow')?.addEventListener('click', (e) => {
-  const btn = e.target.closest('button');
-  if (!btn) return;
-  $('readingRow').querySelectorAll('button').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  G.reading = btn.dataset.reading;
-});
   const btn = e.target.closest('button');
   if (!btn) return;
   difficultyRow.querySelectorAll('button').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   G.difficulty = btn.dataset.diff;
 });
-storyRow.addEventListener('click', (e) => {
-  const btn = e.target.closest('button');
-  if (!btn) return;
-  storyRow.querySelectorAll('button').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  G.story = btn.dataset.story === '1';
-});
+
+// Reading row — its own listener, not nested
+const readingRowEl = $('readingRow');
+if (readingRowEl) {
+  readingRowEl.addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    readingRowEl.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    G.reading = btn.dataset.reading;
+  });
+}
+
+// Replay buttons
 objReplay.addEventListener('click', (e) => {
   e.stopPropagation();
   if (G.targetGate) speakAr(G.targetGate.item);
@@ -211,18 +234,19 @@ objSubReplay.addEventListener('click', (e) => {
   e.stopPropagation();
   if (G.lastWrong) speakAr(G.lastWrong.item);
 });
-
 document.querySelector('.objective-line').addEventListener('click', (e) => {
   e.stopPropagation();
   if (G.targetGate) speakAr(G.targetGate.item);
 });
 
+// ============================================================
+//  Room review
+// ============================================================
 function showRoomReview(done) {
   const seen = G.roomPhrases || [];
   const wrong = seen.filter(p => !p.correct);
   const right = seen.filter(p => p.correct);
 
-  // Wrong first, then correct, deduped by phrase.
   const shown = [];
   const seenAr = new Set();
   for (const p of wrong) {
@@ -249,20 +273,24 @@ function showRoomReview(done) {
 
   const list = $('reviewList');
   list.innerHTML = '';
+  const ctxItems = (G.roomPhrases || []).map(x => x.item);
   for (const p of shown) {
     const row = document.createElement('div');
     row.className = 'review-row ' + (p.correct ? 'ok' : 'bad');
-    const ctxItems = (G.roomPhrases || []).map(x => x.item);
     const ar = G.mode === 'en-ar' ? renderAr(p.item, ctxItems, G.reading) : p.item.en;
     const en = G.mode === 'en-ar' ? p.item.en : renderAr(p.item, ctxItems, G.reading);
     const dir = G.mode === 'en-ar' ? 'rtl' : 'ltr';
+    const hint = p.item.hint ? ` · ${p.item.hint}` : '';
     row.innerHTML = `
       <div class="review-mark">${p.correct ? '✓' : '✗'}</div>
       <div class="review-body">
-        <div class="review-ar" dir="${dir}">${ar}</div>
-        <div class="review-en">${en}</div>
+        <div class="review-ar" dir="${dir}"></div>
+        <div class="review-en"></div>
       </div>
     `;
+    row.querySelector('.review-ar').textContent = ar;
+    row.querySelector('.review-en').textContent = en + hint;
+    row.onclick = () => { initAudio(); if (ac && ac.state === 'suspended') ac.resume(); speakAr(p.item); };
     list.appendChild(row);
   }
 
@@ -272,7 +300,6 @@ function showRoomReview(done) {
   reviewScreen.classList.add('show');
   pauseOn();
 
-  // Stagger the rows in.
   const rows = list.querySelectorAll('.review-row');
   let idx = 0;
   function reveal() {
@@ -283,7 +310,6 @@ function showRoomReview(done) {
   }
   setTimeout(reveal, 300);
 
-  // Auto-advance after everything has been visible for a beat.
   const totalTime = 500 + shown.length * 550 + 2200;
   const timer = setTimeout(() => {
     reviewScreen.classList.remove('show');
@@ -291,8 +317,6 @@ function showRoomReview(done) {
     done();
   }, totalTime);
 
-  // Tap to skip — but only once the last row has revealed, so a joystick
-  // release or a stray tap during the animation doesn't dismiss it.
   const revealDone = 300 + shown.length * 550 + 600;
   let armed = false;
   let downOnReview = false;
@@ -311,6 +335,9 @@ function showRoomReview(done) {
   });
 }
 
+// ============================================================
+//  Pause
+// ============================================================
 function enterPause() {
   if (G.userPaused) return;
   G.userPaused = true;
@@ -326,8 +353,6 @@ function resumeFromPause() {
 }
 function togglePause() {
   if (!G.running) return;
-  if (dialogueScreen.classList.contains('show')) return;
-  if (upgradeScreen.classList.contains('show')) return;
   if (chooseScreen.classList.contains('show')) return;
   if (G.userPaused) resumeFromPause();
   else enterPause();

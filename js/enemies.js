@@ -233,8 +233,8 @@ function advanceRoom() {
   }
 
   showRoomReview(() => {
-    const between = STORY.between[(G.roomIdx - 1) % STORY.between.length];
-    showDialogue(between, () => enterRoom(G.roomIdx));
+    const nextRoom = G.rooms[G.roomIdx];
+    const nextName = nextRoom ? nextRoom.name : 'The road ahead';
+    showLoading(nextName, `Room ${G.roomIdx + 1}`, 1400, () => enterRoom(G.roomIdx));
   });
 }
-

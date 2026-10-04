@@ -815,3 +815,302 @@ body.touch .status .sub { display: none; }
   .disc-ar { font-size: 30px; }
   .disc-en { font-size: 11px; }
 }
+
+/* Study phase: notes and mid-size text */
+.study-ar-mid {
+  font-family: "Noto Naskh Arabic", "Geeza Pro", "Traditional Arabic", serif;
+  font-size: 42px;
+  font-weight: 700;
+  color: #d4af37;
+  line-height: 1.5;
+  text-align: center;
+  direction: rtl;
+  max-width: 90vw;
+}
+.study-en-mid {
+  font-size: 22px;
+  font-weight: 500;
+  color: #c9b88a;
+  text-align: center;
+  max-width: 90vw;
+  line-height: 1.4;
+  margin-top: -8px;
+}
+.study-rule {
+  width: 100px;
+  height: 1px;
+  background: #3a3020;
+  margin: 12px 0;
+}
+.study-notes {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: #8a7a5a;
+  text-align: center;
+  max-width: 520px;
+  line-height: 1.8;
+  padding: 0 20px;
+}
+.study-hint {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: #d4af37;
+  text-align: center;
+  margin-top: -12px;
+}
+
+/* Phase-specific sizing tweaks */
+#studyScreen[data-phase="study"] .study-content {
+  gap: 20px;
+  padding: 60px 40px;
+}
+
+@media (max-width: 820px) {
+  .study-ar-mid { font-size: 32px; }
+  .study-en-mid { font-size: 17px; }
+  .study-notes { font-size: 12px; }
+  .study-hint { font-size: 11px; }
+}
+
+/* ---------- LOADING SCREEN ---------- */
+#loadingScreen {
+  z-index: 45;
+  gap: 24px;
+}
+.loading-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 28px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #d4af37;
+  font-weight: 700;
+}
+.loading-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: #6a5a3d;
+}
+.loading-bar {
+  width: 180px;
+  height: 3px;
+  background: #1a160f;
+  border: 1px solid #3a3020;
+  overflow: hidden;
+}
+.loading-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: #d4af37;
+  animation: loadingFill 1.3s ease-out forwards;
+}
+@keyframes loadingFill {
+  from { width: 0%; }
+  to   { width: 100%; }
+}
+
+/* ---------- STUDY SCREEN ---------- */
+#studyScreen {
+  z-index: 45;
+  background: #0e0c08;
+  padding: 0;
+  justify-content: space-between;
+  gap: 0;
+}
+.study-exit {
+  position: absolute;
+  top: max(20px, env(safe-area-inset-top));
+  right: 20px;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid #3a3020;
+  color: #8a7a5a;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.study-exit:hover { border-color: #6a5a3d; color: #c9b88a; }
+
+.study-content {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 40px;
+}
+
+/* ---------- STUDY LINES ---------- */
+.study-content {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 20px;
+  padding: 60px 20px 40px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.study-content.centered {
+  justify-content: center;
+}
+
+.study-lines {
+  width: 100%;
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.study-line-en {
+  font-size: 20px;
+  font-weight: 500;
+  color: #e8dfc8;
+  text-align: left;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+}
+
+.study-line-ar {
+  font-family: "Noto Naskh Arabic", "Geeza Pro", "Traditional Arabic", serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: #d4af37;
+  text-align: right;
+  line-height: 1.6;
+}
+
+.study-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 0;
+  border-bottom: 1px solid #1a160f;
+}
+.study-block:last-child { border-bottom: none; }
+
+.study-block-ar {
+  font-family: "Noto Naskh Arabic", "Geeza Pro", "Traditional Arabic", serif;
+  font-size: 30px;
+  font-weight: 700;
+  color: #d4af37;
+  text-align: right;
+  line-height: 1.6;
+}
+.study-block-en {
+  font-size: 16px;
+  color: #c9b88a;
+  line-height: 1.4;
+}
+.study-block-notes {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: #8a7a5a;
+  line-height: 1.7;
+  margin-top: 4px;
+  padding-left: 12px;
+  border-left: 2px solid #3a3020;
+}
+
+@media (max-width: 820px) {
+  .study-line-en { font-size: 16px; }
+  .study-line-ar { font-size: 24px; }
+  .study-block-ar { font-size: 24px; }
+  .study-block-en { font-size: 14px; }
+  .study-block-notes { font-size: 11px; }
+  .study-content { padding: 50px 16px 30px; }
+}
+.study-pulse {
+  width: 90px; height: 90px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(212,175,55,0.7), rgba(212,175,55,0) 70%);
+  animation: studyPulse 1.6s ease-in-out infinite;
+}
+@keyframes studyPulse {
+  0%, 100% { transform: scale(0.85); opacity: 0.6; }
+  50%      { transform: scale(1.05); opacity: 1; }
+}
+
+.study-bottom {
+  width: 100%;
+  padding: 20px 24px max(24px, env(safe-area-inset-bottom));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-top: 1px solid #1a160f;
+}
+.study-replay {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: rgba(14,12,8,0.85);
+  border: 1px solid #6a5a3d;
+  color: #d4af37;
+  font-size: 16px;
+  cursor: pointer;
+  filter: grayscale(1) brightness(1.4);
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.study-replay:hover { border-color: #d4af37; }
+.study-replay:active { transform: scale(0.94); }
+.study-phase-hint {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: #6a5a3d;
+  flex: 1;
+  text-align: center;
+}
+.study-progress {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: #8a7a5a;
+  flex-shrink: 0;
+}
+.study-skip {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #6a5a3d;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  flex-shrink: 0;
+}
+.study-skip:hover { color: #c9b88a; }
+.study-tap-hint {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: #3a3020;
+  text-align: center;
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
+  animation: pulse 2s infinite;
+}
+
+@media (max-width: 820px) {
+  .study-ar-big { font-size: 40px; }
+  .study-ar-mid { font-size: 32px; }
+  .study-en-big { font-size: 24px; }
+  .study-en-mid { font-size: 17px; }
+  .study-notes { font-size: 12px; }
+  .study-hint { font-size: 11px; }
+  .study-pulse { width: 70px; height: 70px; }
+}

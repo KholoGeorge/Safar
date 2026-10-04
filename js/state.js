@@ -11,7 +11,6 @@ const G = {
   daily: false,
   endless: false,
   difficulty: 'normal',
-  story: true,
   lastWrong: null,
   roomPhrases: [],
   roomType: 'combat',

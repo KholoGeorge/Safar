@@ -11,11 +11,6 @@
     { "ar": "هُوَ مُهَنْدِسٌ",                  "en": "He is an engineer",                   "hint": "man",               "variant": "m" },
     { "ar": "هِيَ طَالِبَةٌ",                   "en": "She is a student",                    "hint": "woman",             "variant": "f" },
 
-    { "ar": "هَذَا أَخِي، هُوَ مُدَرِّسٌ",      "en": "This is my brother, he is a teacher",  "hint": "pointing to brother", "variant": "m" },
-    { "ar": "هَذِهِ أُخْتِي، هِيَ طَبِيبَةٌ",    "en": "This is my sister, she is a doctor",   "hint": "pointing to sister",  "variant": "f" },
-    { "ar": "هَذَا صَدِيقِي، هُوَ مُهَنْدِسٌ",   "en": "This is my friend, he is an engineer", "hint": "male friend",       "variant": "m" },
-    { "ar": "هَذِهِ صَدِيقَتِي، هِيَ طَالِبَةٌ",  "en": "This is my friend, she is a student",  "hint": "female friend",     "variant": "f" },
-
     { "ar": "أَهْلًا وَسَهْلًا",                 "en": "Welcome" },
     { "ar": "مَعَ السَّلَامَةِ",               "en": "Goodbye" }
   ]

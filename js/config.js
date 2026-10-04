@@ -37,13 +37,14 @@ const upgradeScreen = $('upgradeScreen');
 const chooseScreen = $('chooseScreen');
 const dialogueScreen = $('dialogueScreen');
 const reviewScreen = $('reviewScreen');
+const loadingScreen = $('loadingScreen');
+const studyScreen = $('studyScreen');
 const lessonGrid = $('lessonGrid');
 const briefTitle = $('briefTitle');
 const briefSub = $('briefSub');
 const modeRow = $('modeRow');
 const voiceRow = $('voiceRow');
 const difficultyRow = $('difficultyRow');
-const storyRow = $('storyRow');
 
 // Canvas
 const canvas = document.getElementById('game');

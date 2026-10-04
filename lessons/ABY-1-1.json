@@ -1,20 +1,81 @@
+```json
 {
+  "lessonId": "ABY 1-1a",
+  "unit": 1,
+  "topic": "Greetings & Introductions",
+  "title": "Greetings (Male)",
+  "dialogueAudio": "aby1_1a_dialogue.mp3",
   "phrases": [
-    { "ar": "السَّلَامُ عَلَيْكُمْ",           "en": "Peace be upon you" },
-    { "ar": "وَعَلَيْكُمُ السَّلَامُ",           "en": "And upon you be peace" },
-
-    { "ar": "إِسْمِي خَالِدٌ",                "en": "My name is Khalid",        "hint": "man speaking",   "variant": "m" },
-    { "ar": "إِسْمِي خَوْلَةُ",               "en": "My name is Khawlah",       "hint": "woman speaking", "variant": "f" },
-
-    { "ar": "مَا اسْمُكَ؟",                   "en": "What is your name?",       "hint": "to a man",   "variant": "m" },
-    { "ar": "مَا اسْمُكِ؟",                   "en": "What is your name?",       "hint": "to a woman", "variant": "f" },
-
-    { "ar": "كَيْفَ حَالُكَ؟",                  "en": "How are you?",             "hint": "to a man",   "variant": "m" },
-    { "ar": "كَيْفَ حَالُكِ؟",                  "en": "How are you?",             "hint": "to a woman", "variant": "f" },
-
-    { "ar": "بِخَيْرٍ، وَالْحَمْدُ لِلَّهِ",        "en": "I am fine, praise God" },
-
-    { "ar": "وَكَيْفَ حَالُكَ أَنْتَ؟",          "en": "And how are you?",         "hint": "to a man",   "variant": "m" },
-    { "ar": "وَكَيْفَ حَالُكِ أَنْتِ؟",          "en": "And how are you?",         "hint": "to a woman", "variant": "f" }
+    {
+      "id": "aby1_1a_01",
+      "ar": "السَّلَامُ عَلَيْكُمْ",
+      "en": "Peace be upon you",
+      "gender": "m",
+      "common": true,
+      "au": "aby1_1a_01.mp3",
+      "notes": "Standard Arabic greeting."
+    },
+    {
+      "id": "aby1_1a_02",
+      "ar": "وَعَلَيْكُمُ السَّلَامُ",
+      "en": "And upon you be peace",
+      "gender": "m",
+      "common": true,
+      "au": "aby1_1a_02.mp3",
+      "notes": "Standard reply to the greeting."
+    },
+    {
+      "id": "aby1_1a_03a",
+      "ar": "اسْمِي خَالِدٌ",
+      "en": "My name is Khalid",
+      "gender": "m",
+      "au": "aby1_1a_03a.mp3",
+      "notes": "اسْمِي = my name."
+    },
+    {
+      "id": "aby1_1a_03b",
+      "ar": "مَا اسْمُكَ؟",
+      "en": "What is your name?",
+      "gender": "m",
+      "hint": "to a man",
+      "au": "aby1_1a_03b.mp3",
+      "notes": "اسْمُكَ = your name (masculine)."
+    },
+    {
+      "id": "aby1_1a_04",
+      "ar": "اسْمِي خَلِيلٌ",
+      "en": "My name is Khalil",
+      "gender": "m",
+      "au": "aby1_1a_04.mp3",
+      "notes": "اسْمِي = my name."
+    },
+    {
+      "id": "aby1_1a_05",
+      "ar": "كَيْفَ حَالُكَ؟",
+      "en": "How are you?",
+      "gender": "m",
+      "hint": "to a man",
+      "au": "aby1_1a_05.mp3",
+      "notes": "حَالُكَ = your condition/health (masculine)."
+    },
+    {
+      "id": "aby1_1a_06a",
+      "ar": "بِخَيْرٍ، وَالْحَمْدُ لِلَّهِ",
+      "en": "Fine, praise be to Allah",
+      "gender": "m",
+      "au": "aby1_1a_06a.mp3",
+      "notes": "Standard reply when asked how you are."
+    },
+    {
+      "id": "aby1_1a_06b",
+      "ar": "وَكَيْفَ حَالُكَ أَنْتَ؟",
+      "en": "And how are you?",
+      "gender": "m",
+      "hint": "to a man",
+      "au": "aby1_1a_06b.mp3",
+      "notes": "أَنْتَ added for emphasis: 'And how are *you*?'"
+    }
   ]
 }
+
+```

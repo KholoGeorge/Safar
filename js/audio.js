@@ -74,8 +74,10 @@ const S = {
   shieldBreak: () => { tone({ freq: 900, slideTo: 200, dur: 0.22, vol: 0.07, type: 'square' }); noise({ dur: 0.18, vol: 0.04 }); },
 };
 
+// ============================================================
+//  Audio playback — no TTS, ever. Silence if no file.
+// ============================================================
 const AUDIO_DIR = 'audio/';
-const USE_TTS_FALLBACK = true;
 let curAudio = null;
 const audioCache = new Map();
 
@@ -107,28 +109,40 @@ function preloadLessonAudio(items) {
     if (!path || audioCache.has(path)) continue;
     getAudioEl(path);
   }
+  // Also preload the whole-dialogue file
+  const dpath = resolveAudioPath(items.dialogueAudio);
+  if (dpath && !audioCache.has(dpath)) getAudioEl(dpath);
 }
 
-function ttsFallback(text) {
-  if (!('speechSynthesis' in window)) return;
-  try {
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'ar-SA'; u.rate = 0.85;
-    speechSynthesis.speak(u);
-  } catch (_) {}
-}
-
+// Play a single phrase's audio file (used in-game on correct/wrong).
+// Silent if no file. No TTS.
 function speakAr(item) {
   if (!G.voice || !item) return;
-  if (curAudio) { try { curAudio.pause(); curAudio.currentTime = 0; } catch (_) {} curAudio = null; }
-  if ('speechSynthesis' in window) speechSynthesis.cancel();
   const path = resolveAudioPath(item.au);
-  if (!path) { if (USE_TTS_FALLBACK) ttsFallback(item.ar); return; }
+  if (!path) return;
+  stopAllAudio();
   const a = getAudioEl(path);
   try { a.currentTime = 0; } catch (_) {}
   curAudio = a;
-  const p = a.play();
-  if (p && p.catch) p.catch(err => {
-    if (USE_TTS_FALLBACK) ttsFallback(item.ar);
-  });
+  a.play().catch(() => {});
+}
+
+// Play the full dialogue audio file. Returns the Audio element or null.
+function playDialogueAudio(path) {
+  const resolved = resolveAudioPath(path);
+  if (!resolved) return null;
+  stopAllAudio();
+  const a = getAudioEl(resolved);
+  try { a.currentTime = 0; } catch (_) {}
+  curAudio = a;
+  a.play().catch(() => {});
+  return a;
+}
+
+function stopAllAudio() {
+  if (curAudio) {
+    try { curAudio.pause(); curAudio.currentTime = 0; } catch (_) {}
+    curAudio = null;
+  }
+  if ('speechSynthesis' in window) speechSynthesis.cancel();
 }

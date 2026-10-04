@@ -1,0 +1,78 @@
+{
+  "lessonId": "ABY 1-1b",
+  "unit": 1,
+  "topic": "Greetings & Introductions",
+  "title": "Greetings (Female)",
+  "dialogueAudio": "aby1_1b_dialogue.mp3",
+  "phrases": [
+    {
+      "id": "aby1_1b_01",
+      "ar": "السَّلَامُ عَلَيْكُمْ",
+      "en": "Peace be upon you",
+      "gender": "f",
+      "common": true,
+      "au": "aby1_1b_01.mp3",
+      "notes": "Standard Arabic greeting."
+    },
+    {
+      "id": "aby1_1b_02",
+      "ar": "وَعَلَيْكُمُ السَّلَامُ",
+      "en": "And upon you be peace",
+      "gender": "f",
+      "common": true,
+      "au": "aby1_1b_02.mp3",
+      "notes": "Standard reply to the greeting."
+    },
+    {
+      "id": "aby1_1b_03a",
+      "ar": "اسْمِي خَوْلَةُ",
+      "en": "My name is Khawlah",
+      "gender": "f",
+      "au": "aby1_1b_03a.mp3",
+      "notes": "اسْمِي = my name."
+    },
+    {
+      "id": "aby1_1b_03b",
+      "ar": "مَا اسْمُكِ؟",
+      "en": "What is your name?",
+      "gender": "f",
+      "hint": "to a woman",
+      "au": "aby1_1b_03b.mp3",
+      "notes": "اسْمُكِ = your name (feminine)."
+    },
+    {
+      "id": "aby1_1b_04",
+      "ar": "اسْمِي خَدِيجَةُ",
+      "en": "My name is Khadijah",
+      "gender": "f",
+      "au": "aby1_1b_04.mp3",
+      "notes": "اسْمِي = my name."
+    },
+    {
+      "id": "aby1_1b_05",
+      "ar": "كَيْفَ حَالُكِ؟",
+      "en": "How are you?",
+      "gender": "f",
+      "hint": "to a woman",
+      "au": "aby1_1b_05.mp3",
+      "notes": "حَالُكِ = your condition/health (feminine)."
+    },
+    {
+      "id": "aby1_1b_06a",
+      "ar": "بِخَيْرٍ، وَالْحَمْدُ لِلَّهِ",
+      "en": "Fine, praise be to Allah",
+      "gender": "f",
+      "au": "aby1_1b_06a.mp3",
+      "notes": "Standard reply when asked how you are."
+    },
+    {
+      "id": "aby1_1b_06b",
+      "ar": "وَكَيْفَ حَالُكِ أَنْتِ؟",
+      "en": "And how are you?",
+      "gender": "f",
+      "hint": "to a woman",
+      "au": "aby1_1b_06b.mp3",
+      "notes": "أَنْتِ added for emphasis: 'And how are *you*?'"
+    }
+  ]
+}
