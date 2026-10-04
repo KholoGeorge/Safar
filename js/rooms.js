@@ -96,10 +96,24 @@ function buildRun() {
   return rooms;
 }
 
+function spawnDust(l, t, r, b) {
+  const dustCount = IS_SLOW ? 25 : 70;
+  for (let i = 0; i < dustCount; i++) {
+    G.dust.push({
+      x: rand(l, r),
+      y: rand(t, b),
+      vx: rand(-10, 30),
+      vy: rand(-8, 8),
+      size: rand(0.8, 2.2),
+      alpha: rand(0.15, 0.5),
+    });
+  }
+}
+
 function enterRoom(idx) {
   while (G.rooms.length <= idx) G.rooms.push(makeRoom(G.rooms.length));
 
-    const w = window.innerWidth, h = window.innerHeight;
+  const w = window.innerWidth, h = window.innerHeight;
   const topPad = IS_TOUCH ? Math.min(140, Math.round(h * 0.18)) : 118;
   const botPad = IS_TOUCH ? Math.min(120, Math.round(h * 0.18)) : 78;
   const availW = w - 40;
@@ -168,10 +182,7 @@ function enterRoom(idx) {
     G.stormY = G.bounds.b + 1000;
     G.stormSpeed = 0;
     G.dust = [];
-    const dustCount = IS_SLOW ? 25 : 70;
-for (let i = 0; i < dustCount; i++) {
-  G.dust.push(...);
-}
+    spawnDust(l, t, r, b);
     G.footprints = []; G.particles = []; G.rings = []; G.floatingText = [];
 
     let tries = 0;
@@ -272,10 +283,7 @@ for (let i = 0; i < dustCount; i++) {
   G.projectiles = [];
 
   G.dust = [];
-  const dustCount = IS_SLOW ? 25 : 70;
-for (let i = 0; i < dustCount; i++) {
-  G.dust.push(...);
-}
+  spawnDust(l, t, r, b);
   G.footprints = []; G.particles = []; G.rings = []; G.floatingText = [];
 
   pickTarget();
