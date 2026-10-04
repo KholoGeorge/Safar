@@ -206,7 +206,7 @@ function showRoomReview(done) {
   const wrong = seen.filter(p => !p.correct);
   const right = seen.filter(p => p.correct);
 
-  // Prioritize: wrong first, then correct, deduped by phrase
+  // Wrong first, then correct, deduped by phrase.
   const shown = [];
   const seenAr = new Set();
   for (const p of wrong) {
@@ -224,7 +224,7 @@ function showRoomReview(done) {
 
   if (!shown.length) { done(); return; }
 
-    const prevRoom = G.rooms[G.roomIdx - 1];
+  const prevRoom = G.rooms[G.roomIdx - 1];
   const nextRoom = G.rooms[G.roomIdx];
   const prevRoomName = (prevRoom && prevRoom.name) || 'The road';
   const nextRoomName = nextRoom
@@ -255,7 +255,7 @@ function showRoomReview(done) {
   reviewScreen.classList.add('show');
   pauseOn();
 
-  // Stagger the rows in
+  // Stagger the rows in.
   const rows = list.querySelectorAll('.review-row');
   let idx = 0;
   function reveal() {
@@ -266,7 +266,7 @@ function showRoomReview(done) {
   }
   setTimeout(reveal, 300);
 
-    // Auto-advance
+  // Auto-advance after everything has been visible for a beat.
   const totalTime = 500 + shown.length * 550 + 2200;
   const timer = setTimeout(() => {
     reviewScreen.classList.remove('show');
@@ -274,7 +274,7 @@ function showRoomReview(done) {
     done();
   }, totalTime);
 
-  // Tap to skip — but only after the last row has revealed, so a joystick
+  // Tap to skip — but only once the last row has revealed, so a joystick
   // release or a stray tap during the animation doesn't dismiss it.
   const revealDone = 300 + shown.length * 550 + 600;
   let armed = false;
@@ -292,6 +292,7 @@ function showRoomReview(done) {
     pauseOff();
     done();
   });
+}
 
 function enterPause() {
   if (G.userPaused) return;
