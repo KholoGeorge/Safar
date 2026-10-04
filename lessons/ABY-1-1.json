@@ -1,17 +1,20 @@
 {
   "phrases": [
-    { "ar": "السَّلَامُ عَلَيْكُمْ",           "en": "Peace be upon you", "au": "audio/salam-m.mp3" },
+    { "ar": "السَّلَامُ عَلَيْكُمْ",           "en": "Peace be upon you" },
     { "ar": "وَعَلَيْكُمُ السَّلَامُ",           "en": "And upon you be peace" },
 
-    { "ar": "مَا اسْمُكَ؟",                   "en": "What is your name?",   "hint": "to a man",   "variant": "m" },
-    { "ar": "مَا اسْمُكِ؟",                   "en": "What is your name?",   "hint": "to a woman", "variant": "f" },
+    { "ar": "إِسْمِي خَالِدٌ",                "en": "My name is Khalid",        "hint": "man speaking",   "variant": "m" },
+    { "ar": "إِسْمِي خَوْلَةُ",               "en": "My name is Khawlah",       "hint": "woman speaking", "variant": "f" },
 
-    { "ar": "كَيْفَ حَالُكَ؟",                  "en": "How are you?",         "hint": "to a man",   "variant": "m" },
-    { "ar": "كَيْفَ حَالُكِ؟",                  "en": "How are you?",         "hint": "to a woman", "variant": "f" },
+    { "ar": "مَا اسْمُكَ؟",                   "en": "What is your name?",       "hint": "to a man",   "variant": "m" },
+    { "ar": "مَا اسْمُكِ؟",                   "en": "What is your name?",       "hint": "to a woman", "variant": "f" },
+
+    { "ar": "كَيْفَ حَالُكَ؟",                  "en": "How are you?",             "hint": "to a man",   "variant": "m" },
+    { "ar": "كَيْفَ حَالُكِ؟",                  "en": "How are you?",             "hint": "to a woman", "variant": "f" },
 
     { "ar": "بِخَيْرٍ، وَالْحَمْدُ لِلَّهِ",        "en": "I am fine, praise God" },
 
-    { "ar": "وَكَيْفَ حَالُكَ أَنْتَ؟",          "en": "And how are you?",     "hint": "to a man",   "variant": "m" },
-    { "ar": "وَكَيْفَ حَالُكِ أَنْتِ؟",          "en": "And how are you?",     "hint": "to a woman", "variant": "f" }
+    { "ar": "وَكَيْفَ حَالُكَ أَنْتَ؟",          "en": "And how are you?",         "hint": "to a man",   "variant": "m" },
+    { "ar": "وَكَيْفَ حَالُكِ أَنْتِ؟",          "en": "And how are you?",         "hint": "to a woman", "variant": "f" }
   ]
 }
