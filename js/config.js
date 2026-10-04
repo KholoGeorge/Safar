@@ -1,5 +1,11 @@
 const $ = id => document.getElementById(id);
 
+// Touch detection — declared first so DPR, state, and input can all read it
+// without hitting the temporal dead zone.
+const IS_TOUCH = matchMedia('(hover: none) and (pointer: coarse)').matches
+              || 'ontouchstart' in window
+              || navigator.maxTouchPoints > 0;
+
 // HUD refs
 const stormFill = $('stormFill');
 const objLabel = $('objLabel');
@@ -42,7 +48,7 @@ const storyRow = $('storyRow');
 // Canvas
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
-let DPR = Math.min(window.devicePixelRatio || 1, 2);
+let DPR = Math.min(window.devicePixelRatio || 1, IS_TOUCH ? 1.5 : 2);
 function resize() {
   const w = window.innerWidth, h = window.innerHeight;
   canvas.width = w * DPR; canvas.height = h * DPR;
@@ -53,11 +59,6 @@ window.addEventListener('resize', resize);
 window.addEventListener('orientationchange', () => setTimeout(resize, 120));
 if (window.visualViewport) window.visualViewport.addEventListener('resize', resize);
 resize();
-
-// Touch detection — must be hoisted so anything that reads it during boot sees it.
-const IS_TOUCH = matchMedia('(hover: none) and (pointer: coarse)').matches
-              || 'ontouchstart' in window
-              || navigator.maxTouchPoints > 0;
 
 // Palette
 const COL = {

@@ -69,13 +69,17 @@ window.addEventListener('contextmenu', (e) => { if (G.running) e.preventDefault(
   }
 
   function showGhost(text, x, y) {
-    ghostBtn.textContent = text;
-    ghostBtn.style.left = x + 'px';
-    ghostBtn.style.top  = y + 'px';
-    ghostBtn.classList.remove('show');
-    void ghostBtn.offsetWidth;
-    ghostBtn.classList.add('show');
-  }
+  ghostBtn.textContent = text;
+  ghostBtn.style.left = x + 'px';
+  ghostBtn.style.top  = y + 'px';
+  ghostBtn.animate(
+    [
+      { opacity: 0.95, transform: 'scale(0.85)' },
+      { opacity: 0,    transform: 'scale(1.15)' },
+    ],
+    { duration: 450, easing: 'ease-out' }
+  );
+}
 
   function fireAction(name, e) {
     if (!G.running || G.paused) return;
@@ -89,12 +93,13 @@ window.addEventListener('contextmenu', (e) => { if (G.running) e.preventDefault(
 
   actionTop.addEventListener('pointerdown', (e) => {
   e.preventDefault(); e.stopPropagation();
-  fireAction('blast', e);      // was 'staff'
-});
+  fireAction('blast', e);
+}, { passive: false });
+
 actionBottom.addEventListener('pointerdown', (e) => {
   e.preventDefault(); e.stopPropagation();
-  fireAction('staff', e);      // was 'blast'
-});
+  fireAction('staff', e);
+}, { passive: false });
 
   // ---------- Floating joystick ----------
   function start(e) {

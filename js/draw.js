@@ -82,6 +82,7 @@ function drawPickups() {
   }
 }
 
+let _stormGrad = null;
 function drawStorm() {
   const { l, t, r, b } = G.bounds;
   const sy = G.stormY;
@@ -91,11 +92,16 @@ function drawStorm() {
   if (sy > t && sy < b) {
     ctx.strokeStyle = COL.stormEdge; ctx.lineWidth = 2;
     ctx.beginPath(); ctx.moveTo(l, sy + 0.5); ctx.lineTo(r, sy + 0.5); ctx.stroke();
-    const grd = ctx.createLinearGradient(0, sy, 0, sy - 90);
-    grd.addColorStop(0, 'rgba(26, 20, 8, 0.85)');
-    grd.addColorStop(1, 'rgba(26, 20, 8, 0)');
-    ctx.fillStyle = grd;
-    ctx.fillRect(l, sy - 90, r - l, 90);
+    if (!_stormGrad) {
+      _stormGrad = ctx.createLinearGradient(0, 0, 0, -90);
+      _stormGrad.addColorStop(0, 'rgba(26, 20, 8, 0.85)');
+      _stormGrad.addColorStop(1, 'rgba(26, 20, 8, 0)');
+    }
+    ctx.save();
+    ctx.translate(0, sy);
+    ctx.fillStyle = _stormGrad;
+    ctx.fillRect(l, -90, r - l, 90);
+    ctx.restore();
   }
 }
 
@@ -324,7 +330,6 @@ function drawParticles() {
     const a = Math.max(0, p.life / p.max);
     ctx.globalAlpha = a;
     ctx.fillStyle = p.color;
-    ctx.shadowColor = p.color; ctx.shadowBlur = 12;
     ctx.beginPath(); ctx.arc(p.x, p.y, p.size * a, 0, Math.PI * 2); ctx.fill();
   }
   ctx.restore();
@@ -336,7 +341,6 @@ function drawRings() {
     const t = 1 - r.life / r.max;
     ctx.globalAlpha = 1 - t;
     ctx.strokeStyle = r.color;
-    ctx.shadowColor = r.color; ctx.shadowBlur = 20;
     ctx.lineWidth = 3 * (1 - t) + 1;
     ctx.beginPath(); ctx.arc(r.x, r.y, r.r, 0, Math.PI * 2); ctx.stroke();
   }
