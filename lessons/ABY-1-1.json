@@ -1,6 +1,6 @@
 {
   "phrases": [
-    { "ar": "السَّلَامُ عَلَيْكُمْ",           "en": "Peace be upon you" },
+    { "ar": "السَّلَامُ عَلَيْكُمْ",           "en": "Peace be upon you", "au": "audio/salam-m.mp3" },
     { "ar": "وَعَلَيْكُمُ السَّلَامُ",           "en": "And upon you be peace" },
 
     { "ar": "مَا اسْمُكَ؟",                   "en": "What is your name?",   "hint": "to a man",   "variant": "m" },
