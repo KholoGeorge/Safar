@@ -170,7 +170,9 @@ function drawGates() {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    const label = (G.mode === 'en-ar') ? g.item.ar : g.item.en;
+    const label = (G.mode === 'en-ar')
+      ? renderAr(g.item, G.gates.map(x => x.item), G.reading)
+      : g.item.en;
     const lw = ctx.measureText(label).width + 16;
     const lh = 24;
     const lx = g.x - lw / 2;

@@ -337,7 +337,7 @@ function pickTarget() {
     objText.textContent = g.item.en;
     objText.classList.remove('arabic');
   } else {
-    objText.textContent = g.item.ar;
+    objText.textContent = renderAr(g.item, G.gates.map(x => x.item), G.reading);
     objText.classList.add('arabic');
   }
   if (hintEl) {

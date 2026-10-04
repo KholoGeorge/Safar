@@ -52,6 +52,10 @@ function openBriefing(name, daily = false) {
   voiceRow.querySelectorAll('button').forEach(b => b.classList.toggle('active', (b.dataset.voice === '1') === G.voice));
   difficultyRow.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.diff === G.difficulty));
   storyRow.querySelectorAll('button').forEach(b => b.classList.toggle('active', (b.dataset.story === '1') === G.story));
+  const readingRow = $('readingRow');
+  if (readingRow) {
+    readingRow.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.reading === G.reading));
+  }
   preloadLessonAudio(G.currentLesson);
   showScreen(briefScreen);
 }
@@ -179,6 +183,13 @@ voiceRow.addEventListener('click', (e) => {
   if (G.voice) preloadLessonAudio(G.currentLesson);
 });
 difficultyRow.addEventListener('click', (e) => {
+  $('readingRow')?.addEventListener('click', (e) => {
+  const btn = e.target.closest('button');
+  if (!btn) return;
+  $('readingRow').querySelectorAll('button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  G.reading = btn.dataset.reading;
+});
   const btn = e.target.closest('button');
   if (!btn) return;
   difficultyRow.querySelectorAll('button').forEach(b => b.classList.remove('active'));
@@ -241,8 +252,9 @@ function showRoomReview(done) {
   for (const p of shown) {
     const row = document.createElement('div');
     row.className = 'review-row ' + (p.correct ? 'ok' : 'bad');
-    const ar = G.mode === 'en-ar' ? p.item.ar : p.item.en;
-    const en = G.mode === 'en-ar' ? p.item.en : p.item.ar;
+    const ctxItems = (G.roomPhrases || []).map(x => x.item);
+    const ar = G.mode === 'en-ar' ? renderAr(p.item, ctxItems, G.reading) : p.item.en;
+    const en = G.mode === 'en-ar' ? p.item.en : renderAr(p.item, ctxItems, G.reading);
     const dir = G.mode === 'en-ar' ? 'rtl' : 'ltr';
     row.innerHTML = `
       <div class="review-mark">${p.correct ? '✓' : '✗'}</div>
