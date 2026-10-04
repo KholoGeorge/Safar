@@ -13,10 +13,6 @@
   <div class="hud">
     <button class="pause-btn" id="pauseBtn" title="Pause (Esc)">⏸</button>
     <div class="hud-top">
-      <div class="storm-meter">
-        <div class="storm-label">Storm</div>
-        <div class="storm-track"><div class="storm-fill" id="stormFill" style="width:100%"></div></div>
-      </div>
       <div class="objective">
         <div class="label" id="objLabel">Objective</div>
         <div class="objective-line">
@@ -244,17 +240,12 @@
 </div>
 
   <div class="touch-controls" id="touchControls">
-    <div class="joystick-zone" id="joyZone">
-      <div class="joystick-base" id="joyBase">
-        <div class="joystick-knob" id="joyKnob"></div>
-      </div>
-    </div>
-    <div class="action-buttons">
-      <div class="action-btn dash" data-action="dash">DASH</div>
-      <div class="action-btn" data-action="burst">BURST</div>
-    </div>
+    <div class="joy-zone" id="joyZone"></div>
+    <div class="action-zone top" id="actionTop"></div>
+    <div class="action-zone bottom" id="actionBottom"></div>
+    <div class="joystick-base" id="joyBase"><div class="joystick-knob" id="joyKnob"></div></div>
+    <div class="ghost-btn" id="ghostBtn"></div>
   </div>
-</div>
 
 <script src="js/storage.js"></script>
 <script src="js/config.js"></script>

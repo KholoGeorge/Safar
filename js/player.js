@@ -37,9 +37,7 @@ function updatePlayer(dt) {
 
   if (len > 0.001) {
     ax /= len; ay /= len;
-    // Keyboard faces movement direction. On touch we leave facing alone and
-    // let autoStaff() snap it at swing time.
-    if (!G.joy) p.angle = Math.atan2(ay, ax);
+    p.angle = Math.atan2(ay, ax);
     p.vx += ax * PLAYER_ACCEL * dt * analog;
     p.vy += ay * PLAYER_ACCEL * dt * analog;
   }
@@ -108,9 +106,6 @@ function updatePlayer(dt) {
     return;
   }
 
-  // ---------- AUTO-STAFF (touch only) ----------
-  if (G.touchMode) autoStaff();
-
   // ---------- DISCOVERY PROXIMITY ----------
   if (G.roomType === 'explore') {
     let near = null;
@@ -157,15 +152,12 @@ function updatePlayer(dt) {
   }
 }
 
-// ---- Touch assist: auto-swing at the nearest enemy in reach ----
-function autoStaff() {
-  if (!G.running || G.paused) return;
+// Snap facing to the nearest enemy within reach before a manual swing.
+// Solves the "can't aim while standing still on touch" problem without
+// taking the swing decision away from the player.
+function aimAssist() {
   const p = G.player; if (!p) return;
-  const now = nowMs();
-  if (now < G.staffCooldownUntil) return;
-  if (now < G.stunUntil) return;
-
-  const reach = (STAFF_RANGE * G.up.range + p.radius) * AUTO_STAFF_REACH;
+  const reach = STAFF_RANGE * G.up.range + p.radius + 24;
   let best = null, bd = Infinity;
   for (const o of G.orbs) {
     if (o.dead) continue;
@@ -178,7 +170,6 @@ function autoStaff() {
   }
   if (best && bd < reach) {
     p.angle = Math.atan2(best.y - p.y, best.x - p.x);
-    tryStaff();
   }
 }
 

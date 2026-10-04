@@ -104,8 +104,8 @@ function enterRoom(idx) {
   const w = window.innerWidth, h = window.innerHeight;
   // Reserve a bottom strip on touch so thumbs don't cover the storm or the
   // wall the player is standing against.
-  const topPad = IS_TOUCH ? Math.min(96, Math.round(h * 0.12)) : 118;
-  const botPad = IS_TOUCH ? Math.min(150, Math.round(h * 0.22)) : 78;
+  const topPad = IS_TOUCH ? Math.min(140, Math.round(h * 0.18)) : 118;
+  const botPad = IS_TOUCH ? Math.min(120, Math.round(h * 0.18)) : 78;
   const playW = Math.min(w - 40, h * 0.6);
   const px0 = (w - playW) / 2;
   G.bounds = { l: px0 + 20, t: topPad, r: px0 + playW - 20, b: h - botPad };

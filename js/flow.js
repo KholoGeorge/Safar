@@ -46,8 +46,8 @@ function openBriefing(name, daily = false) {
   if (!daily && stat?.bestScore) sub += ` · best ${stat.bestScore} pts`;
   briefSub.textContent = sub;
   $('briefInfo').textContent = daily
-    ? 'Same gate order for everyone today. 5 rooms. One shot at your best score.'
-    : '5 rooms. Read fast, fight hard. The boss waits in the dark — and beyond it, the endless road.';
+    ? 'Same gate order for everyone today. 6 rooms. One shot at your best score.'
+    : '6 rooms. Read fast, fight hard. The boss waits in the dark — and beyond it, the endless road.';
   modeRow.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.mode === G.mode));
   voiceRow.querySelectorAll('button').forEach(b => b.classList.toggle('active', (b.dataset.voice === '1') === G.voice));
   difficultyRow.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.diff === G.difficulty));
@@ -266,7 +266,7 @@ function showRoomReview(done) {
   }
   setTimeout(reveal, 300);
 
-  // Auto-advance
+    // Auto-advance
   const totalTime = 500 + shown.length * 550 + 2200;
   const timer = setTimeout(() => {
     reviewScreen.classList.remove('show');
@@ -274,18 +274,24 @@ function showRoomReview(done) {
     done();
   }, totalTime);
 
-  // Tap to skip
-  setTimeout(() => {
-    const skip = () => {
-      clearTimeout(timer);
-      reviewScreen.removeEventListener('click', skip);
-      reviewScreen.classList.remove('show');
-      pauseOff();
-      done();
-    };
-    reviewScreen.addEventListener('click', skip, { once: true });
-  }, 900);
-}
+  // Tap to skip — but only after the last row has revealed, so a joystick
+  // release or a stray tap during the animation doesn't dismiss it.
+  const revealDone = 300 + shown.length * 550 + 600;
+  let armed = false;
+  let downOnReview = false;
+
+  setTimeout(() => { armed = true; }, revealDone);
+
+  reviewScreen.addEventListener('pointerdown', () => { downOnReview = true; });
+  reviewScreen.addEventListener('pointerup', () => {
+    if (!armed) { downOnReview = false; return; }
+    if (!downOnReview) return;
+    downOnReview = false;
+    clearTimeout(timer);
+    reviewScreen.classList.remove('show');
+    pauseOff();
+    done();
+  });
 
 function enterPause() {
   if (G.userPaused) return;

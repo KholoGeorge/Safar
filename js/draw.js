@@ -147,27 +147,26 @@ function drawGates() {
     }
 
     const labelAlpha = g.done ? 0.28 : 1;
-    ctx.save();
-    ctx.globalAlpha = labelAlpha;
-    ctx.textAlign = g.isLeft ? 'left' : 'right';
-    ctx.textBaseline = 'bottom';
-    const label = (G.mode === 'en-ar') ? g.item.ar : g.item.en;
-    if (G.mode === 'en-ar') {
-      ctx.direction = 'rtl';
-      ctx.font = '700 17px "Inter", system-ui, sans-serif';
-    } else {
-      ctx.direction = 'ltr';
-      ctx.font = '600 15px "Inter", system-ui, sans-serif';
-    }
-    const tx = g.isLeft ? x + 2 : x + g.w - 2;
-    const ty = y - 8;
-    const w = ctx.measureText(label).width + 14;
-    const bgX = g.isLeft ? tx - 4 : tx - w + 4;
-    ctx.fillStyle = 'rgba(14,12,8,0.85)';
-    ctx.fillRect(bgX, ty - 19, w, 22);
-    ctx.fillStyle = COL.khakiBr;
-    ctx.fillText(label, tx, ty);
-    ctx.restore();
+ctx.save();
+ctx.globalAlpha = labelAlpha;
+ctx.direction = (G.mode === 'en-ar') ? 'rtl' : 'ltr';
+ctx.font = (G.mode === 'en-ar')
+  ? '700 17px "Inter", system-ui, sans-serif'
+  : '600 15px "Inter", system-ui, sans-serif';
+ctx.textAlign = 'center';
+ctx.textBaseline = 'middle';
+
+const label = (G.mode === 'en-ar') ? g.item.ar : g.item.en;
+const lw = ctx.measureText(label).width + 16;
+const lh = 24;
+const lx = g.x - lw / 2;
+const ly = y - lh - 6;
+
+ctx.fillStyle = 'rgba(14,12,8,0.85)';
+ctx.fillRect(lx, ly, lw, lh);
+ctx.fillStyle = COL.khakiBr;
+ctx.fillText(label, g.x, ly + lh / 2);
+ctx.restore();
   }
 
 const exitOpen = (G.roomType === 'explore')

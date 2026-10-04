@@ -78,6 +78,9 @@ function updateLastWrongPanel() {
   if (!G.lastWrong) { objSub.style.display = 'none'; return; }
   objSub.style.display = 'flex';
   const it = G.lastWrong.item;
-  const text = (G.mode === 'en-ar') ? `${it.ar}  =  ${it.en}` : `${it.en}  =  ${it.ar}`;
-  objSubText.textContent = 'You chose: ' + text;
+  // On touch, just show the correct phrase — no "you chose" preamble.
+  const text = IS_TOUCH
+    ? (G.mode === 'en-ar' ? it.ar : it.en)
+    : 'You chose: ' + ((G.mode === 'en-ar') ? `${it.ar}  =  ${it.en}` : `${it.en}  =  ${it.ar}`);
+  objSubText.textContent = text;
 }

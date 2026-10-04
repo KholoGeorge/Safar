@@ -84,16 +84,7 @@ function frame(now) {
   }
   ctx.restore();
 
-  if (G.player && G.stormSpeed > 0) {
-    const gap = (G.player.y + G.player.radius) - G.stormY;
-    const pct = clamp(gap / 400, 0, 1) * 100;
-    stormFill.style.width = pct + '%';
-    stormFill.className = 'storm-fill' + (pct < 20 ? ' danger' : pct < 45 ? ' warn' : '');
-  } else if (stormFill) {
-    stormFill.style.width = '100%';
-    stormFill.className = 'storm-fill';
-  }
-
+  // ---------- HUD updates ----------
   const pct = G.stamina / G.maxStamina * 100;
   staminaFill.style.width = pct + '%';
   staminaFill.className = 'stamina-fill' + (G.stamina < 20 ? ' low' : (G.dashing || now < G.dashCooldownUntil ? '' : ' boost'));
@@ -105,13 +96,27 @@ function frame(now) {
   shieldAbility.classList.toggle('ready', G.shield);
   scoreEl.textContent = `SCORE ${G.score}` + (G.combo >= 3 ? ` · x${comboMult()}` : '');
 
-    const pauseBtn = document.getElementById('pauseBtn');
+  const pauseBtn = document.getElementById('pauseBtn');
   if (pauseBtn) {
     const shouldShow = G.running && !G.userPaused
       && !dialogueScreen.classList.contains('show')
-      && !upgradeScreen.classList.contains('show')
       && !chooseScreen.classList.contains('show');
     pauseBtn.style.display = shouldShow ? 'flex' : 'none';
+  }
+
+  // Discovery prompt — one text write per state change, no per-frame DOM cost.
+  const discPrompt = document.getElementById('discPrompt');
+  if (discPrompt) {
+    const showPrompt = G.running && !G.paused
+      && G.roomType === 'explore'
+      && G.discoveryNear && !G.discoveryOpen;
+    if (showPrompt) {
+      const wanted = IS_TOUCH ? 'Tap to inspect' : 'Press K · Tap to inspect';
+      if (discPrompt.textContent !== wanted) discPrompt.textContent = wanted;
+      if (!discPrompt.classList.contains('show')) discPrompt.classList.add('show');
+    } else if (discPrompt.classList.contains('show')) {
+      discPrompt.classList.remove('show');
+    }
   }
 
   statusEl.innerHTML = G.statusText + (G.statusSub ? `<div class="sub">${G.statusSub}</div>` : '');
