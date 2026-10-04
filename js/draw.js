@@ -105,6 +105,12 @@ function drawStorm() {
   }
 }
 
+// Palette for the gender stripe on gate labels
+const GATE_VARIANT_COLOR = {
+  m: '#7ab8c9',   // cool blue-grey — masculine
+  f: '#d49a9a',   // muted rose — feminine
+};
+
 function drawGates() {
   const p = G.player;
   const t = performance.now();
@@ -161,30 +167,41 @@ function drawGates() {
     }
 
     const labelAlpha = g.done ? 0.28 : 1;
-ctx.save();
-ctx.globalAlpha = labelAlpha;
-ctx.direction = (G.mode === 'en-ar') ? 'rtl' : 'ltr';
-ctx.font = (G.mode === 'en-ar')
-  ? '700 17px "Inter", system-ui, sans-serif'
-  : '600 15px "Inter", system-ui, sans-serif';
-ctx.textAlign = 'center';
-ctx.textBaseline = 'middle';
+    ctx.save();
+    ctx.globalAlpha = labelAlpha;
+    ctx.direction = (G.mode === 'en-ar') ? 'rtl' : 'ltr';
+    ctx.font = (G.mode === 'en-ar')
+      ? '700 17px "Inter", system-ui, sans-serif'
+      : '600 15px "Inter", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
 
-const label = (G.mode === 'en-ar') ? g.item.ar : g.item.en;
-const lw = ctx.measureText(label).width + 16;
-const lh = 24;
-const lx = g.x - lw / 2;
-const ly = y - lh - 6;
+    const label = (G.mode === 'en-ar') ? g.item.ar : g.item.en;
+    const lw = ctx.measureText(label).width + 16;
+    const lh = 24;
+    const lx = g.x - lw / 2;
+    const ly = y - lh - 6;
 
-ctx.fillStyle = 'rgba(14,12,8,0.85)';
-ctx.fillRect(lx, ly, lw, lh);
-ctx.fillStyle = COL.khakiBr;
-ctx.fillText(label, g.x, ly + lh / 2);
-ctx.restore();
+    ctx.fillStyle = 'rgba(14,12,8,0.85)';
+    ctx.fillRect(lx, ly, lw, lh);
+
+    // Gender stripe across the top of the label box
+    const stripe = GATE_VARIANT_COLOR[g.item.variant];
+    if (stripe) {
+      ctx.save();
+      ctx.globalAlpha = labelAlpha * 0.9;
+      ctx.fillStyle = stripe;
+      ctx.fillRect(lx, ly, lw, 3);
+      ctx.restore();
+    }
+
+    ctx.fillStyle = COL.khakiBr;
+    ctx.fillText(label, g.x, ly + lh / 2 + 1);
+    ctx.restore();
   }
 
-const exitOpen = (G.roomType === 'explore')
-  || (G.gates.every(g => g.done) && (!G.boss || G.boss.dead));
+  const exitOpen = (G.roomType === 'explore')
+    || (G.gates.every(g => g.done) && (!G.boss || G.boss.dead));
   if (exitOpen) {
     const { l, r, t } = G.bounds;
     const pulse = 0.55 + Math.sin(performance.now() / 400) * 0.35;
@@ -259,7 +276,6 @@ function drawOrbs() {
       ctx.beginPath(); ctx.arc(o.x, o.y + bob, o.r + 6, 0, Math.PI * 2); ctx.stroke();
       ctx.restore();
     }
-
   }
 }
 
@@ -472,25 +488,21 @@ function drawDiscoveries() {
   for (const d of G.discoveries) {
     if (d.found) continue;
     const bob = Math.sin(t * 1.8 + d.bob) * 4;
-    // Outer glow
     ctx.save();
     ctx.globalAlpha = 0.15 + 0.10 * Math.sin(t * 2 + d.bob);
     ctx.fillStyle = COL.gold;
     ctx.beginPath(); ctx.arc(d.x, d.y + bob, 32, 0, Math.PI * 2); ctx.fill();
     ctx.restore();
-    // Core
     ctx.fillStyle = COL.gold;
     ctx.beginPath(); ctx.arc(d.x, d.y + bob, 9, 0, Math.PI * 2); ctx.fill();
     ctx.fillStyle = COL.void;
     ctx.beginPath(); ctx.arc(d.x, d.y + bob, 4, 0, Math.PI * 2); ctx.fill();
-    // Halo ring
     ctx.strokeStyle = COL.khakiBr;
     ctx.globalAlpha = 0.5;
     ctx.lineWidth = 1.5;
     ctx.beginPath(); ctx.arc(d.x, d.y + bob, 16, 0, Math.PI * 2); ctx.stroke();
     ctx.globalAlpha = 1;
 
-    // Prompt hint if this is the nearest one
     if (G.discoveryNear === d && !G.discoveryOpen) {
       const pulse = 0.6 + 0.4 * Math.sin(t * 4);
       ctx.save();

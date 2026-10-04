@@ -75,7 +75,7 @@ const S = {
 };
 
 const AUDIO_DIR = 'audio/';
-const USE_TTS_FALLBACK = false;
+const USE_TTS_FALLBACK = true;
 let curAudio = null;
 const audioCache = new Map();
 

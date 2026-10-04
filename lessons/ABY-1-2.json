@@ -1,0 +1,22 @@
+{
+  "phrases": [
+    { "ar": "مِنْ أَيْنَ أَنْتَ؟",              "en": "Where are you from?",       "hint": "to a man",   "variant": "m" },
+    { "ar": "مِنْ أَيْنَ أَنْتِ؟",              "en": "Where are you from?",       "hint": "to a woman", "variant": "f" },
+
+    { "ar": "أَنَا مِنْ بَاكِسْتَانَ",          "en": "I am from Pakistan" },
+    { "ar": "أَنَا مِنْ تُرْكِيَا",             "en": "I am from Turkey" },
+    { "ar": "أَنَا مِنْ مِصْرَ",               "en": "I am from Egypt" },
+    { "ar": "أَنَا مِنْ سُورِيَا",             "en": "I am from Syria" },
+
+    { "ar": "هَلْ أَنْتَ بَاكِسْتَانِيٌّ؟",     "en": "Are you Pakistani?",        "hint": "to a man",   "variant": "m" },
+    { "ar": "هَلْ أَنْتِ مِصْرِيَّةٌ؟",          "en": "Are you Egyptian?",         "hint": "to a woman", "variant": "f" },
+
+    { "ar": "نَعَمْ، أَنَا بَاكِسْتَانِيٌّ",     "en": "Yes, I am Pakistani",       "hint": "man speaking",   "variant": "m" },
+    { "ar": "نَعَمْ، أَنَا مِصْرِيَّةٌ",         "en": "Yes, I am Egyptian",        "hint": "woman speaking", "variant": "f" },
+
+    { "ar": "مَا جِنْسِيَّتُكَ؟",              "en": "What is your nationality?", "hint": "to a man",   "variant": "m" },
+    { "ar": "مَا جِنْسِيَّتُكِ؟",              "en": "What is your nationality?", "hint": "to a woman", "variant": "f" },
+
+    { "ar": "أَهْلًا وَسَهْلًا",                "en": "Welcome" }
+  ]
+}

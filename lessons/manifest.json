@@ -1,3 +1,4 @@
 [
-  "ABY-1-1.txt"
+  { "name": "ABY 1-1 · Greetings", "file": "ABY-1-1.json" },
+  { "name": "ABY 1-2 · Country & Nationality", "file": "ABY-1-2.json" }
 ]

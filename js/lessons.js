@@ -50,23 +50,37 @@ function parseLessonFile(text, filename) {
   const trimmed = text.trim();
   if (!trimmed) return [];
 
+  // JSON — supports { ar, en, au, hint, variant }
   if (trimmed.startsWith('[') || trimmed.startsWith('{')) {
     try {
       const ld = JSON.parse(trimmed);
       const phrases = Array.isArray(ld) ? ld : (ld.phrases || ld.items || []);
       return phrases
-        .map(p => ({ ar: p.ar || '', en: p.en || '', au: p.au || p.audio || '' }))
+        .map(p => ({
+          ar: p.ar || '',
+          en: p.en || '',
+          au: p.au || p.audio || '',
+          hint: p.hint || '',
+          variant: p.variant || '',
+        }))
         .filter(p => p.ar && p.en);
     } catch (_) {}
   }
 
+  // Pipe-delimited — ar | en | au | hint | variant
   return trimmed
     .split(/\r?\n/)
     .map(l => l.trim())
     .filter(l => l && !l.startsWith('#'))
     .map(line => {
       const parts = line.split('|').map(p => p.trim());
-      return { ar: parts[0] || '', en: parts[1] || '', au: parts[2] || '' };
+      return {
+        ar: parts[0] || '',
+        en: parts[1] || '',
+        au: parts[2] || '',
+        hint: parts[3] || '',
+        variant: parts[4] || '',
+      };
     })
     .filter(p => p.ar && p.en);
 }

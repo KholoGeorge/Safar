@@ -8,7 +8,6 @@ function roomTypeFor(i) {
 function makeRoom(i) {
   const type = roomTypeFor(i);
   const D = DIFFICULTY[G.difficulty] || DIFFICULTY.normal;
-  // Touch tilts the run toward reading, away from reflex.
   const T = IS_TOUCH ? TOUCH_MODIFIERS : { gateMul: 1, stormMul: 1, orbMul: 1, bossMul: 1 };
   const M = {
     gateMul:  D.gateMul  * T.gateMul,
@@ -90,7 +89,6 @@ function makeRoom(i) {
   };
 }
 
-// Single definition. The old file had two, and the 5-room one won.
 function buildRun() {
   G.rng = G.daily ? mulberry32(dayNum() * 7919 + 13) : Math.random;
   const rooms = [];
@@ -102,8 +100,6 @@ function enterRoom(idx) {
   while (G.rooms.length <= idx) G.rooms.push(makeRoom(G.rooms.length));
 
   const w = window.innerWidth, h = window.innerHeight;
-  // Reserve a bottom strip on touch so thumbs don't cover the storm or the
-  // wall the player is standing against.
   const topPad = IS_TOUCH ? Math.min(140, Math.round(h * 0.18)) : 118;
   const botPad = IS_TOUCH ? Math.min(120, Math.round(h * 0.18)) : 78;
   const playW = Math.min(w - 40, h * 0.6);
@@ -120,9 +116,6 @@ function enterRoom(idx) {
   G.staffCooldownUntil = 0; G.burstCooldownUntil = 0;
   G.tension = 0; G.heartTimer = 0;
 
-  // Per-room resets — these used to live inside pickTarget(), which fires on
-  // every correct gate. That wiped the room review after each answer and
-  // cancelled the boss respawn timer.
   G.lastWrong = null;
   updateLastWrongPanel();
   G.roomPhrases = [];
@@ -131,6 +124,10 @@ function enterRoom(idx) {
   G.inWrongGate = null;
   G.inWrongSince = 0;
   G.gateCooldownUntil = 0;
+
+  // Clear any leftover hint
+  const hintEl = document.getElementById('objHint');
+  if (hintEl) { hintEl.textContent = ''; hintEl.style.display = 'none'; }
 
   G.roomType = room.type || 'combat';
   G.discoveries = [];
@@ -323,7 +320,13 @@ function spawnBoss(hp = 6) {
 function pickTarget() {
   if (G.roomType === 'explore') return;
   const available = G.gates.filter(g => !g.done);
-  if (!available.length) { G.targetGate = null; return; }
+  const hintEl = document.getElementById('objHint');
+
+  if (!available.length) {
+    G.targetGate = null;
+    if (hintEl) { hintEl.textContent = ''; hintEl.style.display = 'none'; }
+    return;
+  }
   const g = available[Math.floor(Math.random() * available.length)];
   for (const x of G.gates) x.isTarget = false;
   g.isTarget = true;
@@ -336,6 +339,15 @@ function pickTarget() {
   } else {
     objText.textContent = g.item.ar;
     objText.classList.add('arabic');
+  }
+  if (hintEl) {
+    if (g.item.hint) {
+      hintEl.textContent = g.item.hint;
+      hintEl.style.display = 'block';
+    } else {
+      hintEl.textContent = '';
+      hintEl.style.display = 'none';
+    }
   }
   speakAr(g.item);
 }

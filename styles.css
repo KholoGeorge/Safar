@@ -99,6 +99,17 @@ html, body {
   pointer-events: auto;
 }
 
+/* Gender hint under the target phrase */
+.obj-hint {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: #d4af37;
+  margin-top: 5px;
+  text-align: left;
+}
+
 .obj-sub {
   margin-top: 8px;
   display: flex;
@@ -178,9 +189,7 @@ html, body {
   box-shadow: 0 0 12px rgba(184,92,92,0.4);
 }
 
-/* ---------- HUD BOTTOM ----------
-   Flex row with vertical-center alignment. Condition block, pause button
-   and status all share one horizontal midline. */
+/* ---------- HUD BOTTOM ---------- */
 .hud-bottom {
   position: absolute; bottom: max(12px, env(safe-area-inset-bottom, 12px)); left: 0; right: 0;
   padding: 0 max(28px, calc((100vw - 800px) / 2));
@@ -247,7 +256,6 @@ html, body {
 .ability.shield.ready .pip { background: #7ab8c9; }
 .ability.shield.ready .label { color: #7ab8c9; }
 
-/* Pause — sits between condition and status in the flex row, center-aligned. */
 .pause-btn {
   width: 44px; height: 44px;
   border-radius: 50%;
@@ -600,7 +608,6 @@ body.touch .touch-controls {
   will-change: opacity, transform;
 }
 
-/* Hide desktop-only HUD on touch */
 body.touch #dashReady,
 body.touch .abilities,
 body.touch .status .sub { display: none; }
@@ -783,6 +790,7 @@ body.touch .status .sub { display: none; }
   }
   .objective .text { font-size: 16px; }
   .objective .text.arabic { font-size: 18px; }
+  .obj-hint { font-size: 9px; letter-spacing: 0.24em; margin-top: 3px; }
   .obj-sub { font-size: 9px; max-width: 90vw; }
 
   .room-info .val { font-size: 15px; }
