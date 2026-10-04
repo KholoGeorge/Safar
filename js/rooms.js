@@ -349,7 +349,6 @@ function pickTarget() {
       hintEl.style.display = 'none';
     }
   }
-  speakAr(g.item);
 }
 
 function updateStars() {

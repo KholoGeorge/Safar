@@ -413,6 +413,9 @@ function gateWrong(g) {
   G.stars--;
   updateStars();
   setStatus('Wrong gate', 'Fall back', 'warn', 1400);
+  
+  if (G.targetGate) speakAr(G.targetGate.item);
+
   if (G.stars <= 0) endRun(false);
 }
 
