@@ -1,0 +1,39 @@
+{
+  "lessonId": "ABY 1-Numbers",
+  "unit": 1,
+  "topic": "Numbers 1 to 5",
+  "title": "Numbers 1-5 (الأَعْدَاد)",
+  "dialogueAudio": "1_1numbers_full.mp3",
+  "phrases": [
+    {
+      "ar": "وَاحِدٌ",
+      "en": "One (1)",
+      "au": "1_num_01.mp3",
+      "notes": "Number 1 (١). Masculine form."
+    },
+    {
+      "ar": "إِثْنَـانِ",
+      "en": "Two (2)",
+      "au": "1_num_02.mp3",
+      "notes": "Number 2 (٢). Dual masculine form."
+    },
+    {
+      "ar": "ثَلَاثَةٌ",
+      "en": "Three (3)",
+      "au": "1_num_03.mp3",
+      "notes": "Number 3 (٣)."
+    },
+    {
+      "ar": "أَرْبَعَةٌ",
+      "en": "Four (4)",
+      "au": "1_num_04.mp3",
+      "notes": "Number 4 (٤)."
+    },
+    {
+      "ar": "خَمْسَةٌ",
+      "en": "Five (5)",
+      "au": "1_num_05.mp3",
+      "notes": "Number 5 (٥)."
+    }
+  ]
+}

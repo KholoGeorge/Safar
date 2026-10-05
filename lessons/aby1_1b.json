@@ -6,90 +6,76 @@
   "dialogueAudio": "1_1b_full.mp3",
   "phrases": [
     {
-      "id": "1_1b_00a",
-      "ar": "الدَّرْسُ الْأَوَّلُ",
-      "en": "Lesson One",
-      "gender": "f",
-      "au": "1_1b_dars.mp3"
-    },
-    {
-      "id": "1_1b_00b",
-      "ar": "الْحِوَارُ الْأَوَّلُ",
+      "ar": "الْحِوَارُ الأَوَّلُ",
       "en": "The First Dialogue",
-      "gender": "f",
-      "au": "1_1b_hiwar.mp3"
+      "au": "1_1b_00.mp3",
+      "notes": "الْحِوَار (al-ḥiwār = the dialogue) + الأَوَّل (al-awwal = the first)."
     },
     {
-      "id": "1_1b_01",
       "ar": "السَّلَامُ عَلَيْكُمْ",
-      "en": "Peace be upon you",
-      "gender": "f",
-      "common": true,
-      "au": "1_1b_salam.mp3"
+      "en": "Peace be upon you.",
+      "au": "1_1b_01.mp3",
+      "notes": "Standard Islamic greeting used regardless of recipient gender."
     },
     {
-      "id": "1_1b_02",
       "ar": "وَعَلَيْكُمُ السَّلَامُ",
-      "en": "And upon you be peace",
-      "gender": "f",
-      "common": true,
-      "au": "1_1b_waalaykum.mp3"
+      "en": "And upon you be peace.",
+      "au": "1_1b_02.mp3",
+      "notes": "Standard reply to the greeting."
     },
     {
-      "id": "1_1b_03",
-      "ar": "اسْمِي خَوْلَةُ",
-      "en": "My name is Khawlah",
-      "gender": "f",
-      "au": "1_1b_khawlah.mp3"
+      "ar": "إِسْمِي خَوْلَةُ",
+      "en": "My name is Khawlah.",
+      "au": "1_1b_03.mp3",
+      "notes": "Feminine proper noun ending in Tā' Marbūṭah (ـَة) taking a single damma (diptote)."
     },
     {
-      "id": "1_1b_04",
-      "ar": "مَا اسْمُكِ؟",
-      "en": "What is your name?",
-      "gender": "f",
-      "hint": "to a woman",
-      "au": "1_1b_masmuki.mp3",
-      "notes": "Notice the ending changed from '-كَ' (-ka) to '-كِ' (-ki) to address a woman."
+      "ar": "مَا اسْمُكِ ؟",
+      "en": "What is your name? (F)",
+      "au": "1_1b_04.mp3",
+      "notes": "Possessive suffix changes to feminine kasrah (-ki) when addressing a female listener."
     },
     {
-      "id": "1_1b_05",
-      "ar": "اسْمِي خَدِيجَةُ",
-      "en": "My name is Khadijah",
-      "gender": "f",
-      "au": "1_1b_khadijah.mp3"
+      "ar": "إِسْمِي خَدِيجَةُ",
+      "en": "My name is Khadijah.",
+      "au": "1_1b_05.mp3",
+      "notes": "Feminine proper noun ending in Tā' Marbūṭah taking a single damma."
     },
     {
-      "id": "1_1b_06",
-      "ar": "كَيْفَ حَالُكِ؟",
-      "en": "How are you?",
-      "gender": "f",
-      "hint": "to a woman",
-      "au": "1_1b_haluki.mp3",
-      "notes": "The '-كِ' (-ki) ending here is used instead of '-كَ' (-ka) because we are speaking to a woman."
+      "ar": "كَيْفَ حَالُكِ ؟",
+      "en": "How are you? (F)",
+      "au": "1_1b_06.mp3",
+      "notes": "Feminine address using the possessive suffix حَالُكِ (ḥāluki)."
     },
     {
-      "id": "1_1b_07",
-      "ar": "بِخَيْرٍ، وَالْحَمْدُ لِلَّهِ",
-      "en": "Fine, praise be to Allah",
-      "gender": "f",
-      "au": "1_1b_bikhayr.mp3"
+      "ar": "بِخَيْرٍ",
+      "en": "I am fine.",
+      "au": "1_1b_07a.mp3",
+      "notes": "Literally 'with goodness'."
     },
     {
-      "id": "1_1b_08",
-      "ar": "وَكَيْفَ حَالُكِ أَنْتِ؟",
-      "en": "And how are you?",
-      "gender": "f",
-      "hint": "to a woman",
-      "au": "1_1b_anti.mp3",
-      "notes": "The word 'أَنْتِ' (anti) means 'you' for a woman (compared to 'أَنْتَ' / anta for a man)."
+      "ar": "وَالْحَمْدُ لِلَّهِ",
+      "en": "And praise be to Allah.",
+      "au": "1_1b_07b.mp3",
+      "notes": "Expression of gratitude to Allah."
     },
     {
-      "id": "1_1b_09",
-      "ar": "بِخَيْرٍ، وَالْحَمْدُ لِلَّهِ",
-      "en": "Good, all praise be to Allah",
-      "gender": "f",
-      "au": "1_1b_bikhayr.mp3"
+      "ar": "وَكَيْفَ حَالُكِ أَنْتِ ؟",
+      "en": "And how are you? (F)",
+      "au": "1_1b_08.mp3",
+      "notes": "The feminine pronoun أَنْتِ ('you') is added for explicit emphasis when speaking to a woman."
+    },
+    {
+      "ar": "بِخَيْرٍ",
+      "en": "I am fine.",
+      "au": "1_1b_09a.mp3",
+      "notes": "Literally 'with goodness'."
+    },
+    {
+      "ar": "وَالْحَمْدُ لِلَّهِ",
+      "en": "And praise be to Allah.",
+      "au": "1_1b_09b.mp3",
+      "notes": "Expression of gratitude to Allah."
     }
   ]
 }
-

@@ -6,85 +6,76 @@
   "dialogueAudio": "1_1a_full.mp3",
   "phrases": [
     {
-      "id": "1_1a_00",
-      "ar": "الْحِوَارُ الْأَوَّلُ",
+      "ar": "الْحِوَارُ الأَوَّلُ",
       "en": "The First Dialogue",
-      "gender": "m",
-      "au": "1_1a_hiwar.mp3"
+      "au": "1_1a_00.mp3",
+      "notes": "الْحِوَار (al-ḥiwār = the dialogue) + الأَوَّل (al-awwal = the first). Adding 'Al-' strips away the tanween (double vowel)."
     },
     {
-      "id": "1_1a_01",
       "ar": "السَّلَامُ عَلَيْكُمْ",
-      "en": "Peace be upon you",
-      "gender": "m",
-      "common": true,
-      "au": "1_1a_salam.mp3"
+      "en": "Peace be upon you.",
+      "au": "1_1a_01.mp3",
+      "notes": "Standard Islamic greeting. Combining 'Al-' with a word removes the tanween."
     },
     {
-      "id": "1_1a_02",
       "ar": "وَعَلَيْكُمُ السَّلَامُ",
-      "en": "And upon you be peace",
-      "gender": "m",
-      "common": true,
-      "au": "1_1a_waalaykum.mp3",
-      "notes": "The 'و' (wa) at the beginning simply means 'and'."
+      "en": "And upon you be peace.",
+      "au": "1_1a_02.mp3",
+      "notes": "Standard response. The damma on 'alaykumu' facilitates smooth vocal transition into 'as-Salām'."
     },
     {
-      "id": "1_1a_03",
-      "ar": "اسْمِي خَالِدٌ",
-      "en": "My name is Khalid",
-      "gender": "m",
-      "au": "1_1a_khalid.mp3",
-      "notes": "The '-ِي' (-i) sound attached to the end of 'اسْم' (ism) means 'my'."
+      "ar": "إِسْمِي خَالِدٌ",
+      "en": "My name is Khalid.",
+      "au": "1_1a_03.mp3",
+      "notes": "إِسْم (name) + ـِي (my Yā' of ownership/belonging). Khalid takes tanween as a standard masculine proper noun."
     },
     {
-      "id": "1_1a_04",
-      "ar": "مَا اسْمُكَ؟",
-      "en": "What is your name?",
-      "gender": "m",
-      "hint": "to a man",
-      "au": "1_1a_masmuka.mp3",
-      "notes": "The '-كَ' (-ka) ending means 'your' when talking to a man."
+      "ar": "مَا اسْمُكَ ؟",
+      "en": "What is your name? (M)",
+      "au": "1_1a_04.mp3",
+      "notes": "مَا (what) + اسْمُكَ (your name). The attachment of the masculine possessive suffix -ka indicates address to a male."
     },
     {
-      "id": "1_1a_05",
-      "ar": "اسْمِي خَلِيلٌ",
-      "en": "My name is Khalil",
-      "gender": "m",
-      "au": "1_1a_khalil.mp3"
+      "ar": "إِسْمِي خَلِيلٌ",
+      "en": "My name is Khalil.",
+      "au": "1_1a_05.mp3",
+      "notes": "إِسْمِي (my name). Khalil ends with tanween damma."
     },
     {
-      "id": "1_1a_06",
-      "ar": "كَيْفَ حَالُكَ؟",
-      "en": "How are you?",
-      "gender": "m",
-      "hint": "to a man",
-      "au": "1_1a_haluka.mp3",
-      "notes": "'حَال' means condition or health, and the '-كَ' (-ka) ending addresses a man."
+      "ar": "كَيْفَ حَالُكَ ؟",
+      "en": "How are you? (M)",
+      "au": "1_1a_06.mp3",
+      "notes": "كَيْفَ (how) + حَالُكَ (your state/condition). The suffix -ka targets a male listener."
     },
     {
-      "id": "1_1a_07",
-      "ar": "بِخَيْرٍ، وَالْحَمْدُ لِلَّهِ",
-      "en": "Fine, praise be to Allah",
-      "gender": "m",
-      "au": "1_1a_bikhayr.mp3",
-      "notes": "'بِـ' (bi-) means 'with' or 'in', and 'خَيْر' means 'goodness'."
+      "ar": "بِخَيْرٍ",
+      "en": "I am fine.",
+      "au": "1_1a_07a.mp3",
+      "notes": "Literally 'with goodness' (preposition بِـ + noun خَيْرٍ)."
     },
     {
-      "id": "1_1a_08",
-      "ar": "وَكَيْفَ حَالُكَ أَنْتَ؟",
+      "ar": "وَالْحَمْدُ لِلَّهِ",
+      "en": "And praise be to Allah.",
+      "au": "1_1a_07b.mp3",
+      "notes": "Expression of gratitude to Allah."
+    },
+    {
+      "ar": "وَكَيْفَ حَالُكَ أَنْتَ ؟",
       "en": "And how are you?",
-      "gender": "m",
-      "hint": "to a man",
-      "au": "1_1a_anta.mp3",
-      "notes": "Adding 'أَنْتَ' (anta - 'you') at the end adds extra emphasis: 'And how are YOU?'"
+      "au": "1_1a_08.mp3",
+      "notes": "The standalone masculine pronoun أَنْتَ ('you') is added at the end for explicit emphasis ('And how are YOU?')."
     },
     {
-      "id": "1_1a_09",
-      "ar": "بِخَيْرٍ، وَالْحَمْدُ لِلَّهِ",
-      "en": "Good, all praise be to Allah",
-      "gender": "m",
-      "au": "1_1a_bikhayr.mp3"
+      "ar": "بِخَيْرٍ",
+      "en": "I am fine.",
+      "au": "1_1a_09a.mp3",
+      "notes": "Literally 'with goodness'."
+    },
+    {
+      "ar": "وَالْحَمْدُ لِلَّهِ",
+      "en": "And praise be to Allah.",
+      "au": "1_1a_09b.mp3",
+      "notes": "Expression of gratitude to Allah."
     }
   ]
 }
