@@ -1,7 +1,7 @@
 // sw.js
 
 // Bump this version number whenever you change your files
-const CACHE_NAME = 'safar-cache-v2';
+const CACHE_NAME = 'safar-cache-v3';
 
 const ASSETS_TO_CACHE = [
   // --- Core App Files ---

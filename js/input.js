@@ -112,6 +112,7 @@ actionBottom.addEventListener('pointerdown', (e) => {
     base.style.top  = cy + 'px';
     base.classList.add('active');
     joyId = e.pointerId;
+    touchJoyActive = true;
     try { joyZone.setPointerCapture(e.pointerId); } catch (_) {}
     move(e);
   }
@@ -131,13 +132,14 @@ actionBottom.addEventListener('pointerdown', (e) => {
     const mag = Math.hypot(nx, ny);
     if (mag < JOY_DEAD) { G.joy = null; G.keys.sprint = false; return; }
     const m = Math.min(1, (mag - JOY_DEAD) / (1 - JOY_DEAD));
-    G.joy = { x: nx / mag * m, y: ny / mag * m, m };
+    G.joy = { x: nx / mag * m, y: ny / mag * m, m, source: 'touch' };
     G.keys.sprint = mag > JOY_SPRINT;
   }
 
   function end(e) {
     if (e.pointerId !== joyId) return;
     joyId = null;
+    touchJoyActive = false;
     G.joy = null;
     G.keys.sprint = false;
     knob.style.transform = 'translate(0, 0)';
@@ -154,3 +156,206 @@ actionBottom.addEventListener('pointerdown', (e) => {
     if (ac && ac.state === 'suspended') ac.resume();
   }, { once: true });
 })();
+
+// ============================================================
+//  GAMEPAD — PC / Bluetooth controllers (standard mapping)
+// ============================================================
+const GamepadInput = {
+  index: null,
+  name: '',
+  connected: false,
+  prevButtons: [],
+  dpadKeys: { up: false, down: false, left: false, right: false },
+  dead: 0.22,     // left-stick deadzone
+  sprint: 0.72,   // push past this to sprint
+};
+
+let touchJoyActive = false;   // set by the touch IIFE below
+
+window.addEventListener('gamepadconnected', (e) => {
+  GamepadInput.index = e.gamepad.index;
+  GamepadInput.name = e.gamepad.id;
+  GamepadInput.connected = true;
+  GamepadInput.prevButtons = [];
+  initAudio();
+  if (ac && ac.state === 'suspended') ac.resume();
+  setStatus('Controller linked', e.gamepad.id.slice(0, 46), 'ok', 2400);
+  console.log('[gamepad] connected:', e.gamepad.id);
+});
+
+window.addEventListener('gamepaddisconnected', (e) => {
+  if (GamepadInput.index !== e.gamepad.index) return;
+  GamepadInput.index = null;
+  GamepadInput.name = '';
+  GamepadInput.connected = false;
+  GamepadInput.prevButtons = [];
+  GamepadInput.dpadKeys = { up: false, down: false, left: false, right: false };
+  if (G.joy && G.joy.source === 'gamepad') G.joy = null;
+  setStatus('Controller lost', '', 'warn', 2000);
+});
+
+// Some browsers (Firefox in particular) don't fire `gamepadconnected`
+// until the user presses a button. This polls the raw list so we always
+// find a live pad.
+function activeGamepad() {
+  const pads = navigator.getGamepads ? navigator.getGamepads() : [];
+  if (GamepadInput.index !== null) {
+    const gp = pads[GamepadInput.index];
+    if (gp && gp.connected) return gp;
+    GamepadInput.index = null;
+    GamepadInput.connected = false;
+  }
+  for (let i = 0; i < pads.length; i++) {
+    const gp = pads[i];
+    if (gp && gp.connected) {
+      GamepadInput.index = i;
+      GamepadInput.name = gp.id;
+      GamepadInput.connected = true;
+      return gp;
+    }
+  }
+  return null;
+}
+
+function padPressed(gp, i) {
+  const b = gp.buttons[i];
+  return !!(b && (b.pressed || b.value > 0.5));
+}
+function padJustPressed(gp, i) {
+  return padPressed(gp, i) && !GamepadInput.prevButtons[i];
+}
+
+function pollGamepad() {
+  const gp = activeGamepad();
+  if (!gp) return;
+
+  // ---------- Analog sticks ----------
+  // Left stick feeds the same G.joy channel as the touch joystick, so
+  // movement code in player.js stays untouched. Touch finger wins.
+  const lx = gp.axes[0] || 0;
+  const ly = gp.axes[1] || 0;
+  const lmag = Math.hypot(lx, ly);
+
+  if (!touchJoyActive) {
+    if (lmag > GamepadInput.dead) {
+      const m = Math.min(1, (lmag - GamepadInput.dead) / (1 - GamepadInput.dead));
+      G.joy = { x: lx / lmag * m, y: ly / lmag * m, m, source: 'gamepad' };
+      G.keys.sprint = lmag > GamepadInput.sprint;
+    } else if (G.joy && G.joy.source === 'gamepad') {
+      G.joy = null;
+      G.keys.sprint = false;
+    }
+  }
+
+  // Right stick aims the player independently of movement.
+  const rx = gp.axes[2] || 0;
+  const ry = gp.axes[3] || 0;
+  if (Math.hypot(rx, ry) > GamepadInput.dead && G.player) {
+    G.player.angle = Math.atan2(ry, rx);
+  }
+
+  // ---------- D-pad (digital movement) ----------
+  const dUp    = padPressed(gp, 12);
+  const dDown  = padPressed(gp, 13);
+  const dLeft  = padPressed(gp, 14);
+  const dRight = padPressed(gp, 15);
+  const dpadNow = dUp || dDown || dLeft || dRight;
+  const dpadWas = GamepadInput.dpadKeys.up || GamepadInput.dpadKeys.down ||
+                  GamepadInput.dpadKeys.left || GamepadInput.dpadKeys.right;
+
+  if (dpadNow) {
+    G.keys.up = dUp; G.keys.down = dDown;
+    G.keys.left = dLeft; G.keys.right = dRight;
+    GamepadInput.dpadKeys = { up: dUp, down: dDown, left: dLeft, right: dRight };
+  } else if (dpadWas) {
+    // Only clear the keys the D-pad actually set — don't stomp the keyboard.
+    if (GamepadInput.dpadKeys.up)    G.keys.up = false;
+    if (GamepadInput.dpadKeys.down)  G.keys.down = false;
+    if (GamepadInput.dpadKeys.left)  G.keys.left = false;
+    if (GamepadInput.dpadKeys.right) G.keys.right = false;
+    GamepadInput.dpadKeys = { up: false, down: false, left: false, right: false };
+  }
+
+  // ---------- Edge-press detection (once per frame) ----------
+  const justA     = padJustPressed(gp, 0);
+  const justB     = padJustPressed(gp, 1);
+  const justX     = padJustPressed(gp, 2);
+  const justY     = padJustPressed(gp, 3);
+  const justStart = padJustPressed(gp, 9);
+  const holdLB    = padPressed(gp, 4);
+  const holdRB    = padPressed(gp, 5);
+  if (holdLB || holdRB) G.keys.sprint = true;
+
+  // ---------- Route: menus vs. live gameplay ----------
+  const inMenu = !G.running || G.paused || G.userPaused;
+
+  if (inMenu && (justA || justStart)) {
+    initAudio();
+    if (ac && ac.state === 'suspended') ac.resume();
+    gamepadMenuAction();
+  } else if (G.running) {
+    if (justStart) togglePause();
+
+    if (!G.paused) {
+      if (justA) {
+        if (G.roomType === 'explore' && G.discoveryNear) openDiscovery(G.discoveryNear);
+        else if (G.roomType !== 'explore') { aimAssist(); tryStaff(); }
+      }
+      if (justB) tryDash();
+      if (justX) {
+        if (G.roomType === 'explore' && G.discoveryNear) openDiscovery(G.discoveryNear);
+        else if (G.roomType !== 'explore') tryBurst();
+      }
+      if (justY) {
+        if (G.roomType === 'explore' && G.discoveryNear) openDiscovery(G.discoveryNear);
+      }
+    }
+  }
+
+  // ---------- Save edge state for next frame ----------
+  for (let i = 0; i < gp.buttons.length; i++) {
+    GamepadInput.prevButtons[i] = padPressed(gp, i);
+  }
+}
+
+// Fire the primary action of whatever screen is currently visible.
+// Returns true if the press was consumed.
+function gamepadMenuAction() {
+  if (dialogueScreen.classList.contains('show')) { advanceDialogue(); return true; }
+
+  if (reviewScreen.classList.contains('show')) {
+    reviewScreen.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+    reviewScreen.dispatchEvent(new PointerEvent('pointerup',   { bubbles: true }));
+    return true;
+  }
+
+  if (typeof discoveryScreen !== 'undefined' && discoveryScreen &&
+      discoveryScreen.classList.contains('show')) { closeDiscovery(); return true; }
+
+  if ($('pauseScreen').classList.contains('show')) { resumeFromPause(); return true; }
+
+  if (studyScreen.classList.contains('show')) { nextStudyStep(); return true; }
+
+  if (manualScreen.classList.contains('show')) {
+    $('closeManualBtn').click(); return true;
+  }
+
+  if (endScreen.classList.contains('show')) {
+    $('againBtn').click(); return true;
+  }
+
+  if (chooseScreen.classList.contains('show')) {
+    $('claimBtn').click(); return true;
+  }
+
+  if (briefScreen.classList.contains('show')) {
+    $('startBtn').click(); return true;
+  }
+
+  if (homeScreen.classList.contains('show')) {
+    const first = lessonGrid.querySelector('.lesson-card');
+    if (first) { first.click(); return true; }
+  }
+
+  return false;
+}

@@ -5,6 +5,8 @@ function frame(now) {
   const inHitstop = now < G.hitstopUntil;
   const dt = inHitstop ? 0 : rawDt;
 
+  pollGamepad();
+
   ctx.save();
   if (now < G.shakeUntil) {
     const t = (G.shakeUntil - now) / 400;
