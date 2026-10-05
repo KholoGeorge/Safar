@@ -56,22 +56,39 @@
     },
     {
       "id": "1_2a_06",
-      "ar": "نَعَمْ ، أَنَا بَاكِسْتَانِيٌّ . وَمَا جِنْسِيَّتُكَ أَنْتَ؟",
-      "en": "Yes, I am Pakistani. And what is your nationality?",
+      "ar": "نَعَمْ ، أَنَا بَاكِسْتَانِيٌّ",
+      "en": "Yes, I am Pakistani.",
       "gender": "m",
       "hint": "to a man",
       "au": "1_2a_na_am.mp3",
-      "notes": "'نَعَمْ' means 'yes'. 'جِنْسِيَّة' means 'nationality', and '-كَ' (-ka) ending means 'your' when addressing a man."
+      "notes": "'نَعَمْ' means 'yes'."
     },
+    
     {
       "id": "1_2a_07",
-      "ar": "أَنَا تُرْكِيٌّ . أَنَا مِنْ تُرْكِيَا",
-      "en": "I am Turkish. I am from Turkey",
+      "ar": "وَمَا جِنْسِيَّتُكَ أَنْتَ؟",
+      "en": "And what is your nationality?",
+      "gender": "m",
+      "hint": "to a man",
+      "au": "1_2a_na_am.mp3",
+      "notes": "'جِنْسِيَّة' means 'nationality', and '-كَ' (-ka) ending means 'your' when addressing a man."
+    },
+    {
+      "id": "1_2a_08",
+      "ar": ".أَنَا تُرْكِيٌّ",
+      "en": "I am Turkish.",
       "gender": "m",
       "au": "1_2a_turki.mp3"
     },
     {
-      "id": "1_2a_08",
+      "id": "1_2a_09",
+      "ar": "أَنَا مِنْ تُرْكِيَا",
+      "en": "I am from Turkey",
+      "gender": "m",
+      "au": "1_2a_turki.mp3"
+    },
+    {
+      "id": "1_2a_10",
       "ar": "أَهْلًا وَسَهْلًا",
       "en": "Welcome",
       "gender": "m",
