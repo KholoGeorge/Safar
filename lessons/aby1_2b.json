@@ -1,0 +1,81 @@
+{
+  "lessonId": "ABY 1-2b",
+  "unit": 1,
+  "topic": "Greetings & Introductions",
+  "title": "Nationalities (Female)",
+  "dialogueAudio": "1_2b_full.mp3",
+  "phrases": [
+    {
+      "id": "1_2b_00",
+      "ar": "الْحِوَارُ الثَّانِي",
+      "en": "The Second Dialogue",
+      "gender": "f",
+      "au": "1_2b_hiwar.mp3"
+    },
+    {
+      "id": "1_2b_01",
+      "ar": "السَّلَامُ عَلَيْكُمْ",
+      "en": "Peace be upon you",
+      "gender": "f",
+      "common": true,
+      "au": "1_2b_salam.mp3"
+    },
+    {
+      "id": "1_2b_02",
+      "ar": "وَعَلَيْكُمُ السَّلَامُ",
+      "en": "And upon you be peace",
+      "gender": "f",
+      "common": true,
+      "au": "1_2b_waalaykum.mp3"
+    },
+    {
+      "id": "1_2b_03",
+      "ar": "مِنْ أَيْنَ أَنْتِ؟",
+      "en": "Where are you from?",
+      "gender": "f",
+      "hint": "to a woman",
+      "au": "1_2b_min_ayna.mp3",
+      "notes": "Uses 'أَنْتِ' (anti) instead of 'أَنْتَ' (anta) to address a woman."
+    },
+    {
+      "id": "1_2b_04",
+      "ar": "أَنَا مِنْ مِصْرَ",
+      "en": "I am from Egypt",
+      "gender": "f",
+      "au": "1_2b_misr.mp3"
+    },
+    {
+      "id": "1_2b_05",
+      "ar": "هَلْ أَنْتِ مِصْرِيَّةٌ؟",
+      "en": "Are you Egyptian?",
+      "gender": "f",
+      "hint": "to a woman",
+      "au": "1_2b_hal_anti.mp3",
+      "notes": "Adding 'ـِيَّة' (-iyyah) to a country name forms the female nationality."
+    },
+    {
+      "id": "1_2b_06",
+      "ar": "نَعَمْ ، أَنَا مِصْرِيَّةٌ . وَمَا جِنْسِيَّتُكِ أَنْتِ؟",
+      "en": "Yes, I am Egyptian. And what is your nationality?",
+      "gender": "f",
+      "hint": "to a woman",
+      "au": "1_2b_na_am.mp3",
+      "notes": "Notice '-كِ' (-ki) and 'أَنْتِ' (anti) are used here instead of '-كَ' (-ka) and 'أَنْتَ' (anta) for a female."
+    },
+    {
+      "id": "1_2b_07",
+      "ar": "أَنَا سُورِيَّةٌ . أَنَا مِنْ سُورِيَا",
+      "en": "I am Syrian. I am from Syria",
+      "gender": "f",
+      "au": "1_2b_suriyyah.mp3"
+    },
+    {
+      "id": "1_2b_08",
+      "ar": "أَهْلًا وَسَهْلًا",
+      "en": "Welcome",
+      "gender": "f",
+      "common": true,
+      "au": "1_2b_ahlan.mp3"
+    }
+  ]
+}

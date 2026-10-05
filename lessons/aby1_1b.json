@@ -1,0 +1,95 @@
+{
+  "lessonId": "ABY 1-1b",
+  "unit": 1,
+  "topic": "Greetings & Introductions",
+  "title": "Greetings (Female)",
+  "dialogueAudio": "1_1b_full.mp3",
+  "phrases": [
+    {
+      "id": "1_1b_00a",
+      "ar": "الدَّرْسُ الْأَوَّلُ",
+      "en": "Lesson One",
+      "gender": "f",
+      "au": "1_1b_dars.mp3"
+    },
+    {
+      "id": "1_1b_00b",
+      "ar": "الْحِوَارُ الْأَوَّلُ",
+      "en": "The First Dialogue",
+      "gender": "f",
+      "au": "1_1b_hiwar.mp3"
+    },
+    {
+      "id": "1_1b_01",
+      "ar": "السَّلَامُ عَلَيْكُمْ",
+      "en": "Peace be upon you",
+      "gender": "f",
+      "common": true,
+      "au": "1_1b_salam.mp3"
+    },
+    {
+      "id": "1_1b_02",
+      "ar": "وَعَلَيْكُمُ السَّلَامُ",
+      "en": "And upon you be peace",
+      "gender": "f",
+      "common": true,
+      "au": "1_1b_waalaykum.mp3"
+    },
+    {
+      "id": "1_1b_03",
+      "ar": "اسْمِي خَوْلَةُ",
+      "en": "My name is Khawlah",
+      "gender": "f",
+      "au": "1_1b_khawlah.mp3"
+    },
+    {
+      "id": "1_1b_04",
+      "ar": "مَا اسْمُكِ؟",
+      "en": "What is your name?",
+      "gender": "f",
+      "hint": "to a woman",
+      "au": "1_1b_masmuki.mp3",
+      "notes": "Notice the ending changed from '-كَ' (-ka) to '-كِ' (-ki) to address a woman."
+    },
+    {
+      "id": "1_1b_05",
+      "ar": "اسْمِي خَدِيجَةُ",
+      "en": "My name is Khadijah",
+      "gender": "f",
+      "au": "1_1b_khadijah.mp3"
+    },
+    {
+      "id": "1_1b_06",
+      "ar": "كَيْفَ حَالُكِ؟",
+      "en": "How are you?",
+      "gender": "f",
+      "hint": "to a woman",
+      "au": "1_1b_haluki.mp3",
+      "notes": "The '-كِ' (-ki) ending here is used instead of '-كَ' (-ka) because we are speaking to a woman."
+    },
+    {
+      "id": "1_1b_07",
+      "ar": "بِخَيْرٍ، وَالْحَمْدُ لِلَّهِ",
+      "en": "Fine, praise be to Allah",
+      "gender": "f",
+      "au": "1_1b_bikhayr.mp3"
+    },
+    {
+      "id": "1_1b_08",
+      "ar": "وَكَيْفَ حَالُكِ أَنْتِ؟",
+      "en": "And how are you?",
+      "gender": "f",
+      "hint": "to a woman",
+      "au": "1_1b_anti.mp3",
+      "notes": "The word 'أَنْتِ' (anti) means 'you' for a woman (compared to 'أَنْتَ' / anta for a man)."
+    },
+    {
+      "id": "1_1b_09",
+      "ar": "بِخَيْرٍ، وَالْحَمْدُ لِلَّهِ",
+      "en": "Good, all praise be to Allah",
+      "gender": "f",
+      "au": "1_1b_bikhayr.mp3"
+    }
+  ]
+}
+

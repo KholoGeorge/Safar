@@ -1,0 +1,83 @@
+{
+  "lessonId": "ABY 1-2a",
+  "unit": 1,
+  "topic": "Greetings & Introductions",
+  "title": "Nationalities (Male)",
+  "dialogueAudio": "1_2a_full.mp3",
+  "phrases": [
+    {
+      "id": "1_2a_00",
+      "ar": "الْحِوَارُ الثَّانِي",
+      "en": "The Second Dialogue",
+      "gender": "m",
+      "au": "1_2a_hiwar.mp3"
+    },
+    {
+      "id": "1_2a_01",
+      "ar": "السَّلَامُ عَلَيْكُمْ",
+      "en": "Peace be upon you",
+      "gender": "m",
+      "common": true,
+      "au": "1_2a_salam.mp3"
+    },
+    {
+      "id": "1_2a_02",
+      "ar": "وَعَلَيْكُمُ السَّلَامُ",
+      "en": "And upon you be peace",
+      "gender": "m",
+      "common": true,
+      "au": "1_2a_waalaykum.mp3"
+    },
+    {
+      "id": "1_2a_03",
+      "ar": "مِنْ أَيْنَ أَنْتَ؟",
+      "en": "Where are you from?",
+      "gender": "m",
+      "hint": "to a man",
+      "au": "1_2a_min_ayna.mp3",
+      "notes": "'مِنْ' means 'from' and 'أَيْن' means 'where'. 'أَنْتَ' (anta) addresses a man."
+    },
+    {
+      "id": "1_2a_04",
+      "ar": "أَنَا مِنْ بَاكِسْتَانَ",
+      "en": "I am from Pakistan",
+      "gender": "m",
+      "au": "1_2a_pakistan.mp3",
+      "notes": "'أَنَا' (ana) means 'I'."
+    },
+    {
+      "id": "1_2a_05",
+      "ar": "هَلْ أَنْتَ بَاكِسْتَانِيٌّ؟",
+      "en": "Are you Pakistani?",
+      "gender": "m",
+      "hint": "to a man",
+      "au": "1_2a_hal_anta.mp3",
+      "notes": "'هَلْ' turns a sentence into a yes/no question. Adding 'ـِيّ' (-iyy) to a country name forms the male nationality."
+    },
+    {
+      "id": "1_2a_06",
+      "ar": "نَعَمْ ، أَنَا بَاكِسْتَانِيٌّ . وَمَا جِنْسِيَّتُكَ أَنْتَ؟",
+      "en": "Yes, I am Pakistani. And what is your nationality?",
+      "gender": "m",
+      "hint": "to a man",
+      "au": "1_2a_na_am.mp3",
+      "notes": "'نَعَمْ' means 'yes'. 'جِنْسِيَّة' means 'nationality', and '-كَ' (-ka) ending means 'your' when addressing a man."
+    },
+    {
+      "id": "1_2a_07",
+      "ar": "أَنَا تُرْكِيٌّ . أَنَا مِنْ تُرْكِيَا",
+      "en": "I am Turkish. I am from Turkey",
+      "gender": "m",
+      "au": "1_2a_turki.mp3"
+    },
+    {
+      "id": "1_2a_08",
+      "ar": "أَهْلًا وَسَهْلًا",
+      "en": "Welcome",
+      "gender": "m",
+      "common": true,
+      "au": "1_2a_ahlan.mp3",
+      "notes": "A common greeting used to express 'welcome' or 'nice to meet you'."
+    }
+  ]
+}
