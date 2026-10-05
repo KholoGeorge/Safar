@@ -1,90 +1,179 @@
-{
-  "lessonId": "ABY 1-1a",
-  "unit": 1,
-  "topic": "Greetings & Introductions",
-  "title": "Greetings (Male)",
-  "dialogueAudio": "1_1a_full.mp3",
-  "phrases": [
-    {
-      "id": "1_1a_00",
-      "ar": "الْحِوَارُ الْأَوَّلُ",
-      "en": "The First Dialogue",
-      "gender": "m",
-      "au": "1_1a_hiwar.mp3"
-    },
-    {
-      "id": "1_1a_01",
-      "ar": "السَّلَامُ عَلَيْكُمْ",
-      "en": "Peace be upon you",
-      "gender": "m",
-      "common": true,
-      "au": "1_1a_salam.mp3"
-    },
-    {
-      "id": "1_1a_02",
-      "ar": "وَعَلَيْكُمُ السَّلَامُ",
-      "en": "And upon you be peace",
-      "gender": "m",
-      "common": true,
-      "au": "1_1a_waalaykum.mp3",
-      "notes": "The 'و' (wa) at the beginning simply means 'and'."
-    },
-    {
-      "id": "1_1a_03",
-      "ar": "اسْمِي خَالِدٌ",
-      "en": "My name is Khalid",
-      "gender": "m",
-      "au": "1_1a_khalid.mp3",
-      "notes": "The '-ِي' (-i) sound attached to the end of 'اسْم' (ism) means 'my'."
-    },
-    {
-      "id": "1_1a_04",
-      "ar": "مَا اسْمُكَ؟",
-      "en": "What is your name?",
-      "gender": "m",
-      "hint": "to a man",
-      "au": "1_1a_masmuka.mp3",
-      "notes": "The '-كَ' (-ka) ending means 'your' when talking to a man."
-    },
-    {
-      "id": "1_1a_05",
-      "ar": "اسْمِي خَلِيلٌ",
-      "en": "My name is Khalil",
-      "gender": "m",
-      "au": "1_1a_khalil.mp3"
-    },
-    {
-      "id": "1_1a_06",
-      "ar": "كَيْفَ حَالُكَ؟",
-      "en": "How are you?",
-      "gender": "m",
-      "hint": "to a man",
-      "au": "1_1a_haluka.mp3",
-      "notes": "'حَال' means condition or health, and the '-كَ' (-ka) ending addresses a man."
-    },
-    {
-      "id": "1_1a_07",
-      "ar": "بِخَيْرٍ، وَالْحَمْدُ لِلَّهِ",
-      "en": "Fine, praise be to Allah",
-      "gender": "m",
-      "au": "1_1a_bikhayr.mp3",
-      "notes": "'بِـ' (bi-) means 'with' or 'in', and 'خَيْر' means 'goodness'."
-    },
-    {
-      "id": "1_1a_08",
-      "ar": "وَكَيْفَ حَالُكَ أَنْتَ؟",
-      "en": "And how are you?",
-      "gender": "m",
-      "hint": "to a man",
-      "au": "1_1a_anta.mp3",
-      "notes": "Adding 'أَنْتَ' (anta - 'you') at the end adds extra emphasis: 'And how are YOU?'"
-    },
-    {
-      "id": "1_1a_09",
-      "ar": "بِخَيْرٍ، وَالْحَمْدُ لِلَّهِ",
-      "en": "Good, all praise be to Allah",
-      "gender": "m",
-      "au": "1_1a_bikhayr.mp3"
-    }
-  ]
-}
+[
+  {
+    "lessonId": "ABY 1-1a",
+    "unit": 1,
+    "topic": "Greetings & Introductions",
+    "title": "Greetings (Male)",
+    "dialogueAudio": "1_1a_full.mp3",
+    "phrases": [
+      {
+        "id": "1_1a_00",
+        "ar": "الْحِوَارُ الْأَوَّلُ",
+        "en": "The First Dialogue",
+        "gender": "m",
+        "au": "1_1a_hiwar.mp3"
+      },
+      {
+        "id": "1_1a_01",
+        "ar": "السَّلَامُ عَلَيْكُمْ",
+        "en": "Peace be upon you",
+        "gender": "m",
+        "common": true,
+        "au": "1_1a_salam.mp3"
+      },
+      {
+        "id": "1_1a_02",
+        "ar": "وَعَلَيْكُمُ السَّلَامُ",
+        "en": "And upon you be peace",
+        "gender": "m",
+        "common": true,
+        "au": "1_1a_waalaykum.mp3",
+        "notes": "The 'و' (wa) at the beginning simply means 'and'."
+      },
+      {
+        "id": "1_1a_03",
+        "ar": "اسْمِي خَالِدٌ",
+        "en": "My name is Khalid",
+        "gender": "m",
+        "au": "1_1a_khalid.mp3",
+        "notes": "The '-ِي' (-i) sound attached to the end of 'اسْم' (ism) means 'my'."
+      },
+      {
+        "id": "1_1a_04",
+        "ar": "مَا اسْمُكَ؟",
+        "en": "What is your name?",
+        "gender": "m",
+        "hint": "to a man",
+        "au": "1_1a_masmuka.mp3",
+        "notes": "The '-كَ' (-ka) ending means 'your' when talking to a man."
+      },
+      {
+        "id": "1_1a_05",
+        "ar": "اسْمِي خَلِيلٌ",
+        "en": "My name is Khalil",
+        "gender": "m",
+        "au": "1_1a_khalil.mp3"
+      },
+      {
+        "id": "1_1a_06",
+        "ar": "كَيْفَ حَالُكَ؟",
+        "en": "How are you?",
+        "gender": "m",
+        "hint": "to a man",
+        "au": "1_1a_haluka.mp3",
+        "notes": "'حَال' means condition or health, and the '-كَ' (-ka) ending addresses a man."
+      },
+      {
+        "id": "1_1a_07",
+        "ar": "بِخَيْرٍ، وَالْحَمْدُ لِلَّهِ",
+        "en": "Fine, praise be to Allah",
+        "gender": "m",
+        "au": "1_1a_bikhayr.mp3",
+        "notes": "'بِـ' (bi-) means 'with' or 'in', and 'خَيْر' means 'goodness'."
+      },
+      {
+        "id": "1_1a_08",
+        "ar": "وَكَيْفَ حَالُكَ أَنْتَ؟",
+        "en": "And how are you?",
+        "gender": "m",
+        "hint": "to a man",
+        "au": "1_1a_anta.mp3",
+        "notes": "Adding 'أَنْتَ' (anta - 'you') at the end adds extra emphasis: 'And how are YOU?'"
+      },
+      {
+        "id": "1_1a_09",
+        "ar": "بِخَيْرٍ، وَالْحَمْدُ لِلَّهِ",
+        "en": "Fine, praise be to Allah",
+        "gender": "m",
+        "au": "1_1a_bikhayr.mp3"
+      }
+    ]
+  },
+  {
+    "lessonId": "ABY 1-1b",
+    "unit": 1,
+    "topic": "Greetings & Introductions",
+    "title": "Greetings (Female)",
+    "dialogueAudio": "1_1b_full.mp3",
+    "phrases": [
+      {
+        "id": "1_1b_00",
+        "ar": "الْحِوَارُ الْأَوَّلُ",
+        "en": "The First Dialogue",
+        "gender": "f",
+        "au": "1_1b_hiwar.mp3"
+      },
+      {
+        "id": "1_1b_01",
+        "ar": "السَّلَامُ عَلَيْكُمْ",
+        "en": "Peace be upon you",
+        "gender": "f",
+        "common": true,
+        "au": "1_1b_salam.mp3"
+      },
+      {
+        "id": "1_1b_02",
+        "ar": "وَعَلَيْكُمُ السَّلَامُ",
+        "en": "And upon you be peace",
+        "gender": "f",
+        "common": true,
+        "au": "1_1b_waalaykum.mp3"
+      },
+      {
+        "id": "1_1b_03",
+        "ar": "اسْمِي خَوْلَةُ",
+        "en": "My name is Khawlah",
+        "gender": "f",
+        "au": "1_1b_khawlah.mp3"
+      },
+      {
+        "id": "1_1b_04",
+        "ar": "مَا اسْمُكِ؟",
+        "en": "What is your name?",
+        "gender": "f",
+        "hint": "to a woman",
+        "au": "1_1b_masmuki.mp3",
+        "notes": "Notice the ending changed from '-كَ' (-ka) to '-كِ' (-ki) to address a woman."
+      },
+      {
+        "id": "1_1b_05",
+        "ar": "اسْمِي خَدِيجَةُ",
+        "en": "My name is Khadijah",
+        "gender": "f",
+        "au": "1_1b_khadijah.mp3"
+      },
+      {
+        "id": "1_1b_06",
+        "ar": "كَيْفَ حَالُكِ؟",
+        "en": "How are you?",
+        "gender": "f",
+        "hint": "to a woman",
+        "au": "1_1b_haluki.mp3",
+        "notes": "The '-كِ' (-ki) ending here is used instead of '-كَ' (-ka) because we are speaking to a woman."
+      },
+      {
+        "id": "1_1b_07",
+        "ar": "بِخَيْرٍ، وَالْحَمْدُ لِلَّهِ",
+        "en": "Fine, praise be to Allah",
+        "gender": "f",
+        "au": "1_1b_bikhayr.mp3"
+      },
+      {
+        "id": "1_1b_08",
+        "ar": "وَكَيْفَ حَالُكِ أَنْتِ؟",
+        "en": "And how are you?",
+        "gender": "f",
+        "hint": "to a woman",
+        "au": "1_1b_anti.mp3",
+        "notes": "The word 'أَنْتِ' (anti) means 'you' for a woman (compared to 'أَنْتَ' / anta for a man)."
+      },
+      {
+        "id": "1_1b_09",
+        "ar": "بِخَيْرٍ، وَالْحَمْدُ لِلَّهِ",
+        "en": "Fine, praise be to Allah",
+        "gender": "f",
+        "au": "1_1b_bikhayr.mp3"
+      }
+    ]
+  }
+]
