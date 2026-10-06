@@ -1,17 +1,42 @@
 // sw.js
 
 // Bump this version number whenever you change your files
-const CACHE_NAME = 'safar-cache-v7';
+const CACHE_NAME = 'safar-cache-v8';
 
 const ASSETS_TO_CACHE = [
-  // --- Core App Files ---
   './',
   './index.html',
   './styles.css',
   './demo.html',
-  
-  // --- JavaScript Files ---
-  './js/ambient.js'
+  './audio/01_10_01.mp3',
+  './audio/01_10_01_01.mp3',
+  './audio/01_10_01_02.mp3',
+  './audio/01_10_01_03.mp3',
+  './audio/01_10_01_04.mp3',
+  './audio/01_10_01_05.mp3',
+  './audio/01_10_01_06.mp3',
+  './audio/01_10_01_07.mp3',
+  './audio/01_10_01_08.mp3',
+  './audio/01_10_01_09.mp3',
+  './audio/01_10_01_10.mp3',
+  './audio/01_10_01_11.mp3',
+  './audio/01_10_01_12.mp3',
+  './audio/01_10_01_13.mp3',
+  './audio/01_10_01_14.mp3',
+  './audio/01_10_01_15.mp3',
+  './audio/01_10_01_16.mp3',
+  './audio/01_10_01_17.mp3',
+  './audio/01_10_01_18.mp3',
+  './audio/1_11_full.mp3',
+  './audio/1_1a_full.mp3',
+  './audio/1_1b_full.mp3',
+  './audio/1_1numbers_full.mp3',
+  './audio/1_2a_full.mp3',
+  './audio/1_2b_full.mp3',
+  './audio/1_3a_full.mp3',
+  './audio/1_3b_full.mp3',
+  './extras/favicon.png',
+  './js/ambient.js',
   './js/audio.js',
   './js/boot.js',
   './js/config.js',
@@ -19,7 +44,7 @@ const ASSETS_TO_CACHE = [
   './js/draw.js',
   './js/enemies.js',
   './js/flow.js',
-  './js/guide.js'
+  './js/guide.js',
   './js/input.js',
   './js/lessons.js',
   './js/loop.js',
@@ -29,39 +54,15 @@ const ASSETS_TO_CACHE = [
   './js/storage.js',
   './js/story.js',
   './js/study.js',
-  
-  // --- Lesson Data (from your screenshot) ---
-  './lessons/aby1_10.json'
-  './lessons/aby1_1_numbers.json'
+  './lessons/aby1_10.json',
+  './lessons/aby1_1_numbers.json',
   './lessons/aby1_1a.json',
   './lessons/aby1_1b.json',
   './lessons/aby1_2a.json',
   './lessons/aby1_2b.json',
-  './lessons/aby1_3a.json'
-  './lessons/aby1_3b.json'
-  './lessons/manifest.json',
-  
-  // --- Full Dialogue Audio (from your screenshot) ---
-  './audio/1_10_full.mp3'
-  './audio/1_11_full.mp3'
-  './audio/1_1a_full.mp3',
-  './audio/1_1b_full.mp3',
-  './audio/1_1numbers_full.mp3'
-  './audio/1_2a_full.mp3',
-  './audio/1_2b_full.mp3',
-  './audio/1_3a_full.mp3'
-  './audio/1_3b_full.mp3'
-
-  // --- Individual Phrase Audio ---
-  // IMPORTANT: You need to add the individual .mp3 files here.
-  // For example:
-  // './audio/1_1a_salam.mp3',
-  // './audio/1_1a_waalaykum.mp3',
-  // './audio/1_1a_khalid.mp3',
-  // ... and so on for every phrase in your JSON files.
-  
-  // --- Icons / Extras ---
-  './extras/favicon.png'
+  './lessons/aby1_3a.json',
+  './lessons/aby1_3b.json',
+  './lessons/manifest.json'
 ];
 
 // 1. The 'install' event
