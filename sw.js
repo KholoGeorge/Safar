@@ -1,7 +1,7 @@
 // sw.js
 
 // Bump this version number whenever you change your files
-const CACHE_NAME = 'safar-cache-v8';
+const CACHE_NAME = 'safar-cache-v10';
 
 const ASSETS_TO_CACHE = [
   './',
