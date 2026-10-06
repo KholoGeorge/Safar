@@ -1,7 +1,7 @@
 // sw.js
 
 // Bump this version number whenever you change your files
-const CACHE_NAME = 'safar-cache-v6';
+const CACHE_NAME = 'safar-cache-v7';
 
 const ASSETS_TO_CACHE = [
   // --- Core App Files ---
@@ -19,6 +19,7 @@ const ASSETS_TO_CACHE = [
   './js/draw.js',
   './js/enemies.js',
   './js/flow.js',
+  './js/guide.js'
   './js/input.js',
   './js/lessons.js',
   './js/loop.js',

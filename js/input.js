@@ -47,6 +47,8 @@ window.addEventListener('contextmenu', (e) => { if (G.running) e.preventDefault(
 // ============================================================
 //  TOUCH CONTROLS
 // ============================================================
+let touchJoyActive = false;
+
 (function setupTouch() {
   if (!IS_TOUCH) return;
   document.body.classList.add('touch');
@@ -69,37 +71,37 @@ window.addEventListener('contextmenu', (e) => { if (G.running) e.preventDefault(
   }
 
   function showGhost(text, x, y) {
-  ghostBtn.textContent = text;
-  ghostBtn.style.left = x + 'px';
-  ghostBtn.style.top  = y + 'px';
-  ghostBtn.animate(
-    [
-      { opacity: 0.95, transform: 'scale(0.85)' },
-      { opacity: 0,    transform: 'scale(1.15)' },
-    ],
-    { duration: 450, easing: 'ease-out' }
-  );
-}
+    ghostBtn.textContent = text;
+    ghostBtn.style.left = x + 'px';
+    ghostBtn.style.top  = y + 'px';
+    ghostBtn.animate(
+      [
+        { opacity: 0.95, transform: 'scale(0.85)' },
+        { opacity: 0,    transform: 'scale(1.15)' },
+      ],
+      { duration: 450, easing: 'ease-out' }
+    );
+  }
 
   function fireAction(name, e) {
     if (!G.running || G.paused) return;
     const node = nearDiscoveryNode(e.clientX, e.clientY);
     if (node) { openDiscovery(node); return; }
-    if (G.roomType === 'explore') return;   // no combat in quiet rooms
+    if (G.roomType === 'explore') return;
     showGhost(name === 'staff' ? 'STAFF' : 'BLAST', e.clientX, e.clientY);
     if (name === 'staff') { aimAssist(); tryStaff(); }
     else                  { tryBurst(); }
   }
 
   actionTop.addEventListener('pointerdown', (e) => {
-  e.preventDefault(); e.stopPropagation();
-  fireAction('blast', e);
-}, { passive: false });
+    e.preventDefault(); e.stopPropagation();
+    fireAction('blast', e);
+  }, { passive: false });
 
-actionBottom.addEventListener('pointerdown', (e) => {
-  e.preventDefault(); e.stopPropagation();
-  fireAction('staff', e);
-}, { passive: false });
+  actionBottom.addEventListener('pointerdown', (e) => {
+    e.preventDefault(); e.stopPropagation();
+    fireAction('staff', e);
+  }, { passive: false });
 
   // ---------- Floating joystick ----------
   function start(e) {
@@ -130,10 +132,11 @@ actionBottom.addEventListener('pointerdown', (e) => {
     const nx = kx / JOY_MAX_R;
     const ny = ky / JOY_MAX_R;
     const mag = Math.hypot(nx, ny);
-    if (mag < JOY_DEAD) { G.joy = null; G.keys.sprint = false; return; }
+    if (mag < JOY_DEAD) { G.joy = null; return; }
     const m = Math.min(1, (mag - JOY_DEAD) / (1 - JOY_DEAD));
     G.joy = { x: nx / mag * m, y: ny / mag * m, m, source: 'touch' };
-    G.keys.sprint = mag > JOY_SPRINT;
+    // Sprint is no longer inferred from stick magnitude on touch —
+    // the SPRINT toggle button controls it instead.
   }
 
   function end(e) {
@@ -141,7 +144,6 @@ actionBottom.addEventListener('pointerdown', (e) => {
     joyId = null;
     touchJoyActive = false;
     G.joy = null;
-    G.keys.sprint = false;
     knob.style.transform = 'translate(0, 0)';
     base.classList.remove('active');
   }
@@ -155,6 +157,19 @@ actionBottom.addEventListener('pointerdown', (e) => {
     initAudio();
     if (ac && ac.state === 'suspended') ac.resume();
   }, { once: true });
+
+  // ---------- Sprint toggle ----------
+  const sprintBtn = $('sprintBtn');
+  if (sprintBtn) {
+    sprintBtn.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      G.touchSprint = !G.touchSprint;
+      G.keys.sprint = G.touchSprint;
+      sprintBtn.classList.toggle('active', G.touchSprint);
+      navigator.vibrate?.(8);
+    }, { passive: false });
+  }
 })();
 
 // ============================================================
@@ -166,11 +181,9 @@ const GamepadInput = {
   connected: false,
   prevButtons: [],
   dpadKeys: { up: false, down: false, left: false, right: false },
-  dead: 0.22,     // left-stick deadzone
-  sprint: 0.72,   // push past this to sprint
+  dead: 0.22,
+  sprint: 0.72,
 };
-
-let touchJoyActive = false;   // set by the touch IIFE below
 
 window.addEventListener('gamepadconnected', (e) => {
   GamepadInput.index = e.gamepad.index;
@@ -194,9 +207,6 @@ window.addEventListener('gamepaddisconnected', (e) => {
   setStatus('Controller lost', '', 'warn', 2000);
 });
 
-// Some browsers (Firefox in particular) don't fire `gamepadconnected`
-// until the user presses a button. This polls the raw list so we always
-// find a live pad.
 function activeGamepad() {
   const pads = navigator.getGamepads ? navigator.getGamepads() : [];
   if (GamepadInput.index !== null) {
@@ -229,9 +239,6 @@ function pollGamepad() {
   const gp = activeGamepad();
   if (!gp) return;
 
-  // ---------- Analog sticks ----------
-  // Left stick feeds the same G.joy channel as the touch joystick, so
-  // movement code in player.js stays untouched. Touch finger wins.
   const lx = gp.axes[0] || 0;
   const ly = gp.axes[1] || 0;
   const lmag = Math.hypot(lx, ly);
@@ -247,14 +254,12 @@ function pollGamepad() {
     }
   }
 
-  // Right stick aims the player independently of movement.
   const rx = gp.axes[2] || 0;
   const ry = gp.axes[3] || 0;
   if (Math.hypot(rx, ry) > GamepadInput.dead && G.player) {
     G.player.angle = Math.atan2(ry, rx);
   }
 
-  // ---------- D-pad (digital movement) ----------
   const dUp    = padPressed(gp, 12);
   const dDown  = padPressed(gp, 13);
   const dLeft  = padPressed(gp, 14);
@@ -268,7 +273,6 @@ function pollGamepad() {
     G.keys.left = dLeft; G.keys.right = dRight;
     GamepadInput.dpadKeys = { up: dUp, down: dDown, left: dLeft, right: dRight };
   } else if (dpadWas) {
-    // Only clear the keys the D-pad actually set — don't stomp the keyboard.
     if (GamepadInput.dpadKeys.up)    G.keys.up = false;
     if (GamepadInput.dpadKeys.down)  G.keys.down = false;
     if (GamepadInput.dpadKeys.left)  G.keys.left = false;
@@ -276,7 +280,6 @@ function pollGamepad() {
     GamepadInput.dpadKeys = { up: false, down: false, left: false, right: false };
   }
 
-  // ---------- Edge-press detection (once per frame) ----------
   const justA     = padJustPressed(gp, 0);
   const justB     = padJustPressed(gp, 1);
   const justX     = padJustPressed(gp, 2);
@@ -286,7 +289,6 @@ function pollGamepad() {
   const holdRB    = padPressed(gp, 5);
   if (holdLB || holdRB) G.keys.sprint = true;
 
-  // ---------- Route: menus vs. live gameplay ----------
   const inMenu = !G.running || G.paused || G.userPaused;
 
   if (inMenu && (justA || justStart)) {
@@ -312,14 +314,11 @@ function pollGamepad() {
     }
   }
 
-  // ---------- Save edge state for next frame ----------
   for (let i = 0; i < gp.buttons.length; i++) {
     GamepadInput.prevButtons[i] = padPressed(gp, i);
   }
 }
 
-// Fire the primary action of whatever screen is currently visible.
-// Returns true if the press was consumed.
 function gamepadMenuAction() {
   if (dialogueScreen.classList.contains('show')) { advanceDialogue(); return true; }
 

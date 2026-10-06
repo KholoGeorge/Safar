@@ -40,7 +40,7 @@
       <div class="boss-bar-label" id="bossLabel">Boss</div>
       <div class="boss-bar-track"><div class="boss-bar-fill" id="bossFill" style="width:100%"></div></div>
     </div>
-  
+
     <div class="disc-prompt" id="discPrompt">Press K · Tap to inspect</div>
 
     <div class="hud-bottom">
@@ -64,6 +64,7 @@
         Awaiting orders
         <div class="sub">WASD · SHIFT sprint · SPACE dash · J staff · K burst</div>
       </div>
+      <button class="sprint-btn" id="sprintBtn" title="Toggle sprint">SPRINT</button>
       <button class="pause-btn" id="pauseBtn" title="Pause (Esc)">⏸</button>
     </div>
   </div>
@@ -88,7 +89,7 @@
     </div>
   </div>
 
-    <!-- MANUAL -->
+  <!-- MANUAL -->
   <div class="screen" id="manualScreen">
     <div class="title-main" style="font-size:44px;">FIELD MANUAL</div>
     <div class="title-sub">Read this before you deploy</div>
@@ -107,7 +108,7 @@
           <div class="manual-item"><span class="key">SHIFT</span><span class="desc">Hold to <b>sprint</b>. Drains stamina.</span></div>
           <div class="manual-item"><span class="key">SPACE</span><span class="desc">Tap to <b>dash</b>. Costs 34 stamina.</span></div>
           <div class="manual-item"><span class="key">ESC</span><span class="desc"><b>Pause</b> the run.</span></div>
-          <div class="manual-item"><span class="key">TOUCH</span><span class="desc">Left thumb <b>joystick</b>. Push far to sprint.</span></div>
+          <div class="manual-item"><span class="key">TOUCH</span><span class="desc">Left thumb <b>joystick</b>. Tap <b>SPRINT</b> to run.</span></div>
         </div>
         <div class="manual-col">
           <h3>Combat</h3>
@@ -116,33 +117,32 @@
           <div class="manual-item"><span class="key">TOUCH</span><span class="desc">Right thumb: <b>DASH · STAFF · BURST</b>.</span></div>
         </div>
         <div class="manual-col">
-        <h3>Controller</h3>
+          <h3>Controller</h3>
           <div class="manual-item"><span class="key">LEFT STICK</span><span class="desc">Walk. Push far to <b>sprint</b>.</span></div>
           <div class="manual-item"><span class="key">RIGHT STICK</span><span class="desc">Aim your staff independently.</span></div>
           <div class="manual-item"><span class="key">D-PAD</span><span class="desc">Alternative movement.</span></div>
-          <div class="manual-item"><span class="key">A / ✕</span><span class="desc"><b>Staff swing</b> — or inspect a discovery in quiet rooms.</span></div>
+          <div class="manual-item"><span class="key">A / ✕</span><span class="desc"><b>Staff swing</b> — or inspect a discovery.</span></div>
           <div class="manual-item"><span class="key">B / ○</span><span class="desc"><b>Dash</b>.</span></div>
-          <div class="manual-item"><span class="key">X / □</span><span class="desc"><b>Light burst</b> — or inspect in quiet rooms.</span></div>
+          <div class="manual-item"><span class="key">X / □</span><span class="desc"><b>Light burst</b> — or inspect.</span></div>
           <div class="manual-item"><span class="key">Y / △</span><span class="desc"><b>Inspect</b> a nearby discovery.</span></div>
           <div class="manual-item"><span class="key">LB / RB</span><span class="desc">Hold to sprint.</span></div>
-          <div class="manual-item"><span class="key">START</span><span class="desc">Pause. Also advances story, review & study cards.</span></div>
+          <div class="manual-item"><span class="key">START</span><span class="desc">Pause. Advances story, review & study cards.</span></div>
         </div>
         <div class="manual-col">
           <h3>The Road</h3>
           <div class="manual-item"><span class="key">GATES</span><span class="desc">Doors on both walls, alternating. Step into the one matching the target.</span></div>
           <div class="manual-item"><span class="key">HINTS</span><span class="desc">Some phrases say who they're addressed to — <b>to a man</b> or <b>to a woman</b>.</span></div>
-          <div class="manual-item"><span class="key">STRIPES</span><span class="desc">A blue stripe on the gate means masculine. A rose stripe means feminine.</span></div>
-          <div class="manual-item"><span class="key">ORBS</span><span class="desc"><b>Drifters</b> chase. <b>Chargers</b> lunge. <b>Splitters</b> divide. They return after 10s.</span></div>
+          <div class="manual-item"><span class="key">ORBS</span><span class="desc"><b>Drifters</b> chase. <b>Chargers</b> lunge. <b>Splitters</b> divide.</span></div>
           <div class="manual-item"><span class="key">COMBO</span><span class="desc">Chain correct gates for a multiplier. Mistakes break it.</span></div>
           <div class="manual-item"><span class="key">STORM</span><span class="desc">Rises from below. Climb out, or it takes you.</span></div>
-          <div class="manual-item"><span class="key">BOSS</span><span class="desc">The Shadow Throne waits at the end. Falls back after 10 seconds if you linger.</span></div>
+          <div class="manual-item"><span class="key">BOSS</span><span class="desc">The Shadow Throne waits at the end.</span></div>
           <div class="manual-item"><span class="key">REVIEW</span><span class="desc">Between rooms, phrases you met are shown. Tap to continue.</span></div>
         </div>
         <div class="manual-col">
           <h3>Exploration</h3>
-          <div class="manual-item"><span class="key">QUIET ROOMS</span><span class="desc">Some rooms have no enemies and no storm. Walk, breathe, look around.</span></div>
+          <div class="manual-item"><span class="key">QUIET ROOMS</span><span class="desc">Some rooms have no enemies and no storm.</span></div>
           <div class="manual-item"><span class="key">DISCOVERIES</span><span class="desc">Glowing nodes hold a phrase. Walk near, press <b>K</b> or tap to inspect.</span></div>
-          <div class="manual-item"><span class="key">EXIT</span><span class="desc">The arrow at the top is always open. Leave when you're ready.</span></div>
+          <div class="manual-item"><span class="key">EXIT</span><span class="desc">The arrow at the top is always open.</span></div>
         </div>
       </div>
     </div>
@@ -179,10 +179,13 @@
       5 rooms. Read fast, fight hard. The boss waits in the dark.
     </div>
     <div class="btn-row">
-  <button class="btn ghost" id="backHomeBtn">Back</button>
-  <button class="btn" id="studyBtn">Study</button>
-  <button class="btn" id="startBtn">Deploy</button>
-  </div>
+      <button class="btn ghost" id="backHomeBtn">Back</button>
+      <button class="btn" id="studyBtn">Study</button>
+      <button class="btn" id="startBtn">Deploy</button>
+    </div>
+    <button class="brief-guide-link" id="briefGuideLink">
+      New to shadowing? How do I know when I'm done? →
+    </button>
   </div>
 
   <div class="screen overlay" id="upgradeScreen">
@@ -230,56 +233,114 @@
       <button class="btn" id="dlgNext">Continue</button>
       <button class="btn ghost" id="dlgSkip">Skip Story</button>
     </div>
-  
+  </div>
+
+  <div class="screen overlay" id="pauseScreen">
+    <div class="title-main" style="font-size:44px;">PAUSED</div>
+    <div class="title-sub">Take a breath</div>
+    <div class="divider"></div>
+    <div class="btn-row">
+      <button class="btn gold" id="pauseResume">Resume</button>
+      <button class="btn ghost" id="pauseQuit">Quit to Routes</button>
+    </div>
+  </div>
+
+  <div class="screen" id="reviewScreen">
+    <div class="review-header">ROOM CLEARED</div>
+    <div class="review-location" id="reviewFrom">—</div>
+    <div class="review-list" id="reviewList"></div>
+    <div class="review-next">Next<b id="reviewTo">—</b></div>
+    <div class="review-hint">tap to continue</div>
+  </div>
+
+  <div class="screen overlay" id="discoveryScreen">
+    <div class="disc-scene" id="discScene">—</div>
+    <div class="disc-ar" id="discAr">—</div>
+    <div class="disc-en" id="discEn">—</div>
+    <div class="disc-audio-row">
+      <button class="disc-audio" id="discAudio">🔊 Hear it</button>
+    </div>
+    <div class="disc-hint">tap anywhere to continue</div>
+  </div>
+
+    <!-- STUDY GUIDE -->
+  <div class="screen overlay" id="guideScreen">
+    <button class="guide-exit" id="guideExit" title="Close">✕</button>
+    <div class="guide-content">
+      <div class="guide-kicker">WHEN AM I DONE?</div>
+      <div class="guide-title">The Arguelles test</div>
+      <div class="guide-lede">
+        There is no number. Two subjective signals tell you when a text has given
+        you everything it has.
       </div>
-  
-        <div class="screen overlay" id="pauseScreen">
-        <div class="title-main" style="font-size:44px;">PAUSED</div>
-        <div class="title-sub">Take a breath</div>
-        <div class="divider"></div>
-        <div class="btn-row">
-          <button class="btn gold" id="pauseResume">Resume</button>
-          <button class="btn ghost" id="pauseQuit">Quit to Routes</button>
+
+      <div class="guide-section">
+        <div class="guide-h">1 · The plateau</div>
+        <p>
+          Shadow the text <b>until you stop noticing change</b>. Early passes
+          sharpen a consonant, fix a vowel length, land a liaison. Later passes
+          feel identical. That stillness is the signal, not a failure.
+        </p>
+      </div>
+
+      <div class="guide-section">
+        <div class="guide-h">2 · The shower test</div>
+        <p>
+          Can you run the whole dialogue in your head — <b>in order, without
+          looking</b> — while doing something else? Walking, washing dishes,
+          standing in the shower. If you blank at the third line, you're not
+          there yet. One more day closes the gap.
+        </p>
+      </div>
+
+      <div class="guide-section">
+        <div class="guide-h">The rhythm</div>
+        <div class="guide-days">
+          <div class="guide-day"><b>Day 1–3</b><span>Every pass changes something. Keep going.</span></div>
+          <div class="guide-day"><b>Day 4–6</b><span>Change slows. One pass feels like the last. Keep going.</span></div>
+          <div class="guide-day"><b>Day 7</b><span>No change. Take the shower test. If you pass it, move on.</span></div>
         </div>
       </div>
 
-      <div class="screen" id="reviewScreen">
-  <div class="review-header">ROOM CLEARED</div>
-  <div class="review-location" id="reviewFrom">—</div>
-  <div class="review-list" id="reviewList"></div>
-  <div class="review-next">Next<b id="reviewTo">—</b></div>
-  <div class="review-hint">tap to continue</div>
-</div>
-  
-  <div class="screen overlay" id="discoveryScreen">
-  <div class="disc-scene" id="discScene">—</div>
-  <div class="disc-ar" id="discAr">—</div>
-  <div class="disc-en" id="discEn">—</div>
-  <div class="disc-audio-row">
-    <button class="disc-audio" id="discAudio">🔊 Hear it</button>
-  </div>
-  <div class="disc-hint">tap anywhere to continue</div>
-</div>
+      <div class="guide-section">
+        <div class="guide-h">The caveat</div>
+        <p>
+          <b>Boredom is not a plateau.</b> If you've stopped improving <i>and</i>
+          you dread opening Study mode again, the text is done. Grinding a
+          dialogue you're sick of teaches you nothing. Move on.
+        </p>
+      </div>
 
-<!-- LOADING -->
-<div class="screen overlay" id="loadingScreen">
-  <div class="loading-title" id="loadingTitle">—</div>
-  <div class="loading-sub" id="loadingSub">—</div>
-  <div class="loading-bar"><div class="loading-bar-fill"></div></div>
-</div>
+      <div class="guide-close">
+        That's the bar. Not a number. A feeling of stillness, confirmed by a shower.
+      </div>
 
-<!-- STUDY -->
-<div class="screen" id="studyScreen" data-phase="blind">
-  <button class="study-exit" id="studyExit" title="Exit study">✕</button>
-  <div class="study-content" id="studyContent"></div>
-  <div class="study-bottom">
-    <button class="study-replay" id="studyReplay" title="Replay audio">🔊</button>
-    <div class="study-phase-hint" id="studyPhaseHint">Listen</div>
-    <div class="study-progress" id="studyProgress">1 / 1</div>
-    <button class="study-skip" id="studySkip">Skip</button>
+      <div class="btn-row" style="margin-top:24px;">
+        <button class="btn" id="guideBackBtn">Back</button>
+      </div>
+    </div>
   </div>
-  <div class="study-tap-hint">tap anywhere to continue</div>
-</div>
+
+  <!-- LOADING -->
+  <div class="screen overlay" id="loadingScreen">
+    <div class="loading-title" id="loadingTitle">—</div>
+    <div class="loading-sub" id="loadingSub">—</div>
+    <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+  </div>
+
+  <!-- STUDY -->
+  <div class="screen" id="studyScreen" data-phase="blind">
+    <button class="study-exit" id="studyExit" title="Exit study">✕</button>
+    <button class="study-help" id="studyHelp" title="When am I done?">When am I done?</button>
+    <div class="study-content" id="studyContent"></div>
+    <div class="study-bottom">
+      <button class="study-replay" id="studyReplay" title="Replay audio">🔊</button>
+      <div class="study-phase-hint" id="studyPhaseHint">Listen</div>
+      <div class="study-progress" id="studyProgress">1 / 1</div>
+      <button class="study-skip" id="studySkip">Skip</button>
+    </div>
+    <div class="study-tap-hint">tap anywhere to continue</div>
+  </div>
 
   <div class="touch-controls" id="touchControls">
     <div class="joy-zone" id="joyZone"></div>

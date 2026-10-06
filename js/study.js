@@ -158,6 +158,7 @@ $('studyScreen').addEventListener('pointerup', (e) => {
   if (e.target.closest('#studyReplay')) return;
   if (e.target.closest('#studyExit')) return;
   if (e.target.closest('#studySkip')) return;
+  if (e.target.closest('#studyHelp')) return;
   // On the full-text phase, don't advance when the user scrolls.
   // Only advance on explicit tap of the bottom bar area or a small tap.
   if (StudyState.active && STUDY_PHASES[StudyState.phase].view === 'full') {

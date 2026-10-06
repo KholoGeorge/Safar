@@ -1,13 +1,12 @@
 function showScreen(el) {
   [homeScreen, manualScreen, briefScreen, endScreen, upgradeScreen, chooseScreen,
-   dialogueScreen, reviewScreen, loadingScreen, studyScreen]
+   dialogueScreen, reviewScreen, loadingScreen, studyScreen, guideScreen]
     .filter(Boolean)
     .forEach(s => s.classList.remove('show'));
   if (el) el.classList.add('show');
 
-  // Ambient dust follows the home screen
-  if (el === homeScreen) startAmbient();
-  else stopAmbient();
+  if (el === homeScreen && typeof startAmbient === 'function') startAmbient();
+  else if (typeof stopAmbient === 'function') stopAmbient();
 }
 
 // ---- Loading card between rooms ----
@@ -41,7 +40,6 @@ function refreshHome() {
     return;
   }
 
-  // Nest: book → unit → lessons
   const books = new Map();
   for (const name of names) {
     const lesson = G.routes[name];
@@ -60,8 +58,6 @@ function refreshHome() {
     const units = books.get(bookNum);
     const unitNums = [...units.keys()].sort((a, b) => a - b);
 
-    // Book wrapper — <details> only if there's more than one book.
-    // Otherwise the book tier is noise.
     let bookContainer;
     if (multiBook) {
       bookContainer = document.createElement('details');
@@ -204,6 +200,9 @@ function startRun() {
   G.up = { speed: 1, regen: 1, range: 1, burstCd: 1, storm: 1 };
   G.paused = false; G.pausedMs = 0;
   G.keys = {};
+  G.touchSprint = false;
+  const _sb = $('sprintBtn');
+  if (_sb) _sb.classList.remove('active');
   G.startTime = nowMs();
   G.running = true;
   preloadLessonAudio(G.currentLesson);
@@ -291,7 +290,19 @@ $('pressOnBtn').onclick = () => {
   showLoading('Endless', 'Deeper into the dust', 1200, () => enterRoom(G.roomIdx));
 };
 
-// Study button — safe if the button is missing
+// ---------- Study guide bindings ----------
+const guideExitBtn = $('guideExit');
+if (guideExitBtn) guideExitBtn.onclick = closeGuide;
+
+const guideBackBtn = $('guideBackBtn');
+if (guideBackBtn) guideBackBtn.onclick = closeGuide;
+
+const studyHelpBtn = $('studyHelp');
+if (studyHelpBtn) studyHelpBtn.onclick = (e) => { e.stopPropagation(); openGuide('study'); };
+
+const briefGuideLink = $('briefGuideLink');
+if (briefGuideLink) briefGuideLink.onclick = (e) => { e.stopPropagation(); openGuide('brief'); };
+
 const studyBtn = $('studyBtn');
 if (studyBtn) {
   studyBtn.onclick = () => {
@@ -301,7 +312,6 @@ if (studyBtn) {
   };
 }
 
-// Mode rows
 modeRow.addEventListener('click', (e) => {
   const btn = e.target.closest('button');
   if (!btn) return;
@@ -327,7 +337,6 @@ difficultyRow.addEventListener('click', (e) => {
   G.difficulty = btn.dataset.diff;
 });
 
-// Reading row — its own listener, not nested
 const readingRowEl = $('readingRow');
 if (readingRowEl) {
   readingRowEl.addEventListener('click', (e) => {
@@ -339,7 +348,6 @@ if (readingRowEl) {
   });
 }
 
-// Replay buttons
 objReplay.addEventListener('click', (e) => {
   e.stopPropagation();
   if (G.targetGate) speakAr(G.targetGate.item);
