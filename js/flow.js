@@ -4,6 +4,10 @@ function showScreen(el) {
     .filter(Boolean)
     .forEach(s => s.classList.remove('show'));
   if (el) el.classList.add('show');
+
+  // Ambient dust follows the home screen
+  if (el === homeScreen) startAmbient();
+  else stopAmbient();
 }
 
 // ---- Loading card between rooms ----
@@ -36,19 +40,128 @@ function refreshHome() {
     lessonGrid.innerHTML = '<div style="color:#6a5a3d; font-family:monospace;">No routes found in lessons/.</div>';
     return;
   }
+
+  // Nest: book → unit → lessons
+  const books = new Map();
   for (const name of names) {
-    const route = G.routes[name];
-    const stat = G.stats[name];
-    const card = document.createElement('div');
-    card.className = 'lesson-card';
-    let meta = `${route.length} phrases`;
-    if (stat?.bestRooms != null) meta += ` · ${stat.bestRooms} rooms`;
-    if (stat?.bestScore) meta += ` · ${stat.bestScore} pts`;
-    card.innerHTML = `<div class="name"></div><div class="meta">${meta}</div>`;
-    card.querySelector('.name').textContent = name;
-    card.onclick = () => openBriefing(name, false);
-    lessonGrid.appendChild(card);
+    const lesson = G.routes[name];
+    const book = lesson.book || 1;
+    const unit = lesson.unit || 0;
+    if (!books.has(book)) books.set(book, new Map());
+    const units = books.get(book);
+    if (!units.has(unit)) units.set(unit, []);
+    units.get(unit).push({ name, lesson });
   }
+
+  const bookNums = [...books.keys()].sort((a, b) => a - b);
+  const multiBook = bookNums.length > 1;
+
+  for (const bookNum of bookNums) {
+    const units = books.get(bookNum);
+    const unitNums = [...units.keys()].sort((a, b) => a - b);
+
+    // Book wrapper — <details> only if there's more than one book.
+    // Otherwise the book tier is noise.
+    let bookContainer;
+    if (multiBook) {
+      bookContainer = document.createElement('details');
+      bookContainer.className = 'book-section';
+      bookContainer.open = loadBookOpen(bookNum);
+
+      const bookSummary = document.createElement('summary');
+      bookSummary.className = 'book-header';
+      const lessonCount = unitNums.reduce((n, u) => n + units.get(u).length, 0);
+      bookSummary.innerHTML = `
+        <span class="book-num">Book ${bookNum}</span>
+        <span class="book-count">${lessonCount} dialogue${lessonCount === 1 ? '' : 's'}</span>
+      `;
+      bookContainer.appendChild(bookSummary);
+
+      const bookBody = document.createElement('div');
+      bookBody.className = 'book-body';
+      bookContainer.appendChild(bookBody);
+      bookContainer.addEventListener('toggle', () => saveBookOpen(bookNum, bookContainer.open));
+      lessonGrid.appendChild(bookContainer);
+      bookContainer = bookBody;
+    } else {
+      bookContainer = lessonGrid;
+    }
+
+    for (const unitNum of unitNums) {
+      const lessons = units.get(unitNum).sort((a, b) => a.name.localeCompare(b.name));
+
+      const topicCounts = {};
+      for (const { lesson } of lessons) {
+        if (lesson.topic) topicCounts[lesson.topic] = (topicCounts[lesson.topic] || 0) + 1;
+      }
+      const topTopic = Object.entries(topicCounts).sort((a, b) => b[1] - a[1])[0];
+      const unitLabel = unitNum > 0 ? `Unit ${unitNum}` : 'Other';
+      const unitTopic = topTopic ? topTopic[0] : '';
+
+      const section = document.createElement('details');
+      section.className = 'unit-section';
+      section.open = loadUnitOpen(bookNum, unitNum, false);
+
+      const summary = document.createElement('summary');
+      summary.className = 'unit-header';
+      summary.innerHTML = `
+        <span class="unit-num">${unitLabel}</span>
+        ${unitTopic ? `<span class="unit-topic">${unitTopic}</span>` : ''}
+        <span class="unit-count">${lessons.length} dialogue${lessons.length === 1 ? '' : 's'}</span>
+      `;
+      section.appendChild(summary);
+      section.addEventListener('toggle', () => saveUnitOpen(bookNum, unitNum, section.open));
+
+      const grid = document.createElement('div');
+      grid.className = 'lesson-grid';
+
+      for (const { name, lesson } of lessons) {
+        const stat = G.stats[name];
+        const card = document.createElement('div');
+        card.className = 'lesson-card';
+        let meta = `${lesson.length} phrases`;
+        if (stat?.bestRooms != null) meta += ` · ${stat.bestRooms} rooms`;
+        if (stat?.bestScore) meta += ` · ${stat.bestScore} pts`;
+        card.innerHTML = `<div class="name"></div><div class="meta">${meta}</div>`;
+        card.querySelector('.name').textContent = name;
+        card.onclick = () => openBriefing(name, false);
+        grid.appendChild(card);
+      }
+
+      section.appendChild(grid);
+      bookContainer.appendChild(section);
+    }
+  }
+}
+
+// ---------- collapse state persistence ----------
+const UI_STATE_KEY = 'safar_ui_v1';
+function loadUIState() {
+  try { return JSON.parse(localStorage.getItem(UI_STATE_KEY) || '{}'); } catch (_) { return {}; }
+}
+function saveUIState(s) {
+  try { localStorage.setItem(UI_STATE_KEY, JSON.stringify(s)); } catch (_) {}
+}
+function loadBookOpen(book) {
+  const s = loadUIState();
+  return s.books && typeof s.books[book] === 'boolean' ? s.books[book] : false;
+}
+function saveBookOpen(book, open) {
+  const s = loadUIState();
+  s.books = s.books || {};
+  s.books[book] = open;
+  saveUIState(s);
+}
+function loadUnitOpen(book, unit, def) {
+  const s = loadUIState();
+  const key = `${book}:${unit}`;
+  return s.units && typeof s.units[key] === 'boolean' ? s.units[key] : def;
+}
+function saveUnitOpen(book, unit, open) {
+  const s = loadUIState();
+  s.units = s.units || {};
+  s.units[`${book}:${unit}`] = open;
+  saveUIState(s);
 }
 
 function openBriefing(name, daily = false) {
@@ -86,6 +199,7 @@ function startRun() {
   G.lastWrong = null;
   updateLastWrongPanel();
   G.seenThisRun = new Set();
+  G.advancing = false;
   G.maxStamina = 100;
   G.up = { speed: 1, regen: 1, range: 1, burstCd: 1, storm: 1 };
   G.paused = false; G.pausedMs = 0;
@@ -311,28 +425,45 @@ function showRoomReview(done) {
   setTimeout(reveal, 300);
 
   const totalTime = 500 + shown.length * 550 + 2200;
+  const revealDone = 300 + shown.length * 550 + 600;
+
+  let armed = false;
+  let downOnReview = false;
+  let handled = false;
+
+  function onDown() { downOnReview = true; }
+
+  function onUp() {
+    if (handled) return;
+    if (!armed) { downOnReview = false; return; }
+    if (!downOnReview) return;
+    downOnReview = false;
+    handled = true;
+    cleanup();
+    reviewScreen.classList.remove('show');
+    pauseOff();
+    done();
+  }
+
+  function cleanup() {
+    clearTimeout(timer);
+    reviewScreen.removeEventListener('pointerdown', onDown);
+    reviewScreen.removeEventListener('pointerup', onUp);
+  }
+
   const timer = setTimeout(() => {
+    if (handled) return;
+    handled = true;
+    cleanup();
     reviewScreen.classList.remove('show');
     pauseOff();
     done();
   }, totalTime);
 
-  const revealDone = 300 + shown.length * 550 + 600;
-  let armed = false;
-  let downOnReview = false;
-
   setTimeout(() => { armed = true; }, revealDone);
 
-  reviewScreen.addEventListener('pointerdown', () => { downOnReview = true; });
-  reviewScreen.addEventListener('pointerup', () => {
-    if (!armed) { downOnReview = false; return; }
-    if (!downOnReview) return;
-    downOnReview = false;
-    clearTimeout(timer);
-    reviewScreen.classList.remove('show');
-    pauseOff();
-    done();
-  });
+  reviewScreen.addEventListener('pointerdown', onDown);
+  reviewScreen.addEventListener('pointerup', onUp);
 }
 
 // ============================================================

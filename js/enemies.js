@@ -203,6 +203,7 @@ function updateTension(dt) {
 function checkRoomClear() {
   const p = G.player;
   if (!p) return;
+  if (G.advancing) return;
   if (p.y >= G.bounds.t + 40) return;
 
   if (G.roomType === 'explore') { advanceRoom(); return; }
@@ -214,6 +215,9 @@ function checkRoomClear() {
 }
 
 function advanceRoom() {
+  if (G.advancing) return;
+  G.advancing = true;
+
   const wasCombat = (G.roomType === 'combat' || G.roomType === 'boss');
   G.roomsCleared++;
   G.roomIdx++;
@@ -227,14 +231,22 @@ function advanceRoom() {
   updateLastWrongPanel();
 
   if (!G.endless && G.roomIdx >= G.rooms.length) {
+    G.advancing = false;
     if (G.daily) { endRun(true); return; }
     offerChoice();
     return;
   }
 
   showRoomReview(() => {
+    // Keep the game frozen across the loading card so the
+    // just-cleared room can't tick again.
+    pauseOn();
     const nextRoom = G.rooms[G.roomIdx];
     const nextName = nextRoom ? nextRoom.name : 'The road ahead';
-    showLoading(nextName, `Room ${G.roomIdx + 1}`, 1400, () => enterRoom(G.roomIdx));
+    showLoading(nextName, `Room ${G.roomIdx + 1}`, 1400, () => {
+      enterRoom(G.roomIdx);
+      G.advancing = false;
+      pauseOff();
+    });
   });
 }

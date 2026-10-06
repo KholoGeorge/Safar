@@ -42,6 +42,8 @@ async function loadOneLesson(file) {
       : (entry.name || file.replace(/\.json$/i, ''));
   phrases.lessonId = entry.lessonId || '';
   phrases.unit = entry.unit || 0;
+  phrases.topic = entry.topic || '';
+  phrases.book = entry.book || 1;
 
   return phrases;
 }

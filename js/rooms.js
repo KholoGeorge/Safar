@@ -112,6 +112,7 @@ function spawnDust(l, t, r, b) {
 
 function enterRoom(idx) {
   while (G.rooms.length <= idx) G.rooms.push(makeRoom(G.rooms.length));
+  G.advancing = false;
 
   const w = window.innerWidth, h = window.innerHeight;
   const topPad = IS_TOUCH ? Math.min(140, Math.round(h * 0.18)) : 118;

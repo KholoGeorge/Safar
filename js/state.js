@@ -46,6 +46,7 @@ const G = {
   bossKilledThisRoom: false,
   inWrongGate: null,
   inWrongSince: 0,
+  advancing: false,
   flashUntil: 0, flashColor: '#e8dfc8', flashAlpha: 0,
   statusText: 'Awaiting orders',
   statusSub: 'WASD · SHIFT sprint · SPACE dash · J staff · K burst',
