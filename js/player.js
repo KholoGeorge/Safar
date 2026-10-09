@@ -18,9 +18,6 @@ function updatePlayer(dt) {
   const K = G.keys;
 
   // ---------- INPUT ----------
-  // Analog stick takes priority. `analog` is 0..1 and scales both the
-  // acceleration rate and the speed cap, so a light push creeps and a full
-  // push runs.
   let ax = 0, ay = 0, analog = 1;
   if (!stunned && !dashing) {
     if (G.joy) {
@@ -46,7 +43,6 @@ function updatePlayer(dt) {
 
   // ---------- SPEED CAP ----------
   const baseSpeed = dashing ? DASH_SPEED : (sprinting ? PLAYER_SPRINT : PLAYER_WALK);
-  // On touch, an analog push below 35% is clamped so creeping is still usable.
   const analogCap = (G.joy && !dashing) ? Math.max(0.35, analog) : 1;
   const maxSpeed = baseSpeed * (dashing ? 1 : G.up.speed) * analogCap;
   const sp = Math.hypot(p.vx, p.vy);
@@ -152,9 +148,6 @@ function updatePlayer(dt) {
   }
 }
 
-// Snap facing to the nearest enemy within reach before a manual swing.
-// Solves the "can't aim while standing still on touch" problem without
-// taking the swing decision away from the player.
 function aimAssist() {
   const p = G.player; if (!p) return;
   const reach = STAFF_RANGE * G.up.range + p.radius + 24;
@@ -357,13 +350,13 @@ function gateCorrect(g) {
   g.done = true;
   g.correctFlashUntil = nowMs() + 600;
   G.correct++;
+  gradeTargetCorrect(g);
   G.combo++; G.bestCombo = Math.max(G.bestCombo, G.combo);
   const speedBonus = Math.max(0, 100 - Math.floor((nowMs() - G.targetShownAt) / 100));
   const pts = (100 + speedBonus) * comboMult();
   G.score += pts;
   spawnFloatText(g.x - 60, g.y - 70, '+' + pts, COL.gold);
   if (G.combo >= 3) spawnFloatText(G.player.x, G.player.y - 40, 'x' + comboMult() + ' COMBO', COL.khakiBr, 1.0, 20);
-  if (G.misses[g.item.ar]) { G.misses[g.item.ar]--; if (G.misses[g.item.ar] <= 0) delete G.misses[g.item.ar]; saveMisses(); }
   G.roomPhrases.push({ item: g.item, correct: true });
   S.correct(G.combo);
   speakAr(g.item);
@@ -385,7 +378,7 @@ function gateWrong(g) {
   G.wrong++;
   G.combo = 0;
   const tgt = G.targetGate && G.targetGate.item;
-  if (tgt) { G.misses[tgt.ar] = (G.misses[tgt.ar] || 0) + 1; saveMisses(); }
+  gradeTargetWrong(g);
   G.lastWrong = { item: g.item, at: nowMs() };
   if (tgt) G.roomPhrases.push({ item: tgt, correct: false });
   updateLastWrongPanel();
@@ -413,7 +406,7 @@ function gateWrong(g) {
   G.stars--;
   updateStars();
   setStatus('Wrong gate', 'Fall back', 'warn', 1400);
-  
+
   if (G.targetGate) speakAr(G.targetGate.item);
 
   if (G.stars <= 0) endRun(false);

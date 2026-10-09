@@ -2,9 +2,9 @@ const G = {
   running: false, paused: false, pausedMs: 0, pauseStart: 0,
   routes: {},
   stats: loadStats(),
-  misses: loadMisses(),
   currentName: '',
   currentLesson: [],
+  currentCards: [],
   mode: 'en-ar',
   reading: 'full',
   voice: true,
@@ -18,10 +18,18 @@ const G = {
   discoveries: [],
   discoveryNear: null,
   discoveryOpen: null,
+  playMs: 0,                 // unpaused game time, ms
+  tgt: null,                 // telemetry for the current target
+  gradedThisRun: new Set(),  // cardKeys already graded this run
+
+  // ---- run queue (Step 4) ----
+  runQueue: [],              // ordered array of lesson card objects for this run
+  queueCursor: 0,            // how far we've consumed runQueue
+  startWall: 0,              // Date.now() at run start (for summary filtering)
 
   // ---- touch ----
-  joy: null,           // { x, y, m } from the floating analog stick, or null
-  touchMode: IS_TOUCH, // opt into auto-staff, gate padding, layout strip
+  joy: null,
+  touchMode: IS_TOUCH,
 
   rng: Math.random,
   roomIdx: 0, rooms: [], roomsCleared: 0, stars: 3,
@@ -65,6 +73,7 @@ function setStatus(text, sub, cls = '', ms = 0) {
 function flash(color, alpha = 0.15, ms = 150) { G.flashUntil = nowMs() + ms; G.flashColor = color; G.flashAlpha = alpha; }
 function shake(mag, ms = 250) { G.shakeUntil = nowMs() + ms; G.shakeMag = mag; }
 function hitstop(ms = 60) { G.hitstopUntil = nowMs() + ms; }
+
 function spawnParticles(x, y, color, count, power = 1) {
   const n = IS_SLOW ? Math.max(3, Math.ceil(count * 0.4)) : count;
   for (let i = 0; i < n; i++) {

@@ -103,7 +103,6 @@ let touchJoyActive = false;
     fireAction('staff', e);
   }, { passive: false });
 
-  // ---------- Floating joystick ----------
   function start(e) {
     if (joyId !== null) return;
     const node = nearDiscoveryNode(e.clientX, e.clientY);
@@ -135,8 +134,6 @@ let touchJoyActive = false;
     if (mag < JOY_DEAD) { G.joy = null; return; }
     const m = Math.min(1, (mag - JOY_DEAD) / (1 - JOY_DEAD));
     G.joy = { x: nx / mag * m, y: ny / mag * m, m, source: 'touch' };
-    // Sprint is no longer inferred from stick magnitude on touch —
-    // the SPRINT toggle button controls it instead.
   }
 
   function end(e) {
@@ -158,7 +155,6 @@ let touchJoyActive = false;
     if (ac && ac.state === 'suspended') ac.resume();
   }, { once: true });
 
-  // ---------- Sprint toggle ----------
   const sprintBtn = $('sprintBtn');
   if (sprintBtn) {
     sprintBtn.addEventListener('pointerdown', (e) => {
@@ -171,6 +167,226 @@ let touchJoyActive = false;
     }, { passive: false });
   }
 })();
+
+// ============================================================
+//  PAD NAVIGATION — controller-only menu navigation.
+//
+//  Active whenever a .screen.show element is visible. Uses the
+//  left stick and D-pad to move a focus ring between focusable
+//  elements. A = confirm / advance, B = back / dismiss.
+//
+//  When no element is focused (index = -1) and A is pressed,
+//  the screen's default action fires (advance dialogue, next
+//  study step, dismiss room review, etc.).
+// ============================================================
+const PadNav = {
+  screen: null,
+  items: [],
+  index: -1,
+  stickDir: null,
+  stickNextAt: 0,
+  stickRepeatMs: 180,
+  moveEchoMs: 60,
+  dead: 0.5,
+  lastMoveAt: 0,
+};
+
+const PAD_FOCUS_SEL = [
+  'button',
+  'a[href]',
+  'input',
+  'select',
+  'textarea',
+  'summary',
+  '.lesson-card',
+  '[tabindex]:not([tabindex="-1"])',
+].join(',');
+
+function padVisibleScreen() {
+  const screens = document.querySelectorAll('.screen.show');
+  if (!screens.length) return null;
+  return screens[screens.length - 1];
+}
+
+function padFocusableIn(root) {
+  if (!root) return [];
+  const all = root.querySelectorAll(PAD_FOCUS_SEL);
+  const out = [];
+  for (let i = 0; i < all.length; i++) {
+    const el = all[i];
+    if (el.disabled) continue;
+    if (el.offsetParent === null) continue;
+    if (el.getAttribute('aria-hidden') === 'true') continue;
+    out.push(el);
+  }
+  return out;
+}
+
+function padDefaultAction() {
+  if (typeof dialogueScreen !== 'undefined' && dialogueScreen && dialogueScreen.classList.contains('show'))
+    return advanceDialogue;
+  if (typeof reviewScreen !== 'undefined' && reviewScreen && reviewScreen.classList.contains('show'))
+    return function () {
+      reviewScreen.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+      reviewScreen.dispatchEvent(new PointerEvent('pointerup',   { bubbles: true }));
+    };
+  if (typeof studyScreen !== 'undefined' && studyScreen && studyScreen.classList.contains('show'))
+    return nextStudyStep;
+  if (typeof discoveryScreen !== 'undefined' && discoveryScreen && discoveryScreen.classList.contains('show'))
+    return closeDiscovery;
+  const pauseEl = document.getElementById('pauseScreen');
+  if (pauseEl && pauseEl.classList.contains('show')) return resumeFromPause;
+  return null;
+}
+
+function padClearFocus() {
+  const prev = document.querySelector('.pad-focus');
+  if (prev) prev.classList.remove('pad-focus');
+}
+
+function padApplyFocus() {
+  padClearFocus();
+  if (PadNav.index < 0 || PadNav.index >= PadNav.items.length) return;
+  const el = PadNav.items[PadNav.index];
+  if (!el) return;
+  el.classList.add('pad-focus');
+  try { el.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (_) {}
+}
+
+function padRefresh() {
+  const scr = padVisibleScreen();
+  if (!scr) {
+    if (PadNav.screen) {
+      PadNav.screen = null;
+      PadNav.items = [];
+      PadNav.index = -1;
+      padClearFocus();
+    }
+    return;
+  }
+
+  // Always re-scan. Cheap enough — the focusable set on a screen
+  // is small, and this picks up newly-revealed elements inside
+  // <details> the moment they become visible.
+  const focusedEl = PadNav.index >= 0 ? PadNav.items[PadNav.index] : null;
+  const items = padFocusableIn(scr);
+  PadNav.screen = scr;
+  PadNav.items = items;
+
+  if (PadNav.index < 0) return;   // unfocused — leave as is
+
+  let idx = focusedEl ? items.indexOf(focusedEl) : -1;
+  if (idx === -1) idx = Math.min(PadNav.index, items.length - 1);
+  if (idx < 0) idx = items.length ? 0 : -1;
+
+  if (idx !== PadNav.index) {
+    PadNav.index = idx;
+    padApplyFocus();
+  }
+}
+
+function padMove(dir) {
+  padRefresh();
+  if (!PadNav.items.length) return;
+
+  // First press on a default-action screen selects the closest item
+  // in the pressed direction, using the screen centre as the origin.
+  let ox, oy;
+  if (PadNav.index < 0) {
+    const scr = PadNav.screen;
+    const r = scr.getBoundingClientRect();
+    ox = r.left + r.width / 2;
+    oy = r.top + r.height / 2;
+  } else {
+    const cur = PadNav.items[PadNav.index];
+    const r = cur.getBoundingClientRect();
+    ox = r.left + r.width / 2;
+    oy = r.top + r.height / 2;
+  }
+
+  let best = -1;
+  let bestScore = Infinity;
+  for (let i = 0; i < PadNav.items.length; i++) {
+    if (i === PadNav.index) continue;
+    const r = PadNav.items[i].getBoundingClientRect();
+    const ex = r.left + r.width / 2;
+    const ey = r.top + r.height / 2;
+    const dx = ex - ox;
+    const dy = ey - oy;
+
+    let along, perp;
+    if (dir === 'up')         { if (dy > -6) continue; along = -dy; perp = Math.abs(dx); }
+    else if (dir === 'down')  { if (dy <  6) continue; along =  dy; perp = Math.abs(dx); }
+    else if (dir === 'left')  { if (dx > -6) continue; along = -dx; perp = Math.abs(dy); }
+    else if (dir === 'right') { if (dx <  6) continue; along =  dx; perp = Math.abs(dy); }
+    else continue;
+
+    const score = along + perp * 1.8;
+    if (score < bestScore) { bestScore = score; best = i; }
+  }
+
+  if (best === -1) {
+    if (dir === 'up' || dir === 'left') best = (PadNav.index <= 0 ? PadNav.items.length : PadNav.index) - 1;
+    else best = (PadNav.index + 1) % PadNav.items.length;
+  }
+  PadNav.index = best;
+  padApplyFocus();
+}
+
+function padActivate() {
+  padRefresh();
+  const def = padDefaultAction();
+  const focused = PadNav.index >= 0 ? PadNav.items[PadNav.index] : null;
+
+  // Special corner buttons win over the default action so the user can
+  // still reach Replay / Exit / Skip on the study & dialogue screens.
+  const SPECIALS = ['studyReplay', 'studyExit', 'studySkip', 'studyHelp',
+                    'guideExit', 'guideBackBtn', 'authClose'];
+  const isSpecial = focused && SPECIALS.indexOf(focused.id) !== -1;
+
+  if (!isSpecial && def) { def(); return; }
+  if (focused) {
+    try { focused.focus(); } catch (_) {}
+    focused.click();
+    return;
+  }
+  if (def) { def(); return; }
+}
+
+function padBack() {
+  if (typeof dialogueScreen !== 'undefined' && dialogueScreen && dialogueScreen.classList.contains('show')) {
+    dlgQueue = []; advanceDialogue(); return;
+  }
+  if (typeof reviewScreen !== 'undefined' && reviewScreen && reviewScreen.classList.contains('show')) {
+    reviewScreen.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+    reviewScreen.dispatchEvent(new PointerEvent('pointerup',   { bubbles: true }));
+    return;
+  }
+  if (typeof discoveryScreen !== 'undefined' && discoveryScreen && discoveryScreen.classList.contains('show')) {
+    closeDiscovery(); return;
+  }
+  const pauseEl = document.getElementById('pauseScreen');
+  if (pauseEl && pauseEl.classList.contains('show')) { resumeFromPause(); return; }
+  if (typeof studyScreen !== 'undefined' && studyScreen && studyScreen.classList.contains('show')) {
+    endStudy(); return;
+  }
+  if (typeof manualScreen !== 'undefined' && manualScreen && manualScreen.classList.contains('show')) {
+    document.getElementById('closeManualBtn').click(); return;
+  }
+  const guideEl = document.getElementById('guideScreen');
+  if (guideEl && guideEl.classList.contains('show')) { closeGuide(); return; }
+  const authEl = document.getElementById('authPanel');
+  if (authEl && authEl.classList.contains('show')) {
+    document.getElementById('authClose').click(); return;
+  }
+  if (typeof briefScreen !== 'undefined' && briefScreen && briefScreen.classList.contains('show')) {
+    document.getElementById('backHomeBtn').click(); return;
+  }
+  if (typeof endScreen !== 'undefined' && endScreen && endScreen.classList.contains('show')) {
+    document.getElementById('endBackBtn').click(); return;
+  }
+  // Home / choose / upgrade: nothing to back out of.
+}
 
 // ============================================================
 //  GAMEPAD — PC / Bluetooth controllers (standard mapping)
@@ -194,6 +410,9 @@ window.addEventListener('gamepadconnected', (e) => {
   if (ac && ac.state === 'suspended') ac.resume();
   setStatus('Controller linked', e.gamepad.id.slice(0, 46), 'ok', 2400);
   console.log('[gamepad] connected:', e.gamepad.id);
+  // Prime pad navigation immediately.
+  PadNav.screen = null;
+  padRefresh();
 });
 
 window.addEventListener('gamepaddisconnected', (e) => {
@@ -204,6 +423,10 @@ window.addEventListener('gamepaddisconnected', (e) => {
   GamepadInput.prevButtons = [];
   GamepadInput.dpadKeys = { up: false, down: false, left: false, right: false };
   if (G.joy && G.joy.source === 'gamepad') G.joy = null;
+  padClearFocus();
+  PadNav.screen = null;
+  PadNav.items = [];
+  PadNav.index = -1;
   setStatus('Controller lost', '', 'warn', 2000);
 });
 
@@ -235,6 +458,36 @@ function padJustPressed(gp, i) {
   return padPressed(gp, i) && !GamepadInput.prevButtons[i];
 }
 
+// Left-stick -> four-way repeat with a short warm-up.
+function padReadStickMove(gp) {
+  const now = performance.now();
+  const lx = gp.axes[0] || 0;
+  const ly = gp.axes[1] || 0;
+  let dir = null;
+  if (Math.abs(lx) > PadNav.dead || Math.abs(ly) > PadNav.dead) {
+    if (Math.abs(lx) > Math.abs(ly)) dir = lx > 0 ? 'right' : 'left';
+    else                             dir = ly > 0 ? 'down'  : 'up';
+  }
+  if (!dir) {
+    PadNav.stickDir = null;
+    PadNav.stickNextAt = 0;
+    return;
+  }
+  if (dir !== PadNav.stickDir) {
+    PadNav.stickDir = dir;
+    PadNav.stickNextAt = now + 260;   // initial delay before repeating
+    if (now - PadNav.lastMoveAt >= PadNav.moveEchoMs) {
+      PadNav.lastMoveAt = now;
+      padMove(dir);
+    }
+    return;
+  }
+  if (now >= PadNav.stickNextAt) {
+    PadNav.stickNextAt = now + PadNav.stickRepeatMs;
+    padMove(dir);
+  }
+}
+
 function pollGamepad() {
   const gp = activeGamepad();
   if (!gp) return;
@@ -242,6 +495,47 @@ function pollGamepad() {
   const lx = gp.axes[0] || 0;
   const ly = gp.axes[1] || 0;
   const lmag = Math.hypot(lx, ly);
+
+  // Any visible screen means "we are in a menu".
+  const inMenu = !!padVisibleScreen();
+
+  if (inMenu) {
+    // Menu mode: stick & d-pad navigate, A confirms, B backs out.
+    padRefresh();
+    padReadStickMove(gp);
+
+    const dUp    = padJustPressed(gp, 12);
+    const dDown  = padJustPressed(gp, 13);
+    const dLeft  = padJustPressed(gp, 14);
+    const dRight = padJustPressed(gp, 15);
+    const now = performance.now();
+    function tryMove(dir) {
+      if (now - PadNav.lastMoveAt < PadNav.moveEchoMs) return;
+      PadNav.lastMoveAt = now;
+      padMove(dir);
+    }
+    if (dUp)    tryMove('up');
+    if (dDown)  tryMove('down');
+    if (dLeft)  tryMove('left');
+    if (dRight) tryMove('right');
+
+    const justA     = padJustPressed(gp, 0);
+    const justB     = padJustPressed(gp, 1);
+    const justStart = padJustPressed(gp, 9);
+    if (justA || justStart) { initAudio(); if (ac && ac.state === 'suspended') ac.resume(); padActivate(); }
+    if (justB) padBack();
+
+    // Keep prevButtons snapshot up to date and bail out early so gameplay
+    // analog input doesn't leak into the menu.
+    for (let i = 0; i < gp.buttons.length; i++) {
+      GamepadInput.prevButtons[i] = padPressed(gp, i);
+    }
+    return;
+  }
+
+  // ---- Gameplay / no screen up ----
+  // Clear any lingering focus ring when we drop into the game.
+  if (PadNav.screen) { PadNav.screen = null; PadNav.items = []; PadNav.index = -1; padClearFocus(); }
 
   if (!touchJoyActive) {
     if (lmag > GamepadInput.dead) {
@@ -289,13 +583,7 @@ function pollGamepad() {
   const holdRB    = padPressed(gp, 5);
   if (holdLB || holdRB) G.keys.sprint = true;
 
-  const inMenu = !G.running || G.paused || G.userPaused;
-
-  if (inMenu && (justA || justStart)) {
-    initAudio();
-    if (ac && ac.state === 'suspended') ac.resume();
-    gamepadMenuAction();
-  } else if (G.running) {
+  if (G.running) {
     if (justStart) togglePause();
 
     if (!G.paused) {
@@ -317,44 +605,4 @@ function pollGamepad() {
   for (let i = 0; i < gp.buttons.length; i++) {
     GamepadInput.prevButtons[i] = padPressed(gp, i);
   }
-}
-
-function gamepadMenuAction() {
-  if (dialogueScreen.classList.contains('show')) { advanceDialogue(); return true; }
-
-  if (reviewScreen.classList.contains('show')) {
-    reviewScreen.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
-    reviewScreen.dispatchEvent(new PointerEvent('pointerup',   { bubbles: true }));
-    return true;
-  }
-
-  if (typeof discoveryScreen !== 'undefined' && discoveryScreen &&
-      discoveryScreen.classList.contains('show')) { closeDiscovery(); return true; }
-
-  if ($('pauseScreen').classList.contains('show')) { resumeFromPause(); return true; }
-
-  if (studyScreen.classList.contains('show')) { nextStudyStep(); return true; }
-
-  if (manualScreen.classList.contains('show')) {
-    $('closeManualBtn').click(); return true;
-  }
-
-  if (endScreen.classList.contains('show')) {
-    $('againBtn').click(); return true;
-  }
-
-  if (chooseScreen.classList.contains('show')) {
-    $('claimBtn').click(); return true;
-  }
-
-  if (briefScreen.classList.contains('show')) {
-    $('startBtn').click(); return true;
-  }
-
-  if (homeScreen.classList.contains('show')) {
-    const first = lessonGrid.querySelector('.lesson-card');
-    if (first) { first.click(); return true; }
-  }
-
-  return false;
 }

@@ -5,6 +5,51 @@ function roomTypeFor(i) {
   return (k % 2 === 1) ? 'combat' : 'explore';
 }
 
+// ------------------------------------------------------------
+//  Run queue (Step 4)
+//  One ordered list per run: due cards first (most overdue first),
+//  then up to 6 new cards, then not-yet-due cards (soonest first).
+//  Daily Route overrides this with a seeded shuffle.
+// ------------------------------------------------------------
+function buildRunQueue(lesson) {
+  if (!lesson || !lesson.length) return [];
+  if (G.daily) {
+    const rng = mulberry32(dayNum() * 7919 + 13);
+    return shuffle(lesson.slice(), rng);
+  }
+  const byKey = new Map(lesson.map(it => [SRS.cardKey(it, G.mode), it]));
+  const keys = lesson.map(it => SRS.cardKey(it, G.mode));
+  const { due, fresh, ahead } = SRS.partition(keys);
+
+  const ordered = [];
+  for (const k of due)          { const it = byKey.get(k); if (it) ordered.push(it); }
+  for (const k of fresh.slice(0, 6)) { const it = byKey.get(k); if (it) ordered.push(it); }
+  for (const k of ahead)        { const it = byKey.get(k); if (it) ordered.push(it); }
+  if (!ordered.length) ordered.push(...lesson);
+  return ordered;
+}
+
+// Pull `count` items off the queue, skipping within-room duplicates.
+// Cycles the queue if the run needs more gates than the lesson has cards.
+function takeFromQueue(count) {
+  const q = G.runQueue;
+  if (!q || !q.length) return [];
+  const out = [];
+  const usedKeys = new Set();
+  let safety = 0;
+  const limit = Math.max(q.length * 4, count * 6);
+  while (out.length < count && safety < limit) {
+    const item = q[G.queueCursor % q.length];
+    G.queueCursor++;
+    safety++;
+    const key = item.cardId || item.ar;
+    if (usedKeys.has(key)) continue;
+    usedKeys.add(key);
+    out.push(item);
+  }
+  return out;
+}
+
 function makeRoom(i) {
   const type = roomTypeFor(i);
   const D = DIFFICULTY[G.difficulty] || DIFFICULTY.normal;
@@ -56,30 +101,12 @@ function makeRoom(i) {
     }
   }
 
-  const lesson = G.currentLesson;
-  const rng = G.rng;
-  const weighted = [];
-  for (const it of lesson) {
-    const copies = G.daily ? 1 : 1 + Math.min(3, G.misses[it.ar] || 0);
-    for (let c = 0; c < copies; c++) weighted.push(it);
-  }
-  const shuffled = shuffle(weighted, rng);
-
   const count = Math.max(2, Math.round(base.gates * M.gateMul));
   const storm = base.storm > 0 ? Math.max(4, Math.round(base.storm * M.stormMul)) : 0;
   const orbCfg = base.orbs.map(c => ({ type: c.type, count: Math.max(1, Math.round(c.count * M.orbMul)) }));
   const bossHp = base.bossHp ? Math.max(3, Math.round(base.bossHp * M.bossMul)) : 0;
 
-  const gates = [];
-  const usedAr = new Set();
-  let cursor = 0;
-  while (gates.length < count) {
-    const item = shuffled[cursor % shuffled.length];
-    cursor++;
-    if (usedAr.has(item.ar)) { if (cursor > shuffled.length * 4) break; continue; }
-    usedAr.add(item.ar);
-    gates.push(item);
-  }
+  const gates = takeFromQueue(count);
 
   return {
     type: base.type,
@@ -91,6 +118,9 @@ function makeRoom(i) {
 
 function buildRun() {
   G.rng = G.daily ? mulberry32(dayNum() * 7919 + 13) : Math.random;
+  // Order the whole run's cards once (Step 4).
+  G.runQueue = buildRunQueue(G.currentCards);
+  G.queueCursor = 0;
   const rooms = [];
   for (let i = 0; i < ROOM_PATTERN.length; i++) rooms.push(makeRoom(i));
   return rooms;
@@ -120,18 +150,14 @@ function enterRoom(idx) {
   const availW = w - 40;
   const availH = h - topPad - botPad;
 
-  // Shape the arena by aspect ratio. Portrait playfields want to be taller
-  // than wide but never a corridor; landscape wants to be closer to square.
   const isPortrait = h > w;
-  const ASPECT = isPortrait ? 1.55 : 1.2;   // playH / playW
+  const ASPECT = isPortrait ? 1.55 : 1.2;
 
   let playW, playH;
   if (availH / availW >= ASPECT) {
-    // Space is taller than the aspect wants → constrain by width.
     playW = Math.min(availW, IS_TOUCH ? 520 : 720);
     playH = playW * ASPECT;
   } else {
-    // Normal case → fill height, cap width so big screens don't balloon.
     playH = Math.min(availH, (IS_TOUCH ? 520 : 720) * ASPECT);
     playW = playH / ASPECT;
   }
@@ -164,7 +190,6 @@ function enterRoom(idx) {
   G.inWrongSince = 0;
   G.gateCooldownUntil = 0;
 
-  // Clear any leftover hint
   const hintEl = document.getElementById('objHint');
   if (hintEl) { hintEl.textContent = ''; hintEl.style.display = 'none'; }
 
@@ -175,6 +200,7 @@ function enterRoom(idx) {
 
   if (G.roomType === 'explore') {
     G.gates = [];
+    G.tgt = null;
     G.obstacles = [];
     G.pickups = [];
     G.orbs = [];
@@ -199,8 +225,9 @@ function enterRoom(idx) {
       G.obstacles.push({ x: ox, y: oy, r: oradius, variant: Math.floor(Math.random() * 3) });
     }
 
-    const unseen = G.currentLesson.filter(it => !G.seenThisRun || !G.seenThisRun.has(it.ar));
-    const pool = unseen.length >= DISCOVERIES_PER_ROOM ? unseen : G.currentLesson;
+    // Discovery pool comes from the deduped card pool (Step 1).
+    const unseen = G.currentCards.filter(it => !G.seenThisRun || !G.seenThisRun.has(it.ar));
+    const pool = unseen.length >= DISCOVERIES_PER_ROOM ? unseen : G.currentCards;
     const picks = shuffle(pool, Math.random).slice(0, DISCOVERIES_PER_ROOM);
     for (let i = 0; i < picks.length; i++) {
       let px = 0, py = 0, ok = false;
@@ -359,14 +386,17 @@ function pickTarget() {
 
   if (!available.length) {
     G.targetGate = null;
+    G.tgt = null;
     if (hintEl) { hintEl.textContent = ''; hintEl.style.display = 'none'; }
     return;
   }
+
   const g = available[Math.floor(Math.random() * available.length)];
   for (const x of G.gates) x.isTarget = false;
   g.isTarget = true;
   G.targetGate = g;
   G.targetShownAt = nowMs();
+  beginTarget(g, available.length);
   objLabel.textContent = 'Find';
   if (G.mode === 'en-ar') {
     objText.textContent = g.item.en;

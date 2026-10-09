@@ -72,6 +72,11 @@
   <!-- HOME -->
   <div class="screen show" id="homeScreen">
     <canvas id="ambientCanvas"></canvas>
+    <button class="sync-btn" id="syncBtn" title="Sync"
+        onclick="return window.__syncClick && window.__syncClick(event);">
+  <span class="sync-dot" id="syncDot"></span>
+  <span class="sync-label" id="syncLabel">Sign in</span>
+</button>
     <div class="title-main">SAFAR</div>
     <div class="title-ar">سفر</div>
     <div class="title-sub">A Dust Journey</div>
@@ -85,8 +90,23 @@
     <div class="err-note" id="errNote" style="display:none;"></div>
     <div class="btn-row" style="margin-top:16px;">
       <button class="btn gold" id="dailyBtn">Daily Route</button>
+      <button class="btn" id="reviewBtn">Review due</button>
       <button class="btn ghost" id="openManualBtn">Field Manual</button>
     </div>
+    <div class="btn-row" style="margin-top:8px;">
+      <button class="btn ghost" id="exportBackupBtn" title="Download a JSON backup">Export backup</button>
+      <button class="btn ghost" id="importBackupBtn" title="Merge a backup file">Import backup</button>
+      <input type="file" id="importBackupInput" accept="application/json,.json" style="display:none;">
+    </div>
+  </div>
+
+  <!-- AUTH PANEL -->
+  <div class="screen overlay" id="authPanel">
+    <button class="study-exit" id="authClose">✕</button>
+    <div class="title-main" style="font-size:34px;">SYNC</div>
+    <div class="title-sub">Optional · your data, your account</div>
+    <div class="divider"></div>
+    <div id="authBody"></div>
   </div>
 
   <!-- MANUAL -->
@@ -220,6 +240,7 @@
       <div class="k">Time</div><div class="v" id="endTime">0:00</div>
       <div class="k">Rooms</div><div class="v" id="endRooms">0/5</div>
     </div>
+    <div class="summary" id="endSummary"></div>
     <div class="btn-row" style="margin-top:16px;">
       <button class="btn ghost" id="endBackBtn">Routes</button>
       <button class="btn" id="againBtn">Again</button>
@@ -263,7 +284,26 @@
     <div class="disc-hint">tap anywhere to continue</div>
   </div>
 
-    <!-- STUDY GUIDE -->
+  <!-- SRS REVIEW (Step 7) -->
+  <div class="screen" id="srsReviewScreen">
+    <button class="study-exit" id="srsReviewExit" title="Close">✕</button>
+    <div class="srs-review-progress" id="srsReviewProgress">—</div>
+    <div class="srs-review-body">
+      <div class="srs-review-prompt ltr" id="srsReviewPrompt">—</div>
+      <div class="srs-review-hint" id="srsReviewHint" style="display:none;"></div>
+      <div class="srs-review-reveal rtl" id="srsReviewReveal" style="display:none;">—</div>
+      <button class="btn ghost" id="srsReviewPlay">🔊 Play</button>
+      <button class="btn gold" id="srsReviewShow">Reveal</button>
+      <div class="srs-review-ratings" id="srsReviewRatings" style="display:none;">
+        <button class="rating rating-again" data-rating="1">Again<span>1</span></button>
+        <button class="rating rating-hard"  data-rating="2">Hard<span>2</span></button>
+        <button class="rating rating-good"  data-rating="3">Good<span>3</span></button>
+        <button class="rating rating-easy"  data-rating="4">Easy<span>4</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STUDY GUIDE -->
   <div class="screen overlay" id="guideScreen">
     <button class="guide-exit" id="guideExit" title="Close">✕</button>
     <div class="guide-content">
@@ -350,9 +390,14 @@
     <div class="ghost-btn" id="ghostBtn"></div>
   </div>
 
+<!-- Supabase-js: cached for offline boot; API calls (supabase.co) are never cached. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
 <script src="js/storage.js"></script>
 <script src="js/config.js"></script>
 <script src="js/state.js"></script>
+<script src="js/srs.js"></script>
+<script src="js/grading.js"></script>
 <script src="js/audio.js"></script>
 <script src="js/lessons.js"></script>
 <script src="js/story.js"></script>
@@ -366,6 +411,10 @@
 <script src="js/ambient.js"></script>
 <script src="js/guide.js"></script>
 <script src="js/flow.js"></script>
+<script src="js/summary.js"></script>
+<script src="js/backup.js"></script>
+<script src="js/sync.js"></script>
+<script src="js/review.js"></script>
 <script src="js/demo.js"></script>
 <script src="js/boot.js"></script>
 </body>

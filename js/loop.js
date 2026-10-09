@@ -17,7 +17,8 @@ function frame(now) {
   ctx.fillStyle = COL.void;
   ctx.fillRect(-40, -40, window.innerWidth + 80, window.innerHeight + 80);
 
-  if (G.running && !G.paused) {
+    if (G.running && !G.paused) {
+    G.playMs += rawDt * 1000;
     updatePlayer(dt);
     if (G.running) {
       if (G.roomType !== 'explore') {
@@ -26,6 +27,7 @@ function frame(now) {
         updateProjectiles(dt);
         updateStorm(dt);
         updateTension(dt);
+        trackTarget();
       }
       checkRoomClear();
     }
