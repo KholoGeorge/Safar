@@ -9,73 +9,74 @@
       "ar": "الْحِوَارُ الثَّانِي",
       "en": "The Second Dialogue",
       "au": "1_2b_00.mp3",
-      "notes": "الْحِوَار (al-ḥiwār = the dialogue) + الثَّانِي (ath-thānī = the second)."
+      "card": false,
+      "notes": "Heading of the dialogue."
     },
     {
       "ar": "السَّلَامُ عَلَيْكُمْ",
       "en": "Peace be upon you.",
       "au": "1_2b_01.mp3",
-      "notes": "Standard Islamic greeting."
+      "notes": "Same greeting as before."
     },
     {
       "ar": "وَعَلَيْكُمُ السَّلَامُ",
       "en": "And upon you be peace.",
       "au": "1_2b_02.mp3",
-      "notes": "Standard reply to the greeting."
+      "notes": "Same reply."
     },
     {
       "ar": "مِنْ أَيْنَ أَنْتِ ؟",
       "en": "Where are you from? (F)",
       "au": "1_2b_03.mp3",
-      "notes": "Feminine pronoun أَنْتِ ('you') with kasrah[cite: 3]."
+      "notes": "Same question as in the male dialogue, but أَنْتِ — feminine 'you'."
     },
     {
       "ar": "أَنَا مِنْ مِصْرَ",
       "en": "I am from Egypt.",
       "au": "1_2b_04.mp3",
-      "notes": "مِصْر (Egypt) is a diptote country name[cite: 3]."
+      "notes": "مِصْر = Egypt."
     },
     {
       "ar": "هَلْ أَنْتِ مِصْرِيَّةٌ ؟",
       "en": "Are you Egyptian? (F)",
       "au": "1_2b_05.mp3",
-      "notes": "Feminine nationality formed by adding Yā' al-Nisbah plus Tā' Marbūṭah (ـِيَّةٌ)[cite: 3]."
+      "notes": "Feminine nationality: same ـيّ ending, plus Tā' Marbūṭah — مِصْرِيَّةٌ."
     },
     {
       "ar": "نَعَمْ",
       "en": "Yes.",
       "au": "1_2b_06a.mp3",
-      "notes": "Standard affirmative response."
+      "notes": "Yes."
     },
     {
       "ar": "أَنَا مِصْرِيَّةٌ",
       "en": "I am Egyptian. (F)",
       "au": "1_2b_06b.mp3",
-      "notes": "Feminine nationality ending in Tā' Marbūṭah[cite: 3]."
+      "notes": "Same ـِيَّةٌ ending pattern."
     },
     {
       "ar": "وَ مَا جِنْسِيَّتُكِ أَنْتِ ؟",
       "en": "And what is your nationality? (F)",
       "au": "1_2b_06c.mp3",
-      "notes": "جِنْسِيَّتُكِ (your nationality, feminine suffix -ki) + أَنْتِ (emphatic feminine pronoun)[cite: 3]."
+      "notes": "Same question as before, with feminine suffix ـكِ and أَنْتِ."
     },
     {
       "ar": "أَنَا سُورِيَّةٌ",
       "en": "I am Syrian. (F)",
       "au": "1_2b_07a.mp3",
-      "notes": "Feminine nationality ending in Tā' Marbūṭah[cite: 3]."
+      "notes": "Nationality from سُورِيَا — same ending pattern."
     },
     {
       "ar": "أَنَا مِنْ سُورِيَا",
       "en": "I am from Syria.",
       "au": "1_2b_07b.mp3",
-      "notes": "Country name Sūriyā[cite: 3]."
+      "notes": "Country name: سُورِيَا."
     },
     {
       "ar": "أَهْلًا وَسَهْلًا",
       "en": "Welcome.",
       "au": "1_2b_08.mp3",
-      "notes": "Standard welcoming phrase[cite: 3]."
+      "notes": "Same welcome as before."
     }
   ]
 }

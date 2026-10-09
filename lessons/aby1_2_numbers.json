@@ -1,0 +1,44 @@
+{
+  "lessonId": "ABY 1-11 Numbers",
+  "unit": 2,
+  "topic": "Numbers 6 to 10",
+  "title": "Numbers 6-10 (الأَعْدَاد)",
+  "dialogueAudio": "1_2numbers_full.mp3",
+  "phrases": [
+    {
+      "cardId": "aby1_11num.p01",
+      "ar": "سِتَّة",
+      "en": "Six (6)",
+      "au": "1_num_06.mp3",
+      "notes": "Written ٦. Feminine of سِتّ — used before feminine nouns. Masculine form: سِتّ."
+    },
+    {
+      "cardId": "aby1_11num.p02",
+      "ar": "سَبْعَة",
+      "en": "Seven (7)",
+      "au": "1_num_07.mp3",
+      "notes": "Written ٧. Same rule as the other numbers: ends in Tā' Marbūṭah when paired with feminine nouns."
+    },
+    {
+      "cardId": "aby1_11num.p03",
+      "ar": "ثَمَانِيَة",
+      "en": "Eight (8)",
+      "au": "1_num_08.mp3",
+      "notes": "Written ٨. Feminine form. Masculine: ثَمَانِي. Note the medial ي."
+    },
+    {
+      "cardId": "aby1_11num.p04",
+      "ar": "تِسْعَة",
+      "en": "Nine (9)",
+      "au": "1_num_09.mp3",
+      "notes": "Written ٩. Feminine form. Masculine: تِسْع."
+    },
+    {
+      "cardId": "aby1_11num.p05",
+      "ar": "عَشْرَة",
+      "en": "Ten (10)",
+      "au": "1_num_10.mp3",
+      "notes": "Written ١٠. Feminine form. Masculine: عَشْر."
+    }
+  ]
+}

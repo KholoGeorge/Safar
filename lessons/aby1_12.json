@@ -1,0 +1,107 @@
+{
+  "lessonId": "ABY 1-12",
+  "unit": 2,
+  "topic": "The Family",
+  "title": "Dialogue 2: Morning at Home",
+  "dialogueAudio": "1_12_full.mp3",
+  "phrases": [
+    {
+      "cardId": "aby1_12.p01",
+      "ar": "هَذَا أَذَانُ الْفَجْرِ",
+      "en": "This is the call to Fajr prayer",
+      "au": "1_12_01.mp3",
+      "notes": "أَذَان = call to prayer. الْفَجْر = dawn, and also the name of the first prayer of the day."
+    },
+    {
+      "cardId": "aby1_12.p02",
+      "ar": "اللهُ أَكْبَرُ . اللهُ أَكْبَرُ",
+      "en": "Allah is greatest. Allah is greatest",
+      "au": "1_12_02.mp3",
+      "notes": "The words that open the adhan. أَكْبَر = greater/greatest. Said twice in a row."
+    },
+    {
+      "cardId": "aby1_12.p03",
+      "ar": "أَيْنَ الْأَوْلَادُ ؟",
+      "en": "Where are the children?",
+      "au": "1_12_03.mp3",
+      "notes": "Same أَيْنَ as in Dialogue 2. الْأَوْلَاد = the children (plural of وَلَد, seen in Dialogue 3)."
+    },
+    {
+      "cardId": "aby1_12.p04",
+      "ar": "سَعْدٌ فِي الْحَمَّامِ يَتَوَضَّأُ",
+      "en": "Sa'd is in the bathroom making wudu",
+      "au": "1_12_04.mp3",
+      "notes": "فِي = in. الْحَمَّام = the bathroom. يَتَوَضَّأ = he makes wudu — the ablution before prayer."
+    },
+    {
+      "cardId": "aby1_12.p05",
+      "ar": "وَأَيْنَ سَعِيدٌ ؟",
+      "en": "And where is Sa'id?",
+      "au": "1_12_05.mp3",
+      "notes": "Same أَيْنَ question as before, with وَ in front — 'and where is …?'."
+    },
+    {
+      "cardId": "aby1_12.p06",
+      "ar": "سَعِيدٌ فِي الْغُرْفَةِ يَقْرَأُ الْقُرْآنَ",
+      "en": "Sa'id is in the room reading the Qur'an",
+      "au": "1_12_06.mp3",
+      "notes": "الْغُرْفَة = the room. يَقْرَأ = he reads. الْقُرْآن = the Qur'an. Same shape as the previous line — فِي … يَ…ُ."
+    },
+    {
+      "cardId": "aby1_12.p07",
+      "ar": "وَأَيْنَ سَعِيدَةٌ ؟",
+      "en": "And where is Sa'idah?",
+      "au": "1_12_07.mp3",
+      "notes": "Same question a third time. The father is working through all the children in turn."
+    },
+    {
+      "cardId": "aby1_12.p08",
+      "ar": "سَعِيدَةٌ فِي الْمُصَلَّى تُصَلِّي",
+      "en": "Sa'idah is in the prayer room praying",
+      "au": "1_12_08.mp3",
+      "notes": "الْمُصَلَّى = the prayer room. تُصَلِّي = she prays — the feminine form, matching سَعِيدَة."
+    },
+    {
+      "cardId": "aby1_12.p09",
+      "ar": "أَيْنَ الْمُصْطَفَى ؟",
+      "en": "Where is al-Mustafa?",
+      "au": "1_12_09.mp3",
+      "notes": "No وَ this time — this isn't a continuation of the previous question but a fresh one. الْمُصْطَفَى = 'the chosen one', here used as a name."
+    },
+    {
+      "cardId": "aby1_12.p10",
+      "ar": "هَذَا هُوَ الْمُصْطَفَى، يَا وَالِدِي",
+      "en": "This is al-Mustafa, O my father",
+      "au": "1_12_10.mp3",
+      "notes": "يَا = O — used before a name or title when addressing someone. وَالِدِي = my father, the same word seen in Dialogue 1 (Family Photo)."
+    },
+    {
+      "cardId": "aby1_12.p12",
+      "ar": "وَأَيْنَ النَّظَّارَةُ ؟",
+      "en": "And where are the glasses?",
+      "au": "1_12_12.mp3",
+      "notes": "النَّظَّارَة = the glasses. The same 'and where is …?' question, but this is the first time it doesn't refer to a person."
+    },
+    {
+      "cardId": "aby1_12.p12",
+      "ar": "هَذِهِ هِيَ النَّظَّارَةُ، يَا وَالِدِي",
+      "en": "This is the glasses, O my father",
+      "au": "1_12_12.mp3",
+      "notes": "Same shape as line 10, but feminine: هَذِهِ هِيَ instead of هَذَا هُوَ — because النَّظَّارَة is feminine."
+    },
+    {
+      "cardId": "aby1_12.p13",
+      "ar": "هَيَّا بِنَا إِلَى الْمَسْجِدِ",
+      "en": "Let's go to the mosque",
+      "au": "1_12_13.mp3",
+      "notes": "هَيَّا بِنَا = 'let's go' / 'come on'. إِلَى = to. الْمَسْجِد = the mosque."
+    },
+    {
+      "cardId": "aby1_12.p14",
+      "ar": "هَيَّا بِنَا",
+      "en": "Let's go",
+      "au": "1_12_14.mp3",
+      "notes": "The same phrase the father just said — the sons answer him by repeating it."
+    }
+  ]
+}

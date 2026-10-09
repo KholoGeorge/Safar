@@ -9,67 +9,68 @@
       "ar": "الْحِوَارُ الثَّالِثُ",
       "en": "The Third Dialogue",
       "au": "1_3a_00.mp3",
-      "notes": "الْحِوَار (al-ḥiwār = the dialogue) + الثَّالِث (ath-thālith = the third)."
+      "card": false,
+      "notes": "Heading of the dialogue."
     },
     {
       "ar": "السَّلَامُ عَلَيْكُمْ",
       "en": "Peace be upon you.",
       "au": "1_3a_01.mp3",
-      "notes": "Standard Islamic greeting."
+      "notes": "Same greeting."
     },
     {
       "ar": "وَعَلَيْكُمُ السَّلَامُ",
       "en": "And upon you be peace.",
       "au": "1_3a_02.mp3",
-      "notes": "Standard reply to the greeting."
+      "notes": "Same reply."
     },
     {
       "ar": "هَذَا أَخِي",
       "en": "This is my brother.",
       "au": "1_3a_03a.mp3",
-      "notes": "هَذَا (masculine demonstrative pronoun 'this') + أَخِي (brother + my Yā' of ownership/belonging)."
+      "notes": "هَذَا = this (masculine). أَخِي = my brother (أَخ + ـِي 'my')."
     },
     {
       "ar": "هُوَ مُدَرِّسٌ",
       "en": "He is a teacher.",
       "au": "1_3a_03b.mp3",
-      "notes": "هُوَ (masculine 3rd-person pronoun 'he') + masculine profession noun."
+      "notes": "هُوَ = he. In Arabic you often say هُوَ or هِيَ even when the sentence would make sense without it."
     },
     {
       "ar": "أَهْلًا وَسَهْلًا",
       "en": "Welcome.",
       "au": "1_3a_04.mp3",
-      "notes": "Welcoming greeting addressed to the brother."
+      "notes": "Said to the brother on meeting him."
     },
     {
       "ar": "هَذَا صَدِيقِي",
       "en": "This is my friend. (M)",
       "au": "1_3a_05a.mp3",
-      "notes": "هَذَا ('this') + صَدِيقِي (my male friend)."
+      "notes": "صَدِيقِي = my friend (male). Same هَذَا + noun + ـِي shape as هَذَا أَخِي."
     },
     {
       "ar": "هُوَ مُهَنْدِسٌ",
       "en": "He is an engineer.",
       "au": "1_3a_05b.mp3",
-      "notes": "هُوَ ('he') + masculine profession noun."
+      "notes": "Same هُوَ + profession shape as before."
     },
     {
       "ar": "أَهْلًا وَسَهْلًا",
       "en": "Welcome.",
       "au": "1_3a_06.mp3",
-      "notes": "Welcoming greeting spoken by the brother (الأَخ)."
+      "notes": "Said in response — a welcoming exchange."
     },
     {
       "ar": "مَعَ السَّلَامَةِ",
       "en": "Goodbye.",
       "au": "1_3a_07.mp3",
-      "notes": "Literally 'with safety' (preposition مَعَ + noun السَّلَامَةِ ending in kasrah due to the preposition)."
+      "notes": "مَعَ = with; السَّلَامَة = safety. Literally 'with safety'."
     },
     {
       "ar": "مَعَ السَّلَامَةِ",
       "en": "Goodbye.",
       "au": "1_3a_08.mp3",
-      "notes": "Standard farewell reply."
+      "notes": "Said back — it's the same phrase both ways."
     }
   ]
 }

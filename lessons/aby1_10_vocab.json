@@ -1,0 +1,65 @@
+{
+  "lessonId": "ABY 1-10 Vocab",
+  "unit": 2,
+  "topic": "The Family",
+  "title": "Vocabulary: The Family",
+  "dialogueAudio": "1_10_vocab_full.mp3",
+  "phrases": [
+    {
+      "cardId": "aby1_10v.p01",
+      "ar": "صُورَة",
+      "en": "Picture",
+      "au": "1_10_vocab_01.mp3",
+      "notes": "Feminine — which is why the dialogue opens هَذِهِ صُورَة, not هَذَا."
+    },
+    {
+      "cardId": "aby1_10v.p02",
+      "ar": "أُسْرَة",
+      "en": "Family",
+      "au": "1_10_vocab_02.mp3",
+      "notes": "Feminine, even though it names a mixed group. Same reason: هَذِهِ أُسْرَة."
+    },
+    {
+      "cardId": "aby1_10v.p03",
+      "ar": "جَدّ",
+      "en": "Grandfather",
+      "au": "1_10_vocab_03.mp3",
+      "notes": "Masculine. Possessive: جَدِّي = my grandfather."
+    },
+    {
+      "cardId": "aby1_10v.p04",
+      "ar": "جَدَّة",
+      "en": "Grandmother",
+      "au": "1_10_vocab_04.mp3",
+      "notes": "Feminine of جَدّ, formed with Tā' Marbūṭah. Possessive: جَدَّتِي."
+    },
+    {
+      "cardId": "aby1_10v.p05",
+      "ar": "وَالِد",
+      "en": "Father",
+      "au": "1_10_vocab_05.mp3",
+      "notes": "Literally 'the one who begets'. Possessive: وَالِدِي = my father."
+    },
+    {
+      "cardId": "aby1_10v.p06",
+      "ar": "وَالِدَة",
+      "en": "Mother",
+      "au": "1_10_vocab_06.mp3",
+      "notes": "Feminine of وَالِد. Possessive: وَالِدَتِي. Same pair pattern as أَب / أُمّ, but more formal."
+    },
+    {
+      "cardId": "aby1_10v.p07",
+      "ar": "طَالِب",
+      "en": "Student (male)",
+      "au": "1_10_vocab_07.mp3",
+      "notes": "Feminine: طَالِبَة. Root ط-ل-ب (to seek) — a student is 'one who seeks'."
+    },
+    {
+      "cardId": "aby1_10v.p08",
+      "ar": "مُعَلِّمَة",
+      "en": "Teacher (female)",
+      "au": "1_10_vocab_08.mp3",
+      "notes": "Masculine: مُعَلِّم. Note the doubled ل with shadda — مُعَلِّم, not مُعَلِم."
+    }
+  ]
+}

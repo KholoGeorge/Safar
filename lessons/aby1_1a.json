@@ -9,73 +9,74 @@
       "ar": "الْحِوَارُ الأَوَّلُ",
       "en": "The First Dialogue",
       "au": "1_1a_00.mp3",
-      "notes": "الْحِوَار (al-ḥiwār = the dialogue) + الأَوَّل (al-awwal = the first). Adding 'Al-' strips away the tanween (double vowel)."
+      "card": false,
+      "notes": "Heading of the dialogue."
     },
     {
       "ar": "السَّلَامُ عَلَيْكُمْ",
       "en": "Peace be upon you.",
       "au": "1_1a_01.mp3",
-      "notes": "Standard Islamic greeting. Combining 'Al-' with a word removes the tanween."
+      "notes": "السَّلَام = peace. عَلَيْكُمْ = upon you (plural)."
     },
     {
       "ar": "وَعَلَيْكُمُ السَّلَامُ",
       "en": "And upon you be peace.",
       "au": "1_1a_02.mp3",
-      "notes": "Standard response. The damma on 'alaykumu' facilitates smooth vocal transition into 'as-Salām'."
+      "notes": "وَ = 'and'. The damma on عَلَيْكُمُ lets the mouth slide into السَّلَامُ."
     },
     {
       "ar": "إِسْمِي خَالِدٌ",
       "en": "My name is Khalid.",
       "au": "1_1a_03.mp3",
-      "notes": "إِسْم (name) + ـِي (my Yā' of ownership/belonging). Khalid takes tanween as a standard masculine proper noun."
+      "notes": "إِسْمِي = my name (إِسْم + ـِي 'my')."
     },
     {
       "ar": "مَا اسْمُكَ ؟",
       "en": "What is your name? (M)",
       "au": "1_1a_04.mp3",
-      "notes": "مَا (what) + اسْمُكَ (your name). The attachment of the masculine possessive suffix -ka indicates address to a male."
+      "notes": "مَا = what. The suffix ـكَ = 'your' when speaking to a male."
     },
     {
       "ar": "إِسْمِي خَلِيلٌ",
       "en": "My name is Khalil.",
       "au": "1_1a_05.mp3",
-      "notes": "إِسْمِي (my name). Khalil ends with tanween damma."
+      "notes": "Same shape as إِسْمِي خَالِدٌ — just a different name."
     },
     {
       "ar": "كَيْفَ حَالُكَ ؟",
       "en": "How are you? (M)",
       "au": "1_1a_06.mp3",
-      "notes": "كَيْفَ (how) + حَالُكَ (your state/condition). The suffix -ka targets a male listener."
+      "notes": "كَيْفَ = how. حَالُكَ = your state — same ـكَ ending."
     },
     {
       "ar": "بِخَيْرٍ",
       "en": "I am fine.",
       "au": "1_1a_07a.mp3",
-      "notes": "Literally 'with goodness' (preposition بِـ + noun خَيْرٍ)."
+      "notes": "بِـ = with; خَيْر = good. Literally 'with goodness'."
     },
     {
       "ar": "وَالْحَمْدُ لِلَّهِ",
       "en": "And praise be to Allah.",
       "au": "1_1a_07b.mp3",
-      "notes": "Expression of gratitude to Allah."
+      "notes": "الحَمْدُ = the praise; لِـ + الله = to Allah."
     },
     {
       "ar": "وَكَيْفَ حَالُكَ أَنْتَ ؟",
       "en": "And how are you?",
       "au": "1_1a_08.mp3",
-      "notes": "The standalone masculine pronoun أَنْتَ ('you') is added at the end for explicit emphasis ('And how are YOU?')."
+      "notes": "Same question as before, with أَنْتَ ('you') added for emphasis — 'and how are YOU?'."
     },
     {
       "ar": "بِخَيْرٍ",
       "en": "I am fine.",
       "au": "1_1a_09a.mp3",
-      "notes": "Literally 'with goodness'."
+      "notes": "Same as the earlier بِخَيْرٍ — this time as the reply."
     },
     {
       "ar": "وَالْحَمْدُ لِلَّهِ",
       "en": "And praise be to Allah.",
       "au": "1_1a_09b.mp3",
-      "notes": "Expression of gratitude to Allah."
+      "notes": "Same as before — closing line of the dialogue."
     }
   ]
 }

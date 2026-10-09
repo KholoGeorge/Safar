@@ -9,73 +9,74 @@
       "ar": "الْحِوَارُ الأَوَّلُ",
       "en": "The First Dialogue",
       "au": "1_1b_00.mp3",
-      "notes": "الْحِوَار (al-ḥiwār = the dialogue) + الأَوَّل (al-awwal = the first)."
+      "card": false,
+      "notes": "Heading of the dialogue."
     },
     {
       "ar": "السَّلَامُ عَلَيْكُمْ",
       "en": "Peace be upon you.",
       "au": "1_1b_01.mp3",
-      "notes": "Standard Islamic greeting used regardless of recipient gender."
+      "notes": "Same greeting regardless of who it's addressed to."
     },
     {
       "ar": "وَعَلَيْكُمُ السَّلَامُ",
       "en": "And upon you be peace.",
       "au": "1_1b_02.mp3",
-      "notes": "Standard reply to the greeting."
+      "notes": "Same reply as in the male dialogue."
     },
     {
       "ar": "إِسْمِي خَوْلَةُ",
       "en": "My name is Khawlah.",
       "au": "1_1b_03.mp3",
-      "notes": "Feminine proper noun ending in Tā' Marbūṭah (ـَة) taking a single damma (diptote)."
+      "notes": "خَوْلَة ends in Tā' Marbūṭah (ـَة) — a common feminine name ending."
     },
     {
       "ar": "مَا اسْمُكِ ؟",
       "en": "What is your name? (F)",
       "au": "1_1b_04.mp3",
-      "notes": "Possessive suffix changes to feminine kasrah (-ki) when addressing a female listener."
+      "notes": "Same question as before, but the suffix changes from ـكَ to ـكِ when speaking to a female."
     },
     {
       "ar": "إِسْمِي خَدِيجَةُ",
       "en": "My name is Khadijah.",
       "au": "1_1b_05.mp3",
-      "notes": "Feminine proper noun ending in Tā' Marbūṭah taking a single damma."
+      "notes": "Same shape as before, another feminine name ending in Tā' Marbūṭah."
     },
     {
       "ar": "كَيْفَ حَالُكِ ؟",
       "en": "How are you? (F)",
       "au": "1_1b_06.mp3",
-      "notes": "Feminine address using the possessive suffix حَالُكِ (ḥāluki)."
+      "notes": "Same question, feminine suffix ـكِ."
     },
     {
       "ar": "بِخَيْرٍ",
       "en": "I am fine.",
       "au": "1_1b_07a.mp3",
-      "notes": "Literally 'with goodness'."
+      "notes": "'With goodness' — same as in the male dialogue."
     },
     {
       "ar": "وَالْحَمْدُ لِلَّهِ",
       "en": "And praise be to Allah.",
       "au": "1_1b_07b.mp3",
-      "notes": "Expression of gratitude to Allah."
+      "notes": "Same closing phrase as before."
     },
     {
       "ar": "وَكَيْفَ حَالُكِ أَنْتِ ؟",
       "en": "And how are you? (F)",
       "au": "1_1b_08.mp3",
-      "notes": "The feminine pronoun أَنْتِ ('you') is added for explicit emphasis when speaking to a woman."
+      "notes": "Same emphatic question, but with أَنْتِ — the feminine 'you' — at the end."
     },
     {
       "ar": "بِخَيْرٍ",
       "en": "I am fine.",
       "au": "1_1b_09a.mp3",
-      "notes": "Literally 'with goodness'."
+      "notes": "Same as the earlier بِخَيْرٍ."
     },
     {
       "ar": "وَالْحَمْدُ لِلَّهِ",
       "en": "And praise be to Allah.",
       "au": "1_1b_09b.mp3",
-      "notes": "Expression of gratitude to Allah."
+      "notes": "Same closing line."
     }
   ]
 }

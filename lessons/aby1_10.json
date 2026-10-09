@@ -9,115 +9,115 @@
       "ar": "السَّلَامُ عَلَيْكُمْ",
       "en": "Peace be upon you",
       "au": "01_10_01_01.mp3",
-      "notes": "Standard Islamic greeting."
+      "notes": "Same greeting."
     },
     {
       "ar": "وَعَلَيْكُمُ السَّلَامُ",
       "en": "And upon you be peace",
       "au": "01_10_01_02.mp3",
-      "notes": "Standard response greeting."
+      "notes": "Same reply."
     },
     {
       "ar": "هَذِهِ صُورَةُ أُسْرَتِي",
       "en": "This is a picture of my family",
       "au": "01_10_01_03.mp3",
-      "notes": "Demonstrative pronoun هَذِهِ (feminine) used because صُورَة ends in Tā' Marbūṭah. Possessive suffix ـِي attached to أُسْرَة (my family)."
+      "notes": "هَذِهِ because صُورَة (picture) is feminine. أُسْرَتِي = my family."
     },
     {
       "ar": "مَا شَاءَ اللَّهُ",
       "en": "Masha'Allah",
       "au": "01_10_01_04.mp3",
-      "notes": "Expression of praise or awe ('As Allah has willed'). No trailing punctuation."
+      "notes": "Literally 'what Allah has willed' — said in admiration, when something pleases you."
     },
     {
       "ar": "مَنْ هَذَا ؟",
       "en": "Who is this? (M)",
       "au": "01_10_01_05.mp3",
-      "notes": "مَنْ (who) + هَذَا (masculine demonstrative 'this')."
+      "notes": "مَنْ = who. هَذَا = this (masculine)."
     },
     {
       "ar": "هَذَا وَالِدِي عَدْنَانُ",
       "en": "This is my father Adnan",
       "au": "01_10_01_06.mp3",
-      "notes": "هَذَا (this M) + وَالِدِي (my father). Proper noun عَدْنَانُ takes a single damma."
+      "notes": "وَالِدِي = my father. عَدْنَان = Adnan."
     },
     {
       "ar": "وَهُوَ مُهَنْدِسٌ",
       "en": "And he is an engineer",
       "au": "01_10_01_07.mp3",
-      "notes": "وَهُوَ (and he is) + مُهَنْدِسٌ (engineer M with tanween damma)."
+      "notes": "Same وَهُوَ + profession pattern as Dialogue 3."
     },
     {
       "ar": "وَمَنْ هَذِهِ ؟",
       "en": "And who is this? (F)",
       "au": "01_10_01_08.mp3",
-      "notes": "وَمَنْ (and who) + هَذِهِ (feminine demonstrative 'this')."
+      "notes": "Same question, but هَذِهِ — feminine 'this'."
     },
     {
       "ar": "هَذِهِ وَالِدَتِي سَعِيدَةُ",
       "en": "This is my mother Saidah",
       "au": "01_10_01_09.mp3",
-      "notes": "هَذِهِ (this F) + وَالِدَتِي (my mother). Proper noun سَعِيدَةُ takes a single damma."
+      "notes": "وَالِدَتِي = my mother (feminine of وَالِد)."
     },
     {
       "ar": "وَهِيَ طَبِيبَةٌ",
       "en": "And she is a doctor",
       "au": "01_10_01_10.mp3",
-      "notes": "وَهِيَ (and she is) + طَبِيبَةٌ (doctor F with Tā' Marbūṭah and tanween damma)."
+      "notes": "Same وَهِيَ + profession pattern. طَبِيبَة = doctor (feminine)."
     },
     {
       "ar": "وَمَنْ هَذَا ؟",
       "en": "And who is this? (M)",
       "au": "01_10_01_11.mp3",
-      "notes": "Masculine question repeated."
+      "notes": "Same question as before."
     },
     {
       "ar": "هَذَا أَخِي عِيسَى",
       "en": "This is my brother Isa",
       "au": "01_10_01_12.mp3",
-      "notes": "هَذَا (this M) + أَخِي (my brother) + عِيسَى (Isa)."
+      "notes": "Same هَذَا + أَخِي shape as in Dialogue 3."
     },
     {
       "ar": "وَهُوَ طَالِبٌ",
       "en": "And he is a student",
       "au": "01_10_01_13.mp3",
-      "notes": "وَهُوَ (and he is) + طَالِبٌ (student M with tanween damma)."
+      "notes": "Same pattern. طَالِب = student (male)."
     },
     {
       "ar": "وَمَنْ هَذِهِ ؟",
       "en": "And who is this? (F)",
       "au": "01_10_01_14.mp3",
-      "notes": "Feminine question repeated."
+      "notes": "Same feminine question."
     },
     {
       "ar": "هَذِهِ أُخْتِي عَبْلَةُ",
       "en": "This is my sister Abla",
       "au": "01_10_01_15.mp3",
-      "notes": "هَذِهِ (this F) + أُخْتِي (my sister) + عَبْلَةُ (Abla)."
+      "notes": "Same هَذِهِ + أُخْتِي shape as in Dialogue 3b."
     },
     {
       "ar": "وَهِيَ مُعَلِّمَةٌ",
       "en": "And she is a teacher",
       "au": "01_10_01_16.mp3",
-      "notes": "وَهِيَ (and she is) + مُعَلِّمَةٌ (teacher F with Tā' Marbūṭah)."
+      "notes": "مُعَلِّمَة = teacher (feminine of مُعَلِّم)."
     },
     {
       "ar": "وَهَذَا جَدِّي",
       "en": "And this is my grandfather",
       "au": "01_10_01_17.mp3",
-      "notes": "وَ (and) + هَذَا (this M) + جَدِّي (my grandfather with possessive Yā')."
+      "notes": "جَدِّي = my grandfather."
     },
     {
       "ar": "وَهَذِهِ جَدَّتِي",
       "en": "And this is my grandmother",
       "au": "01_10_01_18.mp3",
-      "notes": "وَ (and) + هَذِهِ (this F) + جَدَّتِي (my grandmother with possessive Yā')."
+      "notes": "جَدَّتِي = my grandmother (feminine of جَدّ, with Tā' Marbūṭah)."
     },
     {
       "ar": "مَا شَاءَ اللَّهُ",
       "en": "Masha'Allah",
       "au": "01_10_01_04.mp3",
-      "notes": "Closing phrase of appreciation."
+      "notes": "The same expression as at the start — closing the dialogue."
     }
   ]
 }

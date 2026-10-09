@@ -9,67 +9,68 @@
       "ar": "الْحِوَارُ الثَّالِثُ",
       "en": "The Third Dialogue",
       "au": "1_3b_00.mp3",
-      "notes": "الْحِوَار (al-ḥiwār = the dialogue) + الثَّالِث (ath-thālith = the third)."
+      "card": false,
+      "notes": "Heading of the dialogue."
     },
     {
       "ar": "السَّلَامُ عَلَيْكُمْ",
       "en": "Peace be upon you.",
       "au": "1_3b_01.mp3",
-      "notes": "Standard Islamic greeting."
+      "notes": "Same greeting."
     },
     {
       "ar": "وَعَلَيْكُمُ السَّلَامُ",
       "en": "And upon you be peace.",
       "au": "1_3b_02.mp3",
-      "notes": "Standard reply to the greeting."
+      "notes": "Same reply."
     },
     {
       "ar": "هَذِهِ أُخْتِي",
       "en": "This is my sister.",
       "au": "1_3b_03a.mp3",
-      "notes": "هَذِهِ (feminine demonstrative pronoun 'this') + أُخْتِي (my sister)."
+      "notes": "هَذِهِ = this (feminine). أُخْتِي = my sister."
     },
     {
       "ar": "هِيَ طَبِيبَةٌ",
       "en": "She is a doctor.",
       "au": "1_3b_03b.mp3",
-      "notes": "هِيَ (feminine 3rd-person pronoun 'she') + feminine profession ending in Tā' Marbūṭah (ـَة)."
+      "notes": "هِيَ = she. طَبِيبَةٌ is the feminine form of طَبِيب (doctor), with Tā' Marbūṭah."
     },
     {
       "ar": "أَهْلًا وَسَهْلًا",
       "en": "Welcome.",
       "au": "1_3b_04.mp3",
-      "notes": "Welcoming greeting addressed to the sister."
+      "notes": "Said to the sister."
     },
     {
       "ar": "هَذِهِ صَدِيقَتِي",
       "en": "This is my friend. (F)",
       "au": "1_3b_05a.mp3",
-      "notes": "هَذِهِ (feminine 'this') + صَدِيقَتِي (my female friend)."
+      "notes": "صَدِيقَتِي = my friend (female). Note صَدِيق → صَدِيقَة (feminine)."
     },
     {
       "ar": "هِيَ طَالِبَةٌ",
       "en": "She is a student.",
       "au": "1_3b_05b.mp3",
-      "notes": "هِيَ ('she') + feminine profession noun ending in Tā' Marbūṭah[cite: 1]."
+      "notes": "طَالِبَة = student (feminine of طَالِب), same Tā' Marbūṭah ending as طَبِيبَة."
     },
     {
       "ar": "أَهْلًا وَسَهْلًا",
       "en": "Welcome.",
       "au": "1_3b_06.mp3",
-      "notes": "Welcoming greeting spoken by the sister (الأُخْت)."
+      "notes": "Said back in the exchange."
     },
     {
       "ar": "مَعَ السَّلَامَةِ",
       "en": "Goodbye.",
       "au": "1_3b_07.mp3",
-      "notes": "Literally 'with safety' (preposition مَعَ + noun ending in kasrah)."
+      "notes": "Same farewell as in the male dialogue."
     },
     {
       "ar": "مَعَ السَّلَامَةِ",
       "en": "Goodbye.",
       "au": "1_3b_08.mp3",
-      "notes": "Standard farewell reply."
+      "notes": "Said back."
     }
   ]
 }

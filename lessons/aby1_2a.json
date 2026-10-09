@@ -9,73 +9,74 @@
       "ar": "الْحِوَارُ الثَّانِي",
       "en": "The Second Dialogue",
       "au": "1_2a_00.mp3",
-      "notes": "الْحِوَار (al-ḥiwār = the dialogue) + الثَّانِي (ath-thānī = the second)."
+      "card": false,
+      "notes": "Heading of the dialogue."
     },
     {
       "ar": "السَّلَامُ عَلَيْكُمْ",
       "en": "Peace be upon you.",
       "au": "1_2a_01.mp3",
-      "notes": "Standard Islamic greeting."
+      "notes": "Same greeting as in Dialogue 1."
     },
     {
       "ar": "وَعَلَيْكُمُ السَّلَامُ",
       "en": "And upon you be peace.",
       "au": "1_2a_02.mp3",
-      "notes": "Standard reply to the greeting."
+      "notes": "Same reply as before."
     },
     {
       "ar": "مِنْ أَيْنَ أَنْتَ ؟",
       "en": "Where are you from? (M)",
       "au": "1_2a_03.mp3",
-      "notes": "مِنْ (from, pronounced with kasrah) + أَيْنَ (where) + أَنْتَ (masculine 'you')[cite: 3]."
+      "notes": "مِنْ = from, أَيْنَ = where. أَنْتَ = masculine 'you'."
     },
     {
       "ar": "أَنَا مِنْ بَاكِسْتَانَ",
       "en": "I am from Pakistan.",
       "au": "1_2a_04.mp3",
-      "notes": "أَنَا (I) + مِنْ (from) + بَاكِسْتَان (Pakistan). In Arabic, the 'P' sound is rendered as 'B' (ب)[cite: 3]."
+      "notes": "أَنَا = I. Note: Arabic has no 'P' sound, so Pakistan is written with ب."
     },
     {
       "ar": "هَلْ أَنْتَ بَاكِسْتَانِيٌّ ؟",
       "en": "Are you Pakistani?",
       "au": "1_2a_05.mp3",
-      "notes": "هَلْ is a question tool placed before nominal sentences to form a Yes/No question[cite: 3]. بَاكِسْتَانِيٌّ uses the doubled Yā' al-Nisbah (ـِيٌّ) to form the nationality[cite: 3]."
+      "notes": "هَلْ turns a statement into a yes/no question. بَاكِسْتَانِيٌّ = 'Pakistani' — the nationality is formed by adding ـيّ to the country name."
     },
     {
       "ar": "نَعَمْ",
       "en": "Yes.",
       "au": "1_2a_06a.mp3",
-      "notes": "Standard affirmative response."
+      "notes": "Yes."
     },
     {
       "ar": "أَنَا بَاكِسْتَانِيٌّ",
       "en": "I am Pakistani.",
       "au": "1_2a_06b.mp3",
-      "notes": "Subject pronoun أَنَا + nationality noun taking Yā' al-Nisbah[cite: 3]."
+      "notes": "Same pattern as the question — the ـيّ ending makes the nationality."
     },
     {
       "ar": "وَ مَا جِنْسِيَّتُكَ أَنْتَ ؟",
       "en": "And what is your nationality? (M)",
       "au": "1_2a_06c.mp3",
-      "notes": "مَا (what) + جِنْسِيَّتُكَ (your nationality, root جِنْس = origin/category + masculine suffix -ka) + أَنْتَ (emphatic pronoun)[cite: 3]."
+      "notes": "جِنْسِيَّة = nationality (from جِنْس = kind, category). ـكَ = 'your' (masculine). أَنْتَ at the end adds emphasis."
     },
     {
       "ar": "أَنَا تُرْكِيٌّ",
       "en": "I am Turkish.",
       "au": "1_2a_07a.mp3",
-      "notes": "Masculine nationality ending in Yā' al-Nisbah (ـِيٌّ)[cite: 3]."
+      "notes": "Nationality from تُرْكِيَا — same ـيّ ending."
     },
     {
       "ar": "أَنَا مِنْ تُرْكِيَا",
       "en": "I am from Turkey.",
       "au": "1_2a_07b.mp3",
-      "notes": "أَنَا (I) + مِنْ (from) + تُرْكِيَا (Turkey)[cite: 3]."
+      "notes": "Country name: تُرْكِيَا."
     },
     {
       "ar": "أَهْلًا وَسَهْلًا",
       "en": "Welcome.",
       "au": "1_2a_08.mp3",
-      "notes": "A welcoming phrase conveying ease and familiarity[cite: 3]."
+      "notes": "أَهْلًا = family/kin (i.e. 'you've come to your own people'); سَهْلًا = ease. Said on welcoming someone."
     }
   ]
 }

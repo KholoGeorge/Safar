@@ -9,31 +9,31 @@
       "ar": "وَاحِدٌ",
       "en": "One (1)",
       "au": "1_num_01.mp3",
-      "notes": "Number 1 (١). Masculine form."
+      "notes": "One. Written ١."
     },
     {
       "ar": "إِثْنَـانِ",
       "en": "Two (2)",
       "au": "1_num_02.mp3",
-      "notes": "Number 2 (٢). Dual masculine form."
+      "notes": "Two. Written ٢. Note this form is for masculine nouns."
     },
     {
       "ar": "ثَلَاثَةٌ",
       "en": "Three (3)",
       "au": "1_num_03.mp3",
-      "notes": "Number 3 (٣)."
+      "notes": "Three. Written ٣."
     },
     {
       "ar": "أَرْبَعَةٌ",
       "en": "Four (4)",
       "au": "1_num_04.mp3",
-      "notes": "Number 4 (٤)."
+      "notes": "Four. Written ٤."
     },
     {
       "ar": "خَمْسَةٌ",
       "en": "Five (5)",
       "au": "1_num_05.mp3",
-      "notes": "Number 5 (٥)."
+      "notes": "Five. Written ٥."
     }
   ]
 }

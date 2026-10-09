@@ -1,0 +1,136 @@
+{
+  "lessonId": "aby1_11",
+  "title": "The Family of the Messenger",
+  "book": 1,
+  "unit": 1,
+  "topic": "The Prophet's Family",
+  "dialogueAudio": "1_11_full.mp3",
+  "phrases": [
+    {
+      "cardId": "aby1_11.p01",
+      "ar": "هَلْ هَذِهِ شَجَرَةٌ؟",
+      "en": "Is this a tree?",
+      "au": "1_11_01.mp3",
+      "notes": "هَلْ opens a yes/no question. شَجَرَة is feminine, so we say هَذِهِ not هَذَا."
+    },
+    {
+      "cardId": "aby1_11.p02a",
+      "ar": "نَعَمْ، هَذِهِ أُسْرَةُ الرَّسُولِ",
+      "en": "Yes, this is the family of the Messenger.",
+      "au": "1_11_02a.mp3",
+      "notes": "نَعَمْ = yes. أُسْرَة = family. The possessive chain أُسْرَةُ الرَّسُولِ has an unwritten \"of\" between the words — \"family of the Messenger\"."
+    },
+    {
+      "cardId": "aby1_11.p02b",
+      "ar": "صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ",
+      "en": "Peace and blessings of Allah be upon him.",
+      "au": "1_11_02b.mp3",
+      "notes": "Said after the Prophet's name — here at the end of Uthman's line."
+    },
+    {
+      "cardId": "aby1_11.p03",
+      "ar": "صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ",
+      "en": "Peace and blessings of Allah be upon him.",
+      "au": "1_11_03.mp3",
+      "notes": "Umar repeats the honorific back — same words, said as a response."
+    },
+    {
+      "cardId": "aby1_11.p04",
+      "ar": "هَذَا وَلَدُ عَبْدِ اللَّهِ",
+      "en": "This is the son of Abdullah.",
+      "au": "1_11_04.mp3",
+      "notes": "وَلَد = son/boy. عَبْد اللَّه = \"servant of Allah\", a very common name. Note how وَلَدُ عَبْدِ اللَّهِ stacks two possessive chains: son of [servant of Allah]."
+    },
+    {
+      "cardId": "aby1_11.p05",
+      "ar": "وَهَذِهِ وَالِدَتُهُ آمِنَةُ",
+      "en": "And this is his mother, Aminah.",
+      "au": "1_11_05.mp3",
+      "notes": "وَالِدَة = mother. The sentence starts وَهَذِهِ (feminine \"and this is\") because وَالِدَة is feminine — Arabic matches هَذَا/هَذِهِ to the noun, not the person."
+    },
+    {
+      "cardId": "aby1_11.p06",
+      "ar": "وَهَذَا جَدُّهُ عَبْدُ الْمُطَّلِبِ",
+      "en": "And this is his grandfather, Abdul-Muttalib.",
+      "au": "1_11_06.mp3",
+      "notes": "جَدّ = grandfather. Same possessive ه: جَدُّهُ = his grandfather."
+    },
+    {
+      "cardId": "aby1_11.p07",
+      "ar": "وَهَذَا عَمُّهُ الْعَبَّاسُ",
+      "en": "And this is his paternal uncle, al-Abbas.",
+      "au": "1_11_07.mp3",
+      "notes": "عَمّ = paternal uncle (father's brother). Not to be confused with خَال = maternal uncle."
+    },
+    {
+      "cardId": "aby1_11.p08",
+      "ar": "وَهَذَا عَمُّهُ حَمْزَةُ",
+      "en": "And this is his paternal uncle, Hamzah.",
+      "au": "1_11_08.mp3",
+      "notes": "Same word عَمّ. Notice the sentence pattern repeating — good place to read fast."
+    },
+    {
+      "cardId": "aby1_11.p09",
+      "ar": "وَهَذَا عَمُّهُ أَبُو طَالِبٍ",
+      "en": "And this is his paternal uncle, Abu Talib.",
+      "au": "1_11_09.mp3",
+      "notes": "أَبُو = \"father of\" in a name. When followed by another word, أَب becomes أَبُو (no tanween on it)."
+    },
+    {
+      "cardId": "aby1_11.p10",
+      "ar": "وَهَذِهِ عَمَّتُهُ صَفِيَّةُ",
+      "en": "And this is his paternal aunt, Safiyyah.",
+      "au": "1_11_10.mp3",
+      "notes": "عَمَّة = paternal aunt. Feminine of عَمّ, formed with ة. Note هَذِهِ matches it."
+    },
+    {
+      "cardId": "aby1_11.p11",
+      "ar": "وَهَذَا ابْنُهُ الْقَاسِمُ",
+      "en": "And this is his son, al-Qasim.",
+      "au": "1_11_11.mp3",
+      "notes": "ابْن = son. اِبْنُهُ has no ال because the possessive already defines it; القَاسِم keeps its ال because it's a name."
+    },
+    {
+      "cardId": "aby1_11.p12",
+      "ar": "وَهَذَا ابْنُهُ عَبْدُ اللَّهِ",
+      "en": "And this is his son, Abdullah.",
+      "au": "1_11_12.mp3",
+      "notes": "Same name as p04, different person — the father and the son are both called Abdullah."
+    },
+    {
+      "cardId": "aby1_11.p13",
+      "ar": "وَهَذَا ابْنُهُ إِبْرَاهِيمُ",
+      "en": "And this is his son, Ibrahim.",
+      "au": "1_11_13.mp3",
+      "notes": "إِبْرَاهِيم = Abraham. Same three-word pattern: وَهَذَا + ابْنُهُ + name."
+    },
+    {
+      "cardId": "aby1_11.p14",
+      "ar": "وَهَذِهِ ابْنَتُهُ فَاطِمَةُ",
+      "en": "And this is his daughter, Fatimah.",
+      "au": "1_11_14.mp3",
+      "notes": "ابْنَة = daughter. Feminine of ابْن, formed with ة. هَذِهِ + ابْنَة + feminine name."
+    },
+    {
+      "cardId": "aby1_11.p15",
+      "ar": "وَهَذِهِ ابْنَتُهُ رُقَيَّةُ",
+      "en": "And this is his daughter, Ruqayyah.",
+      "au": "1_11_15.mp3",
+      "notes": "Same pattern. Read the whole sentence as one beat: وَهَذِهِ ابْنَتُهُ رُقَيَّةُ."
+    },
+    {
+      "cardId": "aby1_11.p16",
+      "ar": "وَهَذِهِ ابْنَتُهُ زَيْنَبُ",
+      "en": "And this is his daughter, Zaynab.",
+      "au": "1_11_16.mp3",
+      "notes": "زَيْنَب is a feminine name. Note the هَذِهِ / ابْنَة / name agreement — all feminine."
+    },
+    {
+      "cardId": "aby1_11.p17",
+      "ar": "وَهَذِهِ ابْنَتُهُ أُمُّ كُلْثُومٍ",
+      "en": "And this is his daughter, Umm Kulthum.",
+      "au": "1_11_17.mp3",
+      "notes": "أُمّ = \"mother of\" in a name (like أَبُو = father of). أُمُّ كُلْثُومٍ literally = \"mother of Kulthum\"."
+    }
+  ]
+}

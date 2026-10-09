@@ -1,0 +1,135 @@
+{
+  "lessonId": "ABY 1-12 Vocab",
+  "unit": 2,
+  "topic": "The Family",
+  "title": "Vocabulary: Morning at Home",
+  "dialogueAudio": "1_12_vocab_full.mp3",
+  "phrases": [
+    {
+      "cardId": "aby1_12v.p01",
+      "ar": "هَيَّا بِنَا",
+      "en": "Let's go",
+      "au": "1_12_vocab_01.mp3",
+      "notes": "هَيَّا = come on; بِنَا = with us. Said to invite someone along."
+    },
+    {
+      "cardId": "aby1_12v.p02",
+      "ar": "الْقُرْآن",
+      "en": "The Qur'an",
+      "au": "1_12_vocab_02.mp3",
+      "notes": "Al- + قُرْآن. The name of the Book."
+    },
+    {
+      "cardId": "aby1_12v.p03",
+      "ar": "مُصَلَّى",
+      "en": "Prayer room",
+      "au": "1_12_vocab_03.mp3",
+      "notes": "From the same root as صَلَّى (he prayed). A room set aside for prayer — not a full mosque."
+    },
+    {
+      "cardId": "aby1_12v.p04",
+      "ar": "مَسْجِد",
+      "en": "Mosque",
+      "au": "1_12_vocab_04.mp3",
+      "notes": "Literally 'place of prostration'. Root س-ج-د."
+    },
+    {
+      "cardId": "aby1_12v.p05",
+      "ar": "حَمَّام",
+      "en": "Bathroom",
+      "au": "1_12_vocab_05.mp3",
+      "notes": "In older usage it can also mean 'bathhouse', but in modern standard Arabic it usually means the bathroom at home."
+    },
+    {
+      "cardId": "aby1_12v.p06",
+      "ar": "غُرْفَة",
+      "en": "Room",
+      "au": "1_12_vocab_06.mp3",
+      "notes": "Feminine. غُرْفَة is any room in a house."
+    },
+    {
+      "cardId": "aby1_12v.p07",
+      "ar": "مِعْطَف",
+      "en": "Coat",
+      "au": "1_12_vocab_07.mp3",
+      "notes": "Outer garment. Not a shirt (قَمِيص) or a robe (ثَوْب)."
+    },
+    {
+      "cardId": "aby1_12v.p08",
+      "ar": "نَظَّارَة",
+      "en": "Glasses",
+      "au": "1_12_vocab_08.mp3",
+      "notes": "Feminine. From نَظَر (sight). Note: in the dialogue, the father asks for his glasses — it's the same word."
+    },
+    {
+      "cardId": "aby1_12v.p09",
+      "ar": "أَب",
+      "en": "Father",
+      "au": "1_12_vocab_09.mp3",
+      "notes": "When followed by another word it becomes أَبُو (as in أَبُو طَالِب). Alone, أَب."
+    },
+    {
+      "cardId": "aby1_12v.p10",
+      "ar": "أُم",
+      "en": "Mother",
+      "au": "1_12_vocab_10.mp3",
+      "notes": "Same pattern as أَب — becomes أُمُّ when in a possessive chain."
+    },
+    {
+      "cardId": "aby1_12v.p11",
+      "ar": "ابْن",
+      "en": "Son",
+      "au": "1_12_vocab_11.mp3",
+      "notes": "Feminine: ابْنَة. Plural: أَبْنَاء."
+    },
+    {
+      "cardId": "aby1_12v.p12",
+      "ar": "أَوْلَاد",
+      "en": "Children",
+      "au": "1_12_vocab_12.mp3",
+      "notes": "Plural of وَلَد (child, seen in Dialogue 3). Covers both boys and girls."
+    },
+    {
+      "cardId": "aby1_12v.p13",
+      "ar": "يُصَلِّي",
+      "en": "He prays",
+      "au": "1_12_vocab_13.mp3",
+      "notes": "Present tense, masculine. Feminine: تُصَلِّي. Root ص-ل-و."
+    },
+    {
+      "cardId": "aby1_12v.p14",
+      "ar": "يَقْرَأ",
+      "en": "He reads",
+      "au": "1_12_vocab_14.mp3",
+      "notes": "Present tense, masculine. Feminine: تَقْرَأ. Root ق-ر-أ."
+    },
+    {
+      "cardId": "aby1_12v.p15",
+      "ar": "يَتَوَضَّأ",
+      "en": "He makes wudu",
+      "au": "1_12_vocab_15.mp3",
+      "notes": "Present tense of تَوَضَّأ — the ritual washing before prayer. One of the words in this list that has no tidy English equivalent."
+    },
+    {
+      "cardId": "aby1_12v.p16",
+      "ar": "أَذَان",
+      "en": "Call to prayer",
+      "au": "1_12_vocab_16.mp3",
+      "notes": "The announcement from the mosque at each prayer time."
+    },
+    {
+      "cardId": "aby1_12v.p17",
+      "ar": "اللهُ أَكْبَر",
+      "en": "Allah is greatest",
+      "au": "1_12_vocab_17.mp3",
+      "notes": "The opening words of the adhan. أَكْبَر = greater/greatest."
+    },
+    {
+      "cardId": "aby1_12v.p18",
+      "ar": "الْفَجْر",
+      "en": "Dawn; the Fajr prayer",
+      "au": "1_12_vocab_18.mp3",
+      "notes": "The time just before sunrise — and by extension, the prayer offered at that time."
+    }
+  ]
+}
