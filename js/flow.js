@@ -1,28 +1,19 @@
-// ============================================================
-//  Sync button shim. Defined at parse time so the inline
-//  onclick in index.html can always find it.
-// ============================================================
 window.__syncClick = function (ev) {
-  console.log('[sync] clicked');
   var panel = document.getElementById('authPanel');
-  if (!panel) { alert('authPanel missing from index.html'); return false; }
-
+  if (!panel) return false;
   if (typeof Sync === 'undefined' || !Sync.CFG) {
     alert('sync.js did not load.');
     return false;
   }
   if (!Sync.CFG.url || !Sync.CFG.anonKey) {
-    alert('Sync is not configured. Open js/sync.js and fill in Sync.CFG.url and Sync.CFG.anonKey.');
+    alert('Sync is not configured.');
     return false;
   }
-
   panel.classList.toggle('show');
   if (panel.classList.contains('show')) {
     try {
       renderAuthState({ session: Sync.getSession && Sync.getSession(), busy: Sync.isBusy && Sync.isBusy() });
-    } catch (e) {
-      console.error('[sync] renderAuthState threw:', e);
-    }
+    } catch (e) {}
   }
   return false;
 };
@@ -36,6 +27,9 @@ function showScreen(el) {
 
   if (el === homeScreen && typeof startAmbient === 'function') startAmbient();
   else if (typeof stopAmbient === 'function') stopAmbient();
+
+  if (el === endScreen && typeof startCampfire === 'function') startCampfire();
+  else if (typeof stopCampfire === 'function') stopCampfire();
 }
 
 function showLoading(title, sub, ms, done) {
@@ -50,9 +44,6 @@ function showLoading(title, sub, ms, done) {
   }, ms || 1400);
 }
 
-// ============================================================
-//  Home counts (Step 4)
-// ============================================================
 function lessonCounts(lesson) {
   if (!lesson) return { due: 0, fresh: 0 };
   var pool = lesson.cards || lesson;
@@ -89,6 +80,8 @@ function refreshHome() {
   $('dailyLine').textContent = names.length
     ? 'Today: ' + dailyName + ' - best ' + todayBest + ' - streak ' + streak + ' days'
     : '';
+
+  if (typeof updateContinueUI === 'function') updateContinueUI();
 
   if (!names.length) {
     lessonGrid.innerHTML = '<div style="color:#6a5a3d;font-family:monospace;">No routes found in lessons/.</div>';
@@ -222,7 +215,6 @@ function refreshHome() {
   }
 }
 
-// ---------- collapse state persistence ----------
 const UI_STATE_KEY = 'safar_ui_v1';
 function loadUIState() {
   try { return JSON.parse(localStorage.getItem(UI_STATE_KEY) || '{}'); } catch (_) { return {}; }
@@ -269,8 +261,8 @@ function openBriefing(name, daily) {
   briefSub.textContent = sub;
 
   $('briefInfo').textContent = daily
-    ? 'Same gate order for everyone today. 5 rooms. One shot at your best score.'
-    : '5 rooms. Read fast, fight hard. The boss waits in the dark - and beyond it, the endless road.';
+    ? 'Same gate order for everyone today. 7 rooms. One shot at your best score.'
+    : '7 rooms. Read fast, fight if you like. The boss waits in the dark - and beyond it, the endless road.';
 
   modeRow.querySelectorAll('button').forEach(function (b) {
     b.classList.toggle('active', b.dataset.mode === G.mode);
@@ -294,6 +286,8 @@ function openBriefing(name, daily) {
 function startRun() {
   initAudio();
   if (ac && ac.state === 'suspended') ac.resume();
+  if (typeof clearRun === 'function') clearRun();
+  if (typeof startWind === 'function') startWind();
   showScreen(null);
   G.rooms = buildRun();
   G.roomIdx = 0; G.roomsCleared = 0; G.stars = 3;
@@ -303,6 +297,7 @@ function startRun() {
   G.lastWrong = null;
   updateLastWrongPanel();
   G.seenThisRun = new Set();
+  G.gatesNear = new Set();
   G.advancing = false;
   G.maxStamina = 100;
   G.up = { speed: 1, regen: 1, range: 1, burstCd: 1, storm: 1 };
@@ -316,6 +311,8 @@ function startRun() {
   G.running = true;
   G.gradedThisRun = new Set();
   G.tgt = null;
+  G.exitAnnounced = false;
+  G.whisperLastIdx = -1;
   preloadLessonAudio(G.currentLesson);
   showLoading(G.currentName, 'Deploying', 1200, function () { enterRoom(0); });
 }
@@ -323,6 +320,8 @@ function startRun() {
 function endRun(victory) {
   if (!G.running) return;
   G.running = false;
+  if (typeof clearRun === 'function') clearRun();
+  if (typeof stopWind === 'function') stopWind();
   pauseOff();
   G.keys = {};
   upgradeScreen.classList.remove('show');
@@ -383,9 +382,6 @@ function endRun(victory) {
   showScreen(endScreen);
 }
 
-// ============================================================
-//  UI bindings
-// ============================================================
 $('openManualBtn').onclick = function () { showScreen(manualScreen); startDemo(); };
 $('closeManualBtn').onclick = function () { refreshHome(); showScreen(homeScreen); };
 $('dailyBtn').onclick = function () {
@@ -409,16 +405,26 @@ $('pressOnBtn').onclick = function () {
   showLoading('Endless', 'Deeper into the dust', 1200, function () { enterRoom(G.roomIdx); });
 };
 
-// ---------- Study guide bindings ----------
+var continueBtn = $('continueBtn');
+if (continueBtn) continueBtn.onclick = function () { continueRun(); };
+var abandonBtn = $('abandonBtn');
+if (abandonBtn) abandonBtn.onclick = function () {
+  if (!confirm('Abandon this run?')) return;
+  clearRun();
+  updateContinueUI();
+};
+
+var journalBtn = $('journalBtn');
+if (journalBtn) journalBtn.onclick = function () { openJournal(); };
+var journalExit = $('journalExit');
+if (journalExit) journalExit.onclick = function () { closeJournal(); };
+
 var guideExitBtn = $('guideExit');
 if (guideExitBtn) guideExitBtn.onclick = closeGuide;
-
 var guideBackBtn = $('guideBackBtn');
 if (guideBackBtn) guideBackBtn.onclick = closeGuide;
-
 var studyHelpBtn = $('studyHelp');
 if (studyHelpBtn) studyHelpBtn.onclick = function (e) { e.stopPropagation(); openGuide('study'); };
-
 var briefGuideLink = $('briefGuideLink');
 if (briefGuideLink) briefGuideLink.onclick = function (e) { e.stopPropagation(); openGuide('brief'); };
 
@@ -431,7 +437,6 @@ if (studyBtn) {
   };
 }
 
-// Review mode entry (Step 7)
 var reviewBtn = $('reviewBtn');
 if (reviewBtn) reviewBtn.onclick = function () { startReview(); };
 
@@ -484,14 +489,10 @@ document.querySelector('.objective-line').addEventListener('click', function (e)
   if (G.targetGate) { noteReplay(); speakAr(G.targetGate.item); }
 });
 
-// ============================================================
-//  Room review
-// ============================================================
 function showRoomReview(done) {
   var seen = G.roomPhrases || [];
   var wrong = seen.filter(function (p) { return !p.correct; });
   var right = seen.filter(function (p) { return p.correct; });
-
   var shown = [];
   var seenAr = new Set();
   var i;
@@ -507,51 +508,40 @@ function showRoomReview(done) {
     seenAr.add(right[i].item.ar);
     shown.push(right[i]);
   }
-
   if (!shown.length) { done(); return; }
-
   var prevRoom = G.rooms[G.roomIdx - 1];
   var nextRoom = G.rooms[G.roomIdx];
   var prevRoomName = (prevRoom && prevRoom.name) || 'The road';
   var nextRoomName = nextRoom
     ? nextRoom.name
     : (G.endless ? 'The endless road' : 'The road home');
-
   var list = $('reviewList');
   list.innerHTML = '';
   var ctxItems = (G.roomPhrases || []).map(function (x) { return x.item; });
-
   for (i = 0; i < shown.length; i++) {
     var p = shown[i];
     var row = document.createElement('div');
     row.className = 'review-row ' + (p.correct ? 'ok' : 'bad');
-
     var ar = G.mode === 'en-ar' ? renderAr(p.item, ctxItems, G.reading) : p.item.en;
     var en = G.mode === 'en-ar' ? p.item.en : renderAr(p.item, ctxItems, G.reading);
     var dir = G.mode === 'en-ar' ? 'rtl' : 'ltr';
     var hint = p.item.hint ? ' - ' + p.item.hint : '';
-
     var mark = document.createElement('div');
     mark.className = 'review-mark';
     mark.textContent = p.correct ? '\u2713' : '\u2717';
-
     var body = document.createElement('div');
     body.className = 'review-body';
-
     var arEl = document.createElement('div');
     arEl.className = 'review-ar';
     arEl.setAttribute('dir', dir);
     arEl.textContent = ar;
-
     var enEl = document.createElement('div');
     enEl.className = 'review-en';
     enEl.textContent = en + hint;
-
     body.appendChild(arEl);
     body.appendChild(enEl);
     row.appendChild(mark);
     row.appendChild(body);
-
     (function (item) {
       row.onclick = function () {
         initAudio();
@@ -559,16 +549,12 @@ function showRoomReview(done) {
         speakAr(item);
       };
     })(p.item);
-
     list.appendChild(row);
   }
-
   $('reviewFrom').textContent = prevRoomName;
   $('reviewTo').textContent = nextRoomName;
-
   reviewScreen.classList.add('show');
   pauseOn();
-
   var rows = list.querySelectorAll('.review-row');
   var idx = 0;
   function reveal() {
@@ -578,14 +564,11 @@ function showRoomReview(done) {
     setTimeout(reveal, 550);
   }
   setTimeout(reveal, 300);
-
   var totalTime = 500 + shown.length * 550 + 2200;
   var revealDone = 300 + shown.length * 550 + 600;
-
   var armed = false;
   var downOnReview = false;
   var handled = false;
-
   function onDown() { downOnReview = true; }
   function onUp() {
     if (handled) return;
@@ -611,15 +594,11 @@ function showRoomReview(done) {
     pauseOff();
     done();
   }, totalTime);
-
   setTimeout(function () { armed = true; }, revealDone);
   reviewScreen.addEventListener('pointerdown', onDown);
   reviewScreen.addEventListener('pointerup', onUp);
 }
 
-// ============================================================
-//  Pause
-// ============================================================
 function enterPause() {
   if (G.userPaused) return;
   G.userPaused = true;
@@ -646,11 +625,6 @@ document.getElementById('pauseQuit').addEventListener('click', function () {
   endRun(false);
 });
 
-// ============================================================
-//  Auth panel rendering (Step 6)
-//  Built with DOM APIs, not innerHTML, so quote characters
-//  in strings can never break parsing.
-// ============================================================
 function _el(tag, attrs, text) {
   var el = document.createElement(tag);
   if (attrs) {
@@ -662,44 +636,29 @@ function _el(tag, attrs, text) {
   return el;
 }
 
-// Track the last rendered auth "identity" so we only rebuild the panel
-// when the signed-in user actually changes — not on every busy flip from
-// Sync.notify(). Otherwise the "Sync now → Syncing… → Synced" label
-// update gets wiped the moment notify() fires at the start of syncNow().
 var _lastAuthKey = '__init__';
 
 function renderAuthState(state) {
   var session = (state && state.session) || null;
   var busy = !!(state && state.busy);
-
-  // Cheap update every time — the status dot.
   var dot = $('syncDot');
-  if (dot) {
-    dot.className = 'sync-dot' + (session ? ' on' : '') + (busy ? ' busy' : '');
-  }
-
-  // Only rebuild the panel when the signed-in identity changes.
+  if (dot) dot.className = 'sync-dot' + (session ? ' on' : '') + (busy ? ' busy' : '');
   var key = session && session.user ? session.user.id : 'out';
   if (key === _lastAuthKey) return;
   _lastAuthKey = key;
-
   var label = $('syncLabel');
   var body = $('authBody');
-
   if (label) {
     var em = session && session.user && session.user.email ? session.user.email : '';
     label.textContent = session ? (em || 'signed in') : 'Sign in';
   }
   if (!body) return;
   body.textContent = '';
-
   if (session) {
     var status = _el('div', { class: 'auth-status' });
     status.appendChild(document.createTextNode('Signed in as '));
-    var emEl = _el('b', null, (session.user && session.user.email) || '');
-    status.appendChild(emEl);
+    status.appendChild(_el('b', null, (session.user && session.user.email) || ''));
     body.appendChild(status);
-
     var row = _el('div', { class: 'btn-row' });
     var syncBtn = _el('button', { class: 'btn gold', id: 'authSyncBtn' }, 'Sync now');
     syncBtn.onclick = function () {
@@ -718,53 +677,39 @@ function renderAuthState(state) {
     body.appendChild(row);
     return;
   }
-
-  // ---- Signed out ----
   body.appendChild(_el('div', { class: 'auth-status' }, 'Sign in or create an account.'));
-
   var emailInput = _el('input', {
     id: 'authEmail', type: 'email', inputmode: 'email',
     autocomplete: 'email', placeholder: 'you@example.com', class: 'auth-input',
   });
   body.appendChild(emailInput);
-
   var pwWrap = _el('div', { class: 'auth-pw-wrap' });
   var pwInput = _el('input', {
     id: 'authPassword', type: 'password',
     autocomplete: 'current-password', placeholder: 'Password (8+ chars)', class: 'auth-input',
   });
   var pwToggle = _el('button', {
-    type: 'button', class: 'auth-pw-toggle', 'aria-label': 'Show password',
-    tabindex: '-1',
+    type: 'button', class: 'auth-pw-toggle', 'aria-label': 'Show password', tabindex: '-1',
   }, '\u{1F441}');
-
   pwToggle.onclick = function () {
     var showing = pwInput.type === 'text';
     pwInput.type = showing ? 'password' : 'text';
     pwToggle.textContent = showing ? '\u{1F441}' : '\u{1F576}';
-    pwToggle.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
     pwInput.focus();
   };
-
   pwWrap.appendChild(pwInput);
   pwWrap.appendChild(pwToggle);
   body.appendChild(pwWrap);
-
   var row2 = _el('div', { class: 'btn-row' });
   var signInBtn = _el('button', { class: 'btn gold', id: 'authSignInBtn' }, 'Sign in');
   var signUpBtn = _el('button', { class: 'btn ghost', id: 'authSignUpBtn' }, 'Create account');
   row2.appendChild(signInBtn);
   row2.appendChild(signUpBtn);
   body.appendChild(row2);
-
   var errEl = _el('div', { class: 'auth-error', id: 'authError' });
   errEl.style.display = 'none';
   body.appendChild(errEl);
-
-  function showErr(msg) {
-    errEl.textContent = msg;
-    errEl.style.display = 'block';
-  }
+  function showErr(msg) { errEl.textContent = msg; errEl.style.display = 'block'; }
   function readCreds() {
     var email = (emailInput.value || '').trim();
     var pw = pwInput.value || '';
@@ -772,7 +717,6 @@ function renderAuthState(state) {
     if (pw.length < 6) { showErr('Password must be at least 6 characters.'); return null; }
     return { email: email, pw: pw };
   }
-
   signInBtn.onclick = function () {
     errEl.style.display = 'none';
     var c = readCreds();
@@ -783,16 +727,13 @@ function renderAuthState(state) {
       signInBtn.textContent = 'Sign in';
     });
   };
-
   signUpBtn.onclick = function () {
     errEl.style.display = 'none';
     var c = readCreds();
     if (!c) return;
-
     signUpBtn.textContent = 'Creating...';
     signUpBtn.disabled = true;
     signInBtn.disabled = true;
-
     var done = false;
     var watchdog = setTimeout(function () {
       if (done) return;
@@ -802,7 +743,6 @@ function renderAuthState(state) {
       signInBtn.disabled = false;
       showErr('Timed out. Check Supabase logs.');
     }, 15000);
-
     Sync.signUp(c.email, c.pw).then(function (data) {
       if (done) return;
       done = true;
@@ -811,7 +751,7 @@ function renderAuthState(state) {
       signUpBtn.disabled = false;
       signInBtn.disabled = false;
       if (!data || !data.session) {
-        showErr('Account created, but no session was returned. Turn OFF "Confirm email" in Supabase, then press Sign in.');
+        showErr('Account created, but no session. Turn OFF "Confirm email" in Supabase, then press Sign in.');
       }
     }).catch(function (e) {
       if (done) return;
@@ -830,15 +770,11 @@ function wireSyncUI() {
   var panel = $('authPanel');
   var close = $('authClose');
   if (btn) btn.onclick = function () {
-    if (!Sync.isConfigured()) {
-      alert('Sync not configured. Fill in Sync.CFG in js/sync.js.');
-      return;
-    }
+    if (!Sync.isConfigured()) { alert('Sync not configured.'); return; }
     panel.classList.toggle('show');
     renderAuthState({ session: Sync.getSession(), busy: Sync.isBusy() });
   };
   if (close) close.onclick = function () { panel.classList.remove('show'); };
-
   if (Sync && Sync.onState) {
     Sync.onState(function (s) { renderAuthState(s); });
   }
@@ -851,18 +787,11 @@ function bootSyncAndBackup() {
       Sync.bootstrap().then(function () {
         renderAuthState({ session: Sync.getSession(), busy: Sync.isBusy() });
         if (Sync.getSession()) Sync.syncNow();
-      }).catch(function (e) {
-        console.warn('Sync bootstrap failed:', e && e.message);
-      });
+      }).catch(function (e) { console.warn('Sync bootstrap failed:', e && e.message); });
     }
   } catch (e) { console.warn('Sync init failed:', e); }
-
-  try { if (typeof wireBackupButtons === 'function') wireBackupButtons(); }
-  catch (e) { console.warn('wireBackupButtons failed:', e); }
-
-  try { if (typeof wireReviewUI === 'function') wireReviewUI(); }
-  catch (e) { console.warn('wireReviewUI failed:', e); }
-
-  try { wireSyncUI(); }
-  catch (e) { console.warn('wireSyncUI failed:', e); }
+  try { if (typeof wireBackupButtons === 'function') wireBackupButtons(); } catch (e) {}
+  try { if (typeof wireReviewUI === 'function') wireReviewUI(); } catch (e) {}
+  try { wireSyncUI(); } catch (e) {}
+  try { if (typeof updateContinueUI === 'function') updateContinueUI(); } catch (e) {}
 }

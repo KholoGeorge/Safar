@@ -1,6 +1,6 @@
 // sw.js
 
-const CACHE_NAME = 'safar-cache-v11';
+const CACHE_NAME = 'safar-cache-v12';
 
 const ASSETS_TO_CACHE = [
   './',
@@ -9,14 +9,13 @@ const ASSETS_TO_CACHE = [
   './demo.html',
   './extras/favicon.png',
 
-  // Supabase-js, cached so the app boots offline. Note: the API endpoint
-  // (*.supabase.co) is explicitly not cached — see the fetch handler.
   'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js',
 
   './js/ambient.js',
   './js/audio.js',
   './js/backup.js',
   './js/boot.js',
+  './js/campfire.js',
   './js/config.js',
   './js/demo.js',
   './js/draw.js',
@@ -25,11 +24,14 @@ const ASSETS_TO_CACHE = [
   './js/grading.js',
   './js/guide.js',
   './js/input.js',
+  './js/journal.js',
   './js/lessons.js',
   './js/loop.js',
   './js/player.js',
+  './js/render3d.js',
   './js/review.js',
   './js/rooms.js',
+  './js/run_save.js',
   './js/srs.js',
   './js/state.js',
   './js/storage.js',
@@ -70,14 +72,11 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Cache-first for app assets. Never cache Supabase API calls, and pass
-// non-GET through untouched.
 self.addEventListener('fetch', (event) => {
   const req = event.request;
   if (req.method !== 'GET') return;
 
   const url = new URL(req.url);
-  // Never cache Supabase API calls — they must hit the network or fail.
   if (url.hostname.endsWith('.supabase.co')) return;
 
   event.respondWith(

@@ -17,11 +17,11 @@ function frame(now) {
   ctx.fillStyle = COL.void;
   ctx.fillRect(-40, -40, window.innerWidth + 80, window.innerHeight + 80);
 
-    if (G.running && !G.paused) {
+  if (G.running && !G.paused) {
     G.playMs += rawDt * 1000;
     updatePlayer(dt);
     if (G.running) {
-      if (G.roomType !== 'explore') {
+      if (G.roomType !== 'explore' && G.roomType !== 'reflection') {
         updateOrbs(dt);
         updateBoss(dt);
         updateProjectiles(dt);
@@ -29,6 +29,79 @@ function frame(now) {
         updateTension(dt);
         trackTarget();
       }
+
+      // Exit announcement
+      if (!G.exitAnnounced && G.roomType !== 'explore' && G.roomType !== 'reflection' && G.gates.length > 0) {
+        const gatesDone = G.gates.every(g => g.done);
+        const bossDead = !G.boss || G.boss.dead;
+        if (gatesDone && bossDead) {
+          G.exitAnnounced = true;
+          setStatus('The way is clear', 'Go north — walk out', 'ok', 4500);
+          S.boon();
+          spawnFloatText(G.player.x, G.player.y - 70, 'THE WAY IS CLEAR', COL.gold, 2.0, 26);
+          flash(COL.gold, 0.18, 320);
+        }
+      }
+
+      // Whispers
+      if (G.voice && G.roomType !== 'boss' &&
+          now >= G.whisperAt &&
+          (!curAudio || curAudio.paused || curAudio.ended)) {
+        const cards = G.currentCards;
+        if (cards && cards.length) {
+          let pick = -1;
+          for (let tries = 0; tries < 4 && pick < 0; tries++) {
+            const i = Math.floor(Math.random() * cards.length);
+            if (i !== G.whisperLastIdx) pick = i;
+          }
+          if (pick < 0) pick = Math.floor(Math.random() * cards.length);
+          G.whisperLastIdx = pick;
+          whisperPhrase(cards[pick]);
+        }
+        G.whisperAt = now + rand(35000, 70000);
+      }
+
+      // Rafiq proximity — speaks once, then fades.
+      if (G.rafiq && !G.rafiq.spoken && G.player) {
+        const d = Math.hypot(G.player.x - G.rafiq.x, G.player.y - G.rafiq.y);
+        if (d < 110) {
+          G.rafiq.spoken = true;
+          G.rafiq.speakAt = now;
+          setStatus('Rafiq', G.rafiq.line, 'ok', 5000);
+          spawnFloatText(G.rafiq.x, G.rafiq.y - 70, G.rafiq.line, COL.gold, 4.0, 18);
+        }
+      }
+      if (G.rafiq && G.rafiq.spoken && now > G.rafiq.speakAt + 2200) {
+        G.rafiq.opacity -= rawDt * 0.45;
+        if (G.rafiq.opacity <= 0) G.rafiq = null;
+      }
+
+      // ----- Gate proximity chime (feature 4) -----
+      if (G.roomType !== 'explore' && G.roomType !== 'reflection' && G.player) {
+        if (!G.gatesNear) G.gatesNear = new Set();
+        for (let i = 0; i < G.gates.length; i++) {
+          const g = G.gates[i];
+          if (g.done) { G.gatesNear.delete(i); continue; }
+          const d = Math.hypot(G.player.x - g.x, G.player.y - g.y);
+          const near = d < 220;
+          if (near && !G.gatesNear.has(i)) {
+            G.gatesNear.add(i);
+            gateChime();
+          } else if (!near && G.gatesNear.has(i)) {
+            G.gatesNear.delete(i);
+          }
+        }
+      }
+
+      // ----- Wind ambient (feature 4) -----
+      if (now > G.windUpdateAt) {
+        G.windUpdateAt = now + 250;
+        let target = 0.10;
+        if (G.weather === 'storm') target = 0.65 + (G.tension || 0) * 0.30;
+        else if (G.weather === 'dust') target = 0.35 + (G.tension || 0) * 0.20;
+        setWindVolume(target);
+      }
+
       checkRoomClear();
     }
   }
@@ -62,33 +135,38 @@ function frame(now) {
     if (d.y < G.bounds.t) d.y = G.bounds.b;
   }
 
-  drawFloor();
-  drawFootprints();
-  drawStorm();
-  drawObstacles();
-  drawPickups();
-  drawGates();
-  drawDiscoveries();
-  drawOrbs();
-  drawBoss();
-  drawProjectiles();
-  drawRings();
-  drawParticles();
-  drawPlayer();
-  drawFloatingText();
-  drawDust();
-  drawVignette();
-
-  if (now < G.flashUntil) {
-    const t = (G.flashUntil - now) / 300;
-    ctx.fillStyle = G.flashColor;
-    ctx.globalAlpha = G.flashAlpha * Math.max(0, t);
-    ctx.fillRect(-40, -40, window.innerWidth + 80, window.innerHeight + 80);
-    ctx.globalAlpha = 1;
+  if (USE_3D && typeof render3D === 'function') {
+    render3D(now);
+  } else {
+    drawFloor();
+    drawFootprints();
+    drawStorm();
+    drawObstacles();
+    drawPickups();
+    drawGates();
+    drawDiscoveries();
+    drawOrbs();
+    drawBoss();
+    drawProjectiles();
+    drawRings();
+    drawParticles();
+    drawPlayer();
+    drawFloatingText();
+    drawDust();
+    drawVignette();
   }
-  ctx.restore();
 
-  // ---------- HUD updates ----------
+  if (!USE_3D) {
+    if (now < G.flashUntil) {
+      const t = (G.flashUntil - now) / 300;
+      ctx.fillStyle = G.flashColor;
+      ctx.globalAlpha = G.flashAlpha * Math.max(0, t);
+      ctx.fillRect(-40, -40, window.innerWidth + 80, window.innerHeight + 80);
+      ctx.globalAlpha = 1;
+    }
+    ctx.restore();
+  }
+
   const pct = G.stamina / G.maxStamina * 100;
   staminaFill.style.width = pct + '%';
   staminaFill.className = 'stamina-fill' + (G.stamina < 20 ? ' low' : (G.dashing || now < G.dashCooldownUntil ? '' : ' boost'));
@@ -108,7 +186,6 @@ function frame(now) {
     pauseBtn.style.display = shouldShow ? 'flex' : 'none';
   }
 
-  // Discovery prompt — one text write per state change, no per-frame DOM cost.
   const discPrompt = document.getElementById('discPrompt');
   if (discPrompt) {
     const showPrompt = G.running && !G.paused

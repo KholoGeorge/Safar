@@ -77,6 +77,12 @@
   <span class="sync-dot" id="syncDot"></span>
   <span class="sync-label" id="syncLabel">Sign in</span>
 </button>
+        <button class="continue-btn" id="continueBtn" style="display:none;">
+      <span class="continue-dot"></span>
+      <span>Continue</span>
+      <span class="continue-label" id="continueLabel">—</span>
+      <span class="continue-x" id="abandonBtn" title="Abandon">×</span>
+    </button>
     <div class="title-main">SAFAR</div>
     <div class="title-ar">سفر</div>
     <div class="title-sub">A Dust Journey</div>
@@ -92,6 +98,7 @@
       <button class="btn gold" id="dailyBtn">Daily Route</button>
       <button class="btn" id="reviewBtn">Review due</button>
       <button class="btn ghost" id="openManualBtn">Field Manual</button>
+      <button class="btn ghost" id="journalBtn">Journal</button>
     </div>
     <div class="btn-row" style="margin-top:8px;">
       <button class="btn ghost" id="exportBackupBtn" title="Download a JSON backup">Export backup</button>
@@ -226,24 +233,35 @@
     </div>
   </div>
 
-  <div class="screen" id="endScreen">
-    <div class="end-title" id="endTitle">JOURNEY ENDED</div>
-    <div class="title-sub" id="endSub">—</div>
+    <div class="screen" id="journalScreen">
+    <button class="study-exit" id="journalExit">✕</button>
+    <div class="title-main" style="font-size:44px;">JOURNAL</div>
+    <div class="title-sub">What the road remembers</div>
     <div class="divider"></div>
-    <div class="stats-grid">
-      <div class="k">Score</div><div class="v" id="endScore">0</div>
-      <div class="k">Best combo</div><div class="v" id="endCombo">x1</div>
-      <div class="k">Correct</div><div class="v" id="endCorrect">0</div>
-      <div class="k">Wrong</div><div class="v" id="endWrong">0</div>
-      <div class="k">Orbs slain</div><div class="v" id="endKills">0</div>
-      <div class="k">Boss</div><div class="v" id="endBoss">—</div>
-      <div class="k">Time</div><div class="v" id="endTime">0:00</div>
-      <div class="k">Rooms</div><div class="v" id="endRooms">0/5</div>
-    </div>
-    <div class="summary" id="endSummary"></div>
-    <div class="btn-row" style="margin-top:16px;">
-      <button class="btn ghost" id="endBackBtn">Routes</button>
-      <button class="btn" id="againBtn">Again</button>
+    <div class="journal-body" id="journalBody"></div>
+  </div>
+
+    <div class="screen" id="endScreen">
+    <canvas id="fireCanvas"></canvas>
+    <div class="campfire-content">
+      <div class="campfire-kicker">THE JOURNEY ENDS</div>
+      <div class="end-title" id="endTitle">JOURNEY ENDED</div>
+      <div class="title-sub" id="endSub">—</div>
+      <div class="summary" id="endSummary"></div>
+      <div class="stats-grid">
+        <div class="k">Score</div><div class="v" id="endScore">0</div>
+        <div class="k">Combo</div><div class="v" id="endCombo">x1</div>
+        <div class="k">Correct</div><div class="v" id="endCorrect">0</div>
+        <div class="k">Wrong</div><div class="v" id="endWrong">0</div>
+        <div class="k">Orbs</div><div class="v" id="endKills">0</div>
+        <div class="k">Boss</div><div class="v" id="endBoss">—</div>
+        <div class="k">Time</div><div class="v" id="endTime">0:00</div>
+        <div class="k">Rooms</div><div class="v" id="endRooms">0/7</div>
+      </div>
+      <div class="btn-row" style="margin-top:16px;">
+        <button class="btn ghost" id="endBackBtn">Routes</button>
+        <button class="btn" id="againBtn">Again</button>
+      </div>
     </div>
   </div>
 
@@ -416,6 +434,10 @@
 <script src="js/sync.js"></script>
 <script src="js/review.js"></script>
 <script src="js/demo.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script src="js/render3d.js"></script>
+<script src="js/run_save.js"></script>
 <script src="js/boot.js"></script>
+
 </body>
 </html>

@@ -25,7 +25,7 @@ function tone({ freq = 440, dur = 0.1, vol = 0.06, type = 'sine', slideTo = null
 function noise({ dur = 0.1, vol = 0.04, lowpass = 2000 }) {
   if (!ac || !masterGain) return;
   const t0 = ac.currentTime;
-  const bufSize = ac.sampleRate * dur;
+  const bufSize = Math.floor(ac.sampleRate * dur);
   const buf = ac.createBuffer(1, bufSize, ac.sampleRate);
   const d = buf.getChannelData(0);
   for (let i = 0; i < bufSize; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufSize, 2);
@@ -37,7 +37,9 @@ function noise({ dur = 0.1, vol = 0.04, lowpass = 2000 }) {
 }
 
 const S = {
-  footstep: () => noise({ dur: 0.06, vol: 0.02, lowpass: 400 }),
+  footstep:       () => noise({ dur: 0.06, vol: 0.02, lowpass: 400 }),
+  footstepSand:   () => noise({ dur: 0.06, vol: 0.02, lowpass: 400 }),
+  footstepStone:  () => { noise({ dur: 0.04, vol: 0.028, lowpass: 1400 }); tone({ freq: 220, dur: 0.03, vol: 0.015, type: 'square' }); },
   staff: () => { tone({ freq: 900, slideTo: 200, dur: 0.14, vol: 0.055, type: 'sawtooth' }); noise({ dur: 0.08, vol: 0.025 }); },
   burst: () => {
     tone({ freq: 220, slideTo: 1400, dur: 0.35, vol: 0.07 });
@@ -75,6 +77,65 @@ const S = {
 };
 
 // ============================================================
+//  Wind — ambient loop for storm / dust weather.
+// ============================================================
+let windNode = null;
+let windGain = null;
+
+function startWind() {
+  if (!ac || !masterGain || windNode) return;
+  try {
+    const dur = 4;
+    const buf = ac.createBuffer(1, Math.floor(ac.sampleRate * dur), ac.sampleRate);
+    const d = buf.getChannelData(0);
+    let last = 0;
+    for (let i = 0; i < d.length; i++) {
+      // Brown-ish noise: integrate white noise, then high-pass by DC removal.
+      const w = Math.random() * 2 - 1;
+      last = (last + 0.02 * w) / 1.02;
+      d[i] = last * 3;
+    }
+    const src = ac.createBufferSource();
+    src.buffer = buf;
+    src.loop = true;
+    const filter = ac.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = 320;
+    filter.Q.value = 0.6;
+    const g = ac.createGain();
+    g.gain.value = 0;
+    src.connect(filter).connect(g).connect(masterGain);
+    src.start();
+    windNode = src;
+    windGain = g;
+  } catch (e) {
+    console.warn('startWind failed:', e);
+  }
+}
+
+function setWindVolume(v) {
+  if (!windGain) return;
+  const target = Math.max(0, Math.min(1, v)) * 0.20;
+  try { windGain.gain.value = target; } catch (_) {}
+}
+
+function stopWind() {
+  if (!windNode) return;
+  try { windNode.stop(); } catch (_) {}
+  try { windNode.disconnect(); } catch (_) {}
+  windNode = null;
+  windGain = null;
+}
+
+// ============================================================
+//  Gate chime — a soft two-note rise when you walk near a gate.
+// ============================================================
+function gateChime() {
+  tone({ freq: 660, dur: 0.30, vol: 0.025, type: 'sine' });
+  tone({ freq: 990, dur: 0.36, vol: 0.018, type: 'sine', delay: 0.06 });
+}
+
+// ============================================================
 //  Audio playback — no TTS, ever. Silence if no file.
 // ============================================================
 const AUDIO_DIR = 'audio/';
@@ -109,13 +170,10 @@ function preloadLessonAudio(items) {
     if (!path || audioCache.has(path)) continue;
     getAudioEl(path);
   }
-  // Also preload the whole-dialogue file
   const dpath = resolveAudioPath(items.dialogueAudio);
   if (dpath && !audioCache.has(dpath)) getAudioEl(dpath);
 }
 
-// Play a single phrase's audio file (used in-game on correct/wrong).
-// Silent if no file. No TTS.
 function speakAr(item) {
   if (!G.voice || !item) return;
   const path = resolveAudioPath(item.au);
@@ -123,17 +181,33 @@ function speakAr(item) {
   stopAllAudio();
   const a = getAudioEl(path);
   try { a.currentTime = 0; } catch (_) {}
+  a.volume = 1.0;
   curAudio = a;
   a.play().catch(() => {});
 }
 
-// Play the full dialogue audio file. Returns the Audio element or null.
+function whisperPhrase(item) {
+  if (!G.voice || !item) return;
+  if (curAudio && !curAudio.paused && !curAudio.ended) return;
+  const path = resolveAudioPath(item.au);
+  if (!path) return;
+  const a = getAudioEl(path);
+  a.volume = 0.30;
+  try { a.currentTime = 0; } catch (_) {}
+  a.play().then(() => {
+    setTimeout(() => { try { a.volume = 1.0; } catch (_) {} }, 6000);
+  }).catch(() => {
+    try { a.volume = 1.0; } catch (_) {}
+  });
+}
+
 function playDialogueAudio(path) {
   const resolved = resolveAudioPath(path);
   if (!resolved) return null;
   stopAllAudio();
   const a = getAudioEl(resolved);
   try { a.currentTime = 0; } catch (_) {}
+  a.volume = 1.0;
   curAudio = a;
   a.play().catch(() => {});
   return a;

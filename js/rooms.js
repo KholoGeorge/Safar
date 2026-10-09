@@ -2,15 +2,9 @@ function roomTypeFor(i) {
   if (i < ROOM_PATTERN.length) return ROOM_PATTERN[i].type;
   const k = i - ROOM_PATTERN.length + 1;
   if (k % 5 === 0) return 'boss';
-  return (k % 2 === 1) ? 'combat' : 'explore';
+  return 'combat';
 }
 
-// ------------------------------------------------------------
-//  Run queue (Step 4)
-//  One ordered list per run: due cards first (most overdue first),
-//  then up to 6 new cards, then not-yet-due cards (soonest first).
-//  Daily Route overrides this with a seeded shuffle.
-// ------------------------------------------------------------
 function buildRunQueue(lesson) {
   if (!lesson || !lesson.length) return [];
   if (G.daily) {
@@ -29,8 +23,6 @@ function buildRunQueue(lesson) {
   return ordered;
 }
 
-// Pull `count` items off the queue, skipping within-room duplicates.
-// Cycles the queue if the run needs more gates than the lesson has cards.
 function takeFromQueue(count) {
   const q = G.runQueue;
   if (!q || !q.length) return [];
@@ -48,6 +40,11 @@ function takeFromQueue(count) {
     out.push(item);
   }
   return out;
+}
+
+function pickWeather(type, i) {
+  if (type === 'boss') return 'clear';
+  return (i % 2 === 0) ? 'dust' : 'storm';
 }
 
 function makeRoom(i) {
@@ -68,6 +65,17 @@ function makeRoom(i) {
       type: 'explore',
       name: EXPLORE_NAMES[n % EXPLORE_NAMES.length],
       gates: [], stormSpeed: 0, obstacleCount: 3, orbConfig: [], isBoss: false, bossHp: 0,
+      weather: (i < ROOM_PATTERN.length) ? (ROOM_PATTERN[i].weather || 'clear') : pickWeather('explore', i),
+    };
+  }
+
+  if (type === 'reflection') {
+    const base = (i < ROOM_PATTERN.length) ? ROOM_PATTERN[i] : { name: 'The Quiet Hour' };
+    return {
+      type: 'reflection',
+      name: base.name || 'The Quiet Hour',
+      gates: [], stormSpeed: 0, obstacleCount: 2, orbConfig: [], isBoss: false, bossHp: 0,
+      weather: 'clear',
     };
   }
 
@@ -76,14 +84,14 @@ function makeRoom(i) {
     base = ROOM_PATTERN[i];
   } else {
     const k = i - ROOM_PATTERN.length;
-    const isBoss = (k + 1) % 5 === 0;
+    const isBoss = (k + 1) % 6 === 0;
     if (isBoss) {
       base = {
         type: 'boss',
-        name: 'Shadow Throne ×' + Math.floor((k + 1) / 5 + 1),
-        gates: 4, storm: 0, obs: 3,
-        orbs: [{ type: 'drifter', count: Math.min(4, 2 + Math.floor(k / 5)) }],
-        bossHp: 6 + Math.floor(k / 5) * 3,
+        name: 'Shadow Throne ×' + Math.floor((k + 1) / 6 + 1),
+        gates: 4, storm: 0, obs: 3, weather: 'clear',
+        orbs: [{ type: 'drifter', count: Math.min(4, 2 + Math.floor(k / 6)) }],
+        bossHp: 6 + Math.floor(k / 6) * 3,
       };
     } else {
       base = {
@@ -92,6 +100,7 @@ function makeRoom(i) {
         gates: 3 + (i % 3),
         storm: Math.min(42, 21 + k * 2.2),
         obs: 4 + (i % 4),
+        weather: pickWeather('combat', i),
         orbs: [
           { type: 'drifter', count: Math.min(5, 2 + Math.floor(k / 2)) },
           { type: 'charger', count: Math.min(4, 1 + Math.floor(k / 2)) },
@@ -102,7 +111,13 @@ function makeRoom(i) {
   }
 
   const count = Math.max(2, Math.round(base.gates * M.gateMul));
-  const storm = base.storm > 0 ? Math.max(4, Math.round(base.storm * M.stormMul)) : 0;
+  let storm = base.storm > 0 ? Math.max(4, Math.round(base.storm * M.stormMul)) : 0;
+
+  // Weather modulates storm speed.
+  const weather = base.weather || 'storm';
+  if (weather === 'clear' || weather === 'drift') storm = 0;
+  else if (weather === 'dust') storm = Math.round(storm * 0.55);
+
   const orbCfg = base.orbs.map(c => ({ type: c.type, count: Math.max(1, Math.round(c.count * M.orbMul)) }));
   const bossHp = base.bossHp ? Math.max(3, Math.round(base.bossHp * M.bossMul)) : 0;
 
@@ -113,12 +128,12 @@ function makeRoom(i) {
     gates, stormSpeed: storm, obstacleCount: base.obs,
     orbConfig: orbCfg, isBoss: base.type === 'boss',
     bossHp, name: base.name,
+    weather,
   };
 }
 
 function buildRun() {
   G.rng = G.daily ? mulberry32(dayNum() * 7919 + 13) : Math.random;
-  // Order the whole run's cards once (Step 4).
   G.runQueue = buildRunQueue(G.currentCards);
   G.queueCursor = 0;
   const rooms = [];
@@ -140,18 +155,30 @@ function spawnDust(l, t, r, b) {
   }
 }
 
+// Pick a Rafiq line for this room. Falls back to a generic one.
+function pickRafiqLine(roomIdx) {
+  const between = (typeof STORY !== 'undefined' && STORY.between) || [];
+  if (!between.length) return 'The road remembers every step.';
+  const set = between[Math.min(roomIdx, between.length - 1)];
+  if (Array.isArray(set) && set.length) {
+    const line = set[Math.floor(Math.random() * set.length)];
+    return line.text || 'The road remembers every step.';
+  }
+  return 'The road remembers every step.';
+}
+
 function enterRoom(idx) {
   while (G.rooms.length <= idx) G.rooms.push(makeRoom(G.rooms.length));
   G.advancing = false;
 
   const w = window.innerWidth, h = window.innerHeight;
-  const topPad = IS_TOUCH ? Math.min(140, Math.round(h * 0.18)) : 118;
-  const botPad = IS_TOUCH ? Math.min(120, Math.round(h * 0.18)) : 78;
+  const topPad = IS_TOUCH ? Math.min(110, Math.round(h * 0.13)) : 118;
+  const botPad = IS_TOUCH ? Math.min(90, Math.round(h * 0.11)) : 78;
   const availW = w - 40;
   const availH = h - topPad - botPad;
 
   const isPortrait = h > w;
-  const ASPECT = isPortrait ? 1.55 : 1.2;
+  const ASPECT = isPortrait ? 1.55 : 0.85;
 
   let playW, playH;
   if (availH / availW >= ASPECT) {
@@ -189,6 +216,10 @@ function enterRoom(idx) {
   G.inWrongGate = null;
   G.inWrongSince = 0;
   G.gateCooldownUntil = 0;
+  G.exitAnnounced = false;
+  G.weather = room.weather || 'storm';
+  G.rafiq = null;
+  G.whisperAt = nowMs() + rand(12000, 22000);
 
   const hintEl = document.getElementById('objHint');
   if (hintEl) { hintEl.textContent = ''; hintEl.style.display = 'none'; }
@@ -198,6 +229,7 @@ function enterRoom(idx) {
   G.discoveryNear = null;
   G.discoveryOpen = null;
 
+  // ---- EXPLORE ----
   if (G.roomType === 'explore') {
     G.gates = [];
     G.tgt = null;
@@ -225,7 +257,6 @@ function enterRoom(idx) {
       G.obstacles.push({ x: ox, y: oy, r: oradius, variant: Math.floor(Math.random() * 3) });
     }
 
-    // Discovery pool comes from the deduped card pool (Step 1).
     const unseen = G.currentCards.filter(it => !G.seenThisRun || !G.seenThisRun.has(it.ar));
     const pool = unseen.length >= DISCOVERIES_PER_ROOM ? unseen : G.currentCards;
     const picks = shuffle(pool, Math.random).slice(0, DISCOVERIES_PER_ROOM);
@@ -251,6 +282,15 @@ function enterRoom(idx) {
       });
     }
 
+    // Rafiq
+    {
+      const rx = rand(l + 90, r - 90);
+      const ry = rand(t + 160, b - 160);
+      if (dist(rx, ry, G.player.x, G.player.y) > 140) {
+        G.rafiq = { x: rx, y: ry, line: pickRafiqLine(idx), spoken: false, speakAt: 0, opacity: 1 };
+      }
+    }
+
     objLabel.textContent = 'Explore';
     objText.textContent = room.name;
     objText.classList.remove('arabic');
@@ -264,7 +304,63 @@ function enterRoom(idx) {
     return;
   }
 
-  // ---- Combat / Boss ----
+  // ---- REFLECTION ----
+  if (G.roomType === 'reflection') {
+    G.gates = [];
+    G.tgt = null;
+    G.obstacles = [];
+    G.pickups = [];
+    G.orbs = [];
+    G.boss = null;
+    G.projectiles = [];
+    G.stormY = G.bounds.b + 1000;
+    G.stormSpeed = 0;
+    G.dust = [];
+    spawnDust(l, t, r, b);
+    G.footprints = []; G.particles = []; G.rings = []; G.floatingText = [];
+
+    // A few stones to give the room shape
+    let tries = 0;
+    while (G.obstacles.length < room.obstacleCount && tries < 60) {
+      tries++;
+      const ox = rand(l + 80, r - 80);
+      const oy = rand(t + 120, b - 120);
+      const oradius = rand(18, 30);
+      if (dist(ox, oy, G.player.x, G.player.y) < oradius + 90) continue;
+      let blocked = false;
+      for (const o of G.obstacles) if (dist(ox, oy, o.x, o.y) < oradius + o.r + 30) { blocked = true; break; }
+      if (blocked) continue;
+      G.obstacles.push({ x: ox, y: oy, r: oradius, variant: Math.floor(Math.random() * 3) });
+    }
+
+    // Rafiq in reflection too
+    {
+      const rx = rand(l + 90, r - 90);
+      const ry = rand(t + 160, b - 200);
+      if (dist(rx, ry, G.player.x, G.player.y) > 140) {
+        G.rafiq = { x: rx, y: ry, line: pickRafiqLine(idx), spoken: false, speakAt: 0, opacity: 1 };
+      }
+    }
+
+    // Play the whole dialogue once, softly.
+    if (G.currentLesson && G.currentLesson.dialogueAudio) {
+      setTimeout(() => { try { playDialogueAudio(G.currentLesson.dialogueAudio); } catch (_) {} }, 600);
+    }
+
+    objLabel.textContent = 'Rest';
+    objText.textContent = room.name;
+    objText.classList.remove('arabic');
+
+    roomVal.textContent = `${idx + 1} / ${G.endless ? '∞' : G.rooms.length}`;
+    roomNameEl.textContent = room.name;
+    updateStars();
+    bossBar.classList.remove('show');
+    S.roomEnter();
+    setStatus('Rest', 'The words are on the wall. Leave when you are ready.', 'ok', 3500);
+    return;
+  }
+
+  // ---- COMBAT / BOSS ----
   const count = room.gates.length;
   const margin = IS_TOUCH ? 52 : 60;
   const usable = (b - t) - margin * 2;
@@ -380,7 +476,7 @@ function spawnBoss(hp = 6) {
 }
 
 function pickTarget() {
-  if (G.roomType === 'explore') return;
+  if (G.roomType === 'explore' || G.roomType === 'reflection') return;
   const available = G.gates.filter(g => !g.done);
   const hintEl = document.getElementById('objHint');
 

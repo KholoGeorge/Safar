@@ -30,8 +30,20 @@ function updateOrbs(dt) {
           if (now > o.chargeAt + 400) { o.chargeState = 'idle'; o.chargeAt = now; o.chargeVx = 0; o.chargeVy = 0; }
         }
       } else {
-        o.x += dx / d * o.speed * dt;
-        o.y += dy / d * o.speed * dt;
+        // Drifters circle at a minimum radius instead of hugging the
+        // player. Once inside minR, they drift tangentially rather than
+        // pressing further in. The arena feels roomier without removing
+        // the danger — you can still collide with them, and chargers
+        // still lunge.
+        const minR = 60;
+        if (d > minR) {
+          o.x += dx / d * o.speed * dt;
+          o.y += dy / d * o.speed * dt;
+        } else {
+          const tx = -dy / d, ty = dx / d;
+          o.x += tx * 30 * dt;
+          o.y += ty * 30 * dt;
+        }
       }
     }
 
@@ -75,7 +87,6 @@ function updateOrbs(dt) {
 
 function updateBoss(dt) {
   if (G.roomType === 'explore') return;
-  // Respawn handler — runs when there's no boss alive
   if (!G.boss) {
     if (G.bossRespawnAt && nowMs() >= G.bossRespawnAt) {
       const room = G.rooms[G.roomIdx];
@@ -206,7 +217,7 @@ function checkRoomClear() {
   if (G.advancing) return;
   if (p.y >= G.bounds.t + 40) return;
 
-  if (G.roomType === 'explore') { advanceRoom(); return; }
+  if (G.roomType === 'explore' || G.roomType === 'reflection') { advanceRoom(); return; }
 
   if (!G.gates.length) return;
   if (!G.gates.every(g => g.done)) return;
@@ -237,16 +248,13 @@ function advanceRoom() {
     return;
   }
 
-  showRoomReview(() => {
-    // Keep the game frozen across the loading card so the
-    // just-cleared room can't tick again.
     pauseOn();
-    const nextRoom = G.rooms[G.roomIdx];
-    const nextName = nextRoom ? nextRoom.name : 'The road ahead';
-    showLoading(nextName, `Room ${G.roomIdx + 1}`, 1400, () => {
-      enterRoom(G.roomIdx);
-      G.advancing = false;
-      pauseOff();
-    });
+  const nextRoom = G.rooms[G.roomIdx];
+  const nextName = nextRoom ? nextRoom.name : 'The road ahead';
+  saveRun();
+  showLoading(nextName, `Room ${G.roomIdx + 1}`, 1400, () => {
+    enterRoom(G.roomIdx);
+    G.advancing = false;
+    pauseOff();
   });
 }

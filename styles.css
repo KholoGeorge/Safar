@@ -1698,3 +1698,162 @@ input[type="password"]::-webkit-credentials-auto-fill-button {
 .btn.pad-focus {
   background: rgba(212,175,55,0.08) !important;
 }
+
+/* ---------- JOURNAL ---------- */
+#journalScreen {
+  padding: 60px 24px 40px;
+  justify-content: flex-start;
+}
+.journal-body {
+  max-width: 620px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  text-align: left;
+  margin-top: 8px;
+}
+.journal-opening {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 16px;
+  font-style: italic;
+  line-height: 1.7;
+  color: #d4af37;
+  padding: 16px 0;
+  border-top: 1px solid #3a3020;
+  border-bottom: 1px solid #3a3020;
+  text-align: center;
+}
+.journal-entry {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.journal-lesson {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  color: #d4af37;
+  text-transform: uppercase;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #2a2418;
+  margin-bottom: 4px;
+  font-weight: 700;
+}
+.journal-line {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.65;
+  color: #c9b88a;
+}
+.journal-slow { color: #a89878; font-style: italic; }
+.journal-empty {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  color: #6a5a3d;
+  text-align: center;
+  padding: 40px;
+}
+
+/* ---------- CAMPFIRE END SCREEN ---------- */
+#endScreen {
+  background: #0a0603;
+  justify-content: flex-end;
+  padding: 40px 24px 40px;
+  position: relative;
+}
+#fireCanvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.campfire-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  max-width: 620px;
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 20px 24px;
+  background: rgba(14, 10, 6, 0.72);
+  border: 1px solid #3a2a14;
+  border-radius: 6px;
+  backdrop-filter: blur(3px);
+}
+.campfire-kicker {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.55em;
+  color: #6a5a3d;
+  text-transform: uppercase;
+}
+#endScreen .end-title {
+  font-size: 42px;
+  letter-spacing: 0.22em;
+}
+#endScreen .stats-grid {
+  margin-top: 8px;
+  opacity: 0.85;
+}
+@media (max-width: 820px) {
+  .campfire-content { padding: 14px 16px; }
+  #endScreen .end-title { font-size: 28px; letter-spacing: 0.14em; }
+}
+
+#endScreen {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  background: #0a0603;
+  justify-content: flex-end;
+  padding: 40px 24px 40px;
+}
+
+/* ---------- CONTINUE BANNER ---------- */
+.continue-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 6px 0 2px;
+  padding: 8px 18px 8px 14px;
+  background: rgba(14,12,8,0.92);
+  border: 1px solid #d4af37;
+  border-radius: 24px;
+  color: #d4af37;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  z-index: 5;
+  transition: all 0.15s;
+}
+.continue-btn:hover { background: rgba(212,175,55,0.10); color: #f5d24a; }
+.continue-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #d4af37;
+  box-shadow: 0 0 10px rgba(212,175,55,0.7);
+  animation: pulse 1.8s infinite;
+}
+.continue-label {
+  color: #c9b88a;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: none;
+}
+.continue-x {
+  margin-left: 4px;
+  padding: 0 6px;
+  color: #6a5a3d;
+  font-size: 14px;
+  line-height: 1;
+  border-left: 1px solid #3a3020;
+  padding-left: 10px;
+}
+.continue-x:hover { color: #b85c5c; }

@@ -18,16 +18,26 @@ const G = {
   discoveries: [],
   discoveryNear: null,
   discoveryOpen: null,
-  playMs: 0,                 // unpaused game time, ms
-  tgt: null,                 // telemetry for the current target
-  gradedThisRun: new Set(),  // cardKeys already graded this run
+  playMs: 0,
+  tgt: null,
+  gradedThisRun: new Set(),
 
-  // ---- run queue (Step 4) ----
-  runQueue: [],              // ordered array of lesson card objects for this run
-  queueCursor: 0,            // how far we've consumed runQueue
-  startWall: 0,              // Date.now() at run start (for summary filtering)
+  runQueue: [],
+  queueCursor: 0,
+  startWall: 0,
+  exitAnnounced: false,
 
-  // ---- touch ----
+  weather: 'storm',
+
+  whisperAt: 0,
+  whisperLastIdx: -1,
+
+  rafiq: null,
+
+  // ---- audio state (feature 4) ----
+  gatesNear: null,          // Set of gate indices inside chime range
+  windUpdateAt: 0,          // throttle for wind gain updates
+
   joy: null,
   touchMode: IS_TOUCH,
 

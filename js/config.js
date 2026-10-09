@@ -1,3 +1,5 @@
+const USE_3D = true;
+
 const $ = id => document.getElementById(id);
 
 // Touch detection — declared first so DPR, state, and input can all read it
@@ -97,69 +99,65 @@ const nowMs = () => performance.now();
 const comboMult = () => 1 + Math.min(4, Math.floor(G.combo / 3));
 
 const ROOM_PATTERN = [
-  // ── 1 ── First steps.
-  // One drifter, storm barely moving. You learn what a gate is,
-  // what a shadow looks like, and that nothing here will kill you
-  // for taking eight seconds to read.
   {
     type: 'combat',
     name: 'The Dust Road',
-    gates: 3,
-    storm: 6,
-    obs: 4,
+    gates: 3, storm: 6, obs: 4, weather: 'dust',
     orbs: [{ type: 'drifter', count: 1 }],
   },
-
-  // ── 2 ── Breather. No enemies, no storm. Discoveries only.
-  { type: 'explore', name: 'The Dry Well' },
-
-  // ── 3 ── First real threat, gentle presentation.
-  // A second drifter and your first charger — one enemy that
-  // telegraphs its lunge, so you learn what a wind-up looks like
-  // without being punished for not recognising it yet.
   {
     type: 'combat',
     name: 'Broken Ruins',
-    gates: 4,
-    storm: 9,
-    obs: 5,
+    gates: 4, storm: 9, obs: 5, weather: 'storm',
     orbs: [
       { type: 'drifter', count: 2 },
       { type: 'charger', count: 1 },
     ],
   },
-
-  // ── 4 ── Breather. Loose pillars, three discoveries, no pressure.
-  { type: 'explore', name: 'Fallen Pillars' },
-
-  // ── 5 ── Climax before the throne. All three orb types appear,
-  // and the storm is fast enough to make you skip a second look
-  // at a gate you already know. Still forgiving — five gates,
-  // five shadows, and a long enough runway that a wrong turn
-  // costs you a reposition, not a star.
   {
     type: 'combat',
     name: 'The Long Passage',
-    gates: 5,
-    storm: 14,
-    obs: 5,
+    gates: 5, storm: 14, obs: 5, weather: 'storm',
     orbs: [
       { type: 'drifter', count: 3 },
       { type: 'charger', count: 1 },
       { type: 'splitter', count: 1 },
     ],
   },
-
-  // ── 6 ── The throne. No storm, no regular enemies. The boss is
-  // the entire pressure. Read the gates, kill the throne, leave.
-  // Regular orbs in here would just be noise on top of an already
-  // loud fight.
+  {
+    type: 'combat',
+    name: 'The Silent Stones',
+    gates: 5, storm: 16, obs: 6, weather: 'storm',
+    orbs: [
+      { type: 'drifter', count: 3 },
+      { type: 'charger', count: 2 },
+      { type: 'splitter', count: 1 },
+    ],
+  },
+  {
+    type: 'combat',
+    name: 'The Long Watch',
+    gates: 6, storm: 18, obs: 6, weather: 'storm',
+    orbs: [
+      { type: 'drifter', count: 4 },
+      { type: 'charger', count: 2 },
+      { type: 'splitter', count: 2 },
+    ],
+  },
+  {
+    type: 'combat',
+    name: 'An Empty Shrine',
+    gates: 6, storm: 20, obs: 6, weather: 'storm',
+    orbs: [
+      { type: 'drifter', count: 4 },
+      { type: 'charger', count: 2 },
+      { type: 'splitter', count: 2 },
+    ],
+  },
   {
     type: 'boss',
     name: 'The Shadow Throne',
-    gates: 4,
-    storm: 0,
-    obs: 3,
+    gates: 4, storm: 0, obs: 3, weather: 'clear',
     orbs: [],
     bossHp: 6,
   },

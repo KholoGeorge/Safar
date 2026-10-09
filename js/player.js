@@ -84,9 +84,18 @@ function updatePlayer(dt) {
 
   const moved = dist(p.x, p.y, prevX, prevY);
   if (moved > 1.2) {
-    G.footstepTimer -= dt;
+        G.footstepTimer -= dt;
     if (G.footstepTimer <= 0 && sp > 60) {
-      S.footstep();
+      // Stone underfoot near obstacles and along the walls; sand elsewhere.
+      let stone = false;
+      for (const o of G.obstacles) {
+        if (dist(p.x, p.y, o.x, o.y) < o.r + 45) { stone = true; break; }
+      }
+      if (!stone) {
+        const b = G.bounds;
+        if (p.x - b.l < 55 || b.r - p.x < 55 || p.y - b.t < 55 || b.b - p.y < 55) stone = true;
+      }
+      if (stone) S.footstepStone(); else S.footstepSand();
       G.footstepTimer = sp > 250 ? 0.22 : 0.32;
     }
     const lastPrint = G.footprints[G.footprints.length - 1];
