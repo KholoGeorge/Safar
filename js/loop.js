@@ -76,23 +76,6 @@ function frame(now) {
         if (G.rafiq.opacity <= 0) G.rafiq = null;
       }
 
-      // ----- Gate proximity chime (feature 4) -----
-      if (G.roomType !== 'explore' && G.roomType !== 'reflection' && G.player) {
-        if (!G.gatesNear) G.gatesNear = new Set();
-        for (let i = 0; i < G.gates.length; i++) {
-          const g = G.gates[i];
-          if (g.done) { G.gatesNear.delete(i); continue; }
-          const d = Math.hypot(G.player.x - g.x, G.player.y - g.y);
-          const near = d < 220;
-          if (near && !G.gatesNear.has(i)) {
-            G.gatesNear.add(i);
-            gateChime();
-          } else if (!near && G.gatesNear.has(i)) {
-            G.gatesNear.delete(i);
-          }
-        }
-      }
-
       // ----- Wind ambient (feature 4) -----
       if (now > G.windUpdateAt) {
         G.windUpdateAt = now + 250;
