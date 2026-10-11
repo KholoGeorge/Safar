@@ -1,6 +1,6 @@
 // sw.js
 
-const CACHE_NAME = 'safar-cache-v15';
+const CACHE_NAME = 'safar-cache-v16';
 
 const ASSETS_TO_CACHE = [
   './',
@@ -35,6 +35,18 @@ const ASSETS_TO_CACHE = [
   './audio/1_10_vocab_06.mp3',
   './audio/1_10_vocab_07.mp3',
   './audio/1_10_vocab_08.mp3',
+  './audio/1_11_01.mp3',
+  './audio/1_11_02.mp3',
+  './audio/1_11_03.mp3',
+  './audio/1_11_04.mp3',
+  './audio/1_11_05.mp3',
+  './audio/1_11_06.mp3',
+  './audio/1_11_07.mp3',
+  './audio/1_11_08.mp3',
+  './audio/1_11_09.mp3',
+  './audio/1_11_10.mp3',
+  './audio/1_11_11.mp3',
+  './audio/1_11_12.mp3',
   './audio/1_11_full.mp3',
   './audio/1_12_full.mp3',
   './audio/1_12_vocab_full.mp3',
