@@ -1,6 +1,6 @@
 // sw.js
 
-const CACHE_NAME = 'safar-cache-v12';
+const CACHE_NAME = 'safar-cache-v14';
 
 const ASSETS_TO_CACHE = [
   './',
@@ -40,7 +40,6 @@ const ASSETS_TO_CACHE = [
   './js/summary.js',
   './js/sync.js',
 
-  './lessons/aby1_10.json',
   './lessons/aby1_1_numbers.json',
   './lessons/aby1_1a.json',
   './lessons/aby1_1b.json',
@@ -48,6 +47,12 @@ const ASSETS_TO_CACHE = [
   './lessons/aby1_2b.json',
   './lessons/aby1_3a.json',
   './lessons/aby1_3b.json',
+  './lessons/aby1_10.json',
+  './lessons/aby1_10_vocab.json',
+  './lessons/aby1_11.json',
+  './lessons/aby1_12.json',
+  './lessons/aby1_12_vocab.json',
+  './lessons/aby1_13_numbers.json',
   './lessons/manifest.json'
 ];
 
