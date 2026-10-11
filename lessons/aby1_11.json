@@ -2,134 +2,92 @@
   "lessonId": "ABY 1-11",
   "unit": 2,
   "topic": "The Family",
-  "title": "The Prophet's Family Tree",
+  "title": "Family Relations",
   "dialogueAudio": "1_11_full.mp3",
   "phrases": [
     {
-      "card": false,
-      "ar": "الْحِوَارُ الثَّانِي",
-      "en": "The Second Dialogue",
-      "au": "1_11_00.mp3",
-      "notes": "الْحِوَار (dialogue) + الثَّانِي (second)."
-    },
-    {
-      "cardId": "aby1_11.q_tree",
-      "ar": "هَلْ هَذِهِ شَجَرَةٌ ؟",
-      "en": "Is this a tree?",
-      "au": "1_11_01.mp3",
-      "notes": "هَذِهِ (demonstrative pronoun 'this', feminine) agrees with شَجَرَة (tree, feminine)."
-    },
-    {
-      "cardId": "aby1_11.a_tree_prophet_family",
-      "ar": "نَعَمْ ، هَذِهِ أُسْرَةُ الرَّسُولِ ، صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ .",
-      "en": "Yes, this is the family of the Messenger, peace and blessings of Allah be upon him.",
-      "au": "1_11_02.mp3",
-      "notes": "أُسْرَةُ الرَّسُولِ is an Iḍāfah structure (Possessive construction: 'family of the Messenger')."
-    },
-    {
-      "cardId": "aby1_11.pbuh",
-      "ar": "صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ .",
-      "en": "Peace and blessings of Allah be upon him.",
-      "au": "1_11_03.mp3",
-      "notes": "Honorific phrase recited whenever the Prophet ﷺ is mentioned."
-    },
-    {
       "cardId": "aby1_11.father_abdullah",
-      "ar": "هَذَا وَالِدُهُ عَبْدُ اللَّهِ .",
-      "en": "This is his father, Abdullah.",
-      "au": "1_11_04.mp3",
-      "notes": "وَالِد (father) + ـهُ (his) = his father."
+      "ar": "هَذَا وَالِدُهُ عَبْدُ اللَّهِ",
+      "en": "This is his father, Abdullah",
+      "au": "1_11_01.mp3",
+      "notes": "وَالِد = father. ـهُ = his. هَذَا = this (masculine). First line of the dialogue — no وَ at the front."
     },
     {
       "cardId": "aby1_11.mother_aminah",
-      "ar": "وَهَذِهِ وَالِدَتُهُ آمِنَةُ .",
-      "en": "And this is his mother, Aminah.",
-      "au": "1_11_05.mp3",
-      "notes": "وَالِدَة (mother) is feminine, so it uses the feminine demonstrative pronoun هَذِهِ."
+      "ar": "وَهَذِهِ وَالِدَتُهُ آمِنَةُ",
+      "en": "And this is his mother, Aminah",
+      "au": "1_11_02.mp3",
+      "notes": "وَهَذِهِ = 'and this is' (feminine). The وَ ties each line back to the previous one."
     },
     {
       "cardId": "aby1_11.grandfather_abdul_muttalib",
-      "ar": "وَهَذَا جَدُّهُ عَبْدُ الْمُطَّلِبِ .",
-      "en": "And this is his grandfather, Abdul-Muttalib.",
-      "au": "1_11_06.mp3",
-      "notes": "جَدّ (grandfather) + ـهُ (his) = his grandfather."
+      "ar": "وَهَذَا جَدُّهُ عَبْدُ الْمُطَّلِبِ",
+      "en": "And this is his grandfather, Abdul-Muttalib",
+      "au": "1_11_03.mp3",
+      "notes": "جَدّ = grandfather. Same هَذَا + noun + ـهُ shape as the first line."
     },
     {
-      "cardId": "aby1_11.paternal_uncle_abbas",
-      "ar": "وَهَذَا عَمُّهُ الْعَبَّاسُ .",
-      "en": "And this is his paternal uncle, Al-Abbas.",
-      "au": "1_11_07.mp3",
-      "notes": "عَمّ specifically means 'paternal uncle' (father's brother)."
+      "cardId": "aby1_11.uncle_abu_talib",
+      "ar": "وَهَذَا عَمُّهُ أَبُو طَالِبٍ",
+      "en": "And this is his paternal uncle, Abu Talib",
+      "au": "1_11_04.mp3",
+      "notes": "عَمّ = father's brother (Arabic distinguishes this from خَال = mother's brother). أَبُو = 'father of' in a name — it stays أَبُو when followed by another word."
     },
     {
-      "cardId": "aby1_11.paternal_uncle_hamzah",
-      "ar": "وَهَذَا عَمُّهُ حَمْزَةُ .",
-      "en": "And this is his paternal uncle, Hamzah.",
-      "au": "1_11_08.mp3",
-      "notes": "Hamzah (حَمْزَةُ) ends in a Tā' Marbūṭah, so it does not take tanween."
-    },
-    {
-      "cardId": "aby1_11.paternal_uncle_abu_talib",
-      "ar": "وَهَذَا عَمُّهُ أَبُو طَالِبٍ .",
-      "en": "And this is his paternal uncle, Abu Talib.",
-      "au": "1_11_09.mp3",
-      "notes": "أَبُو is one of the Five Nouns (الأسماء الخمسة) and takes a Wāw when in the nominative case."
-    },
-    {
-      "cardId": "aby1_11.paternal_aunt_safiyyah",
-      "ar": "وَهَذِهِ عَمَّتُهُ صَفِيَّةُ .",
-      "en": "And this is his paternal aunt, Safiyyah.",
-      "au": "1_11_10.mp3",
-      "notes": "عَمَّة specifically means 'paternal aunt' (father's sister)."
+      "cardId": "aby1_11.aunt_safiyyah",
+      "ar": "وَهَذِهِ عَمَّتُهُ صَفِيَّةُ",
+      "en": "And this is his paternal aunt, Safiyyah",
+      "au": "1_11_05.mp3",
+      "notes": "عَمَّة = father's sister. Feminine of عَمّ, formed with Tā' Marbūṭah — hence هَذِهِ."
     },
     {
       "cardId": "aby1_11.son_qasim",
-      "ar": "وَهَذَا ابْنُهُ الْقَاسِمُ .",
-      "en": "And this is his son, Al-Qasim.",
-      "au": "1_11_11.mp3",
-      "notes": "ابْن (son) + ـهُ (his) = his son."
+      "ar": "وَهَذَا ابْنُهُ الْقَاسِمُ",
+      "en": "And this is his son, Al-Qasim",
+      "au": "1_11_06.mp3",
+      "notes": "ابْن = son. First of three sons; the shape repeats for the next two."
     },
     {
       "cardId": "aby1_11.son_abdullah",
-      "ar": "وَهَذَا ابْنُهُ عَبْدُ اللَّهِ .",
-      "en": "And this is his son, Abdullah.",
-      "au": "1_11_12.mp3",
-      "notes": "Another son of the Prophet ﷺ."
+      "ar": "وَهَذَا ابْنُهُ عَبْدُ اللَّهِ",
+      "en": "And this is his son, Abdullah",
+      "au": "1_11_07.mp3",
+      "notes": "Same name as the father in card 1, but a different person — one is his father, this one is his son."
     },
     {
       "cardId": "aby1_11.son_ibrahim",
-      "ar": "وَهَذَا ابْنُهُ إِبْرَاهِيمُ .",
-      "en": "And this is his son, Ibrahim.",
-      "au": "1_11_13.mp3",
-      "notes": "إِبْرَاهِيمُ is a non-Arabic (foreign) proper noun and does not take tanween."
+      "ar": "وَهَذَا ابْنُهُ إِبْرَاهِيمُ",
+      "en": "And this is his son, Ibrahim",
+      "au": "1_11_08.mp3",
+      "notes": "Same shape again. Three sons in a row — read them as one rhythm."
     },
     {
       "cardId": "aby1_11.daughter_fatimah",
-      "ar": "وَهَذِهِ ابْنَتُهُ فَاطِمَةُ .",
-      "en": "And this is his daughter, Fatimah.",
-      "au": "1_11_14.mp3",
-      "notes": "ابْنَة (daughter) + ـهُ (his). Feminine proper names ending in Tā' Marbūṭah do not take tanween."
+      "ar": "وَهَذِهِ ابْنَتُهُ فَاطِمَةُ",
+      "en": "And this is his daughter, Fatimah",
+      "au": "1_11_09.mp3",
+      "notes": "ابْنَة = daughter — feminine of ابْن. Note the switch back to هَذِهِ for all four daughters."
     },
     {
       "cardId": "aby1_11.daughter_ruqayyah",
-      "ar": "وَهَذِهِ ابْنَتُهُ رُقَيَّةُ .",
-      "en": "And this is his daughter, Ruqayyah.",
-      "au": "1_11_15.mp3",
-      "notes": "Ruqayyah was married to Uthman ibn Affan (may Allah be pleased with him)."
+      "ar": "وَهَذِهِ ابْنَتُهُ رُقَيَّةُ",
+      "en": "And this is his daughter, Ruqayyah",
+      "au": "1_11_10.mp3",
+      "notes": "Same shape. Read the whole line as one beat."
     },
     {
       "cardId": "aby1_11.daughter_zaynab",
-      "ar": "وَهَذِهِ ابْنَتُهُ زَيْنَبُ .",
-      "en": "And this is his daughter, Zaynab.",
-      "au": "1_11_16.mp3",
-      "notes": "Feminine proper nouns in Arabic generally do not take tanween."
+      "ar": "وَهَذِهِ ابْنَتُهُ زَيْنَبُ",
+      "en": "And this is his daughter, Zaynab",
+      "au": "1_11_11.mp3",
+      "notes": "زَيْنَب is a feminine name. Every word in this line agrees in the feminine."
     },
     {
       "cardId": "aby1_11.daughter_um_kulthum",
-      "ar": "وَهَذِهِ ابْنَتُهُ أُمُّ كُلْثُومٍ .",
-      "en": "And this is his daughter, Umm Kulthum.",
-      "au": "1_11_17.mp3",
-      "notes": "أُمُّ كُلْثُومٍ is a compound kunyah name ('Mother of Kulthum')."
+      "ar": "وَهَذِهِ ابْنَتُهُ أُمُّ كُلْثُومٍ",
+      "en": "And this is his daughter, Umm Kulthum",
+      "au": "1_11_12.mp3",
+      "notes": "أُمُّ كُلْثُومٍ = 'mother of Kulthum' — a compound name, mirroring أَبُو طَالِبٍ in card 4."
     }
   ]
 }
